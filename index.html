@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全能搜索助手-ZMF</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+            color: #e0e0e0;
+        }
+
+        .search-box {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        /* 搜索区域优化 */
+        .search-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10vh;
+            gap: 10px;
+            position: relative;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            width: min(600px, 90vw);
+            height: 56px;
+            padding: 0 30px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s;
+            background: #fff;
+        }
+
+        .search-box:focus {
+            border-color: #1890ff;
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
+        }
+
+        /* 平台选择器优化 */
+        .platform-selector {
+            position: relative;
+            z-index: 100;
+        }
+
+        .main-menu-btn {
+            background: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 14px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .main-menu-btn:hover {
+            background: #096dd9;
+        }
+
+        /* 菜单系统优化 */
+        .menu-system {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            display: none;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            min-width: 240px;
+        }
+
+        .main-menu {
+            padding: 8px 0;
+        }
+
+        .main-menu-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .main-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .sub-menu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: #fff;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+            min-width: 240px;
+        }
+
+        .sub-menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sub-menu-item:hover {
+            background: #f5f5f5;
+        }
+
+        .sub-menu-item img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        /* 全屏显示优化 */
+        .fullscreen-result {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: white;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            width: 48px;
+            height: 48px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+            background: rgba(0, 0, 0, 1);
+        }
+
+        .close-btn::before,
+        .close-btn::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 2px;
+            background: white;
+        }
+
+        .close-btn::before {
+            transform: rotate(45deg);
+        }
+
+        .close-btn::after {
+            transform: rotate(-45deg);
+        }
+
+        .result-iframe {
+            flex: 1;
+            width: 100%;
+            border: none;
+            margin-top: 60px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .search-area {
+                margin-top: 5vh;
+                flex-direction: column;
+            }
+
+            .platform-selector {
+                width: 100%;
+                text-align: center;
+            }
+
+            .main-menu-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .menu-system {
+                width: 100%;
+            }
+
+            .sub-menu {
+                position: static;
+                border-radius: 12px;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-area">
+            <input type="text" class="search-box" placeholder="输入搜索内容..." autofocus>
+            
+            <div class="platform-selector">
+                <button class="main-menu-btn">请选择搜索平台 ▼</button>
+                <div class="menu-system">
+                    <div class="main-menu">
+                        <div class="main-menu-item" data-category="search">
+                            搜索引擎
+                            <div class="sub-menu">
+                                <div class="sub-menu-item" data-platform="bing">
+                                    <img src="https://www.bing.com/favicon.ico" alt="Bing">
+                                    Bing
+                                </div>
+                                <div class="sub-menu-item" data-platform="sogou">
+                                    <img src="https://www.sogou.com/favicon.ico" alt="搜狗">
+                                    搜狗
+                                </div>
+                                <div class="sub-menu-item" data-platform="360">
+                                    <img src="https://www.so.com/favicon.ico" alt="360搜索">
+                                    360搜索
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="main-menu-item" data-category="video">
+                            短视频平台
+                            <div class="sub-menu">
+                                <div class="sub-menu-item" data-platform="kuaishou">
+                                    <img src="https://www.kuaishou.com/favicon.ico" alt="快手">
+                                    快手
+                                </div>
+                                <div class="sub-menu-item" data-platform="bilibili">
+                                    <img src="https://www.bilibili.com/favicon.ico" alt="哔哩哔哩">
+                                    哔哩哔哩
+                                </div>
+                                <div class="sub-menu-item" data-platform="haokan">
+                                    <img src="https://haokan.baidu.com/favicon.ico" alt="好看视频">
+                                    好看视频
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="main-menu-item" data-category="audio">
+                            听书软件
+                            <div class="sub-menu">
+                                <div class="sub-menu-item" data-platform="ximalaya">
+                                    <img src="https://www.ximalaya.com/favicon.ico" alt="喜马拉雅">
+                                    喜马拉雅
+                                </div>
+                                <div class="sub-menu-item" data-platform="lazy">
+                                    <img src="https://www.lrts.me/favicon.ico" alt="懒人听书">
+                                    懒人听书
+                                </div>
+                                <div class="sub-menu-item" data-platform="missevan">
+                                    <img src="https://www.missevan.com/favicon.ico" alt="猫耳FM">
+                                    猫耳FM
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="search-btn main-menu-btn">立即搜索</button>
+        </div>
+    </div>
+
+    <div class="fullscreen-result">
+        <div class="close-btn"></div>
+        <iframe class="result-iframe" src="" title="搜索结果"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dom = {
+                menuBtn: document.querySelector('.main-menu-btn'),
+                menuSystem: document.querySelector('.menu-system'),
+                searchBox: document.querySelector('.search-box'),
+                fullscreen: document.querySelector('.fullscreen-result'),
+                closeBtn: document.querySelector('.close-btn'),
+                iframe: document.querySelector('.result-iframe')
+            };
+
+            let selectedPlatform = null;
+
+            // 菜单交互逻辑
+            dom.menuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dom.menuSystem.style.display = dom.menuSystem.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.querySelectorAll('.main-menu-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const subMenu = item.querySelector('.sub-menu');
+                    document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
+                    subMenu.style.display = 'block';
+                });
+            });
+
+            document.querySelectorAll('.sub-menu-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectedPlatform = item.dataset.platform;
+                    dom.menuBtn.textContent = `${item.textContent.trim()} ▼`;
+                    dom.menuSystem.style.display = 'none';
+                });
+            });
+
+            // 点击空白处关闭菜单
+            document.addEventListener('click', () => {
+                dom.menuSystem.style.display = 'none';
+                document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
+            });
+
+            // 搜索功能
+            const search = () => {
+                const query = dom.searchBox.value.trim();
+                if (!query || !selectedPlatform) {
+                    alert(selectedPlatform ? '请输入搜索内容' : '请选择搜索平台');
+                    return;
+                }
+
+                const urlMap = {
+                    // 搜索引擎
+                    bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+                    sogou: `https://www.sogou.com/web?query=${encodeURIComponent(query)}`,
+                    360: `https://www.so.com/s?q=${encodeURIComponent(query)}`,
+                    
+                    // 短视频
+                    kuaishou: `https://www.kuaishou.com/search/video?searchKey=${encodeURIComponent(query)}`,
+                    bilibili: `https://search.bilibili.com/all?keyword=${encodeURIComponent(query)}`,
+                    haokan: `https://haokan.baidu.com/search?query=${encodeURIComponent(query)}`,
+                    
+                    // 听书软件
+                    ximalaya: `https://www.ximalaya.com/search/${encodeURIComponent(query)}`,
+                    lazy: `https://www.lrts.me/search?keyword=${encodeURIComponent(query)}`,
+                    missevan: `https://www.missevan.com/search/?keyword=${encodeURIComponent(query)}`
+                };
+
+                dom.iframe.src = urlMap[selectedPlatform];
+                dom.fullscreen.style.display = 'flex';
+            };
+
+            // 绑定事件
+            document.querySelector('.search-btn').addEventListener('click', search);
+            dom.searchBox.addEventListener('keypress', (e) => e.key === 'Enter' && search());
+            dom.closeBtn.addEventListener('click', () => dom.fullscreen.style.display = 'none');
+        });
+    </script>
+</body>
+
+    <!-- 在容器后添加新模块 -->
+    <div class="tool-panel">
+        <button onclick="window.open('tools.html')">在线编译器</button>
+        <button onclick="window.open('game.html')">小游戏</button>
+    </div>
+
+    <!-- 添加联系信息 -->
+    <div class="contact-info">
+        <p>📧 tuboshu5418@163.com</p>
+        <p>📱 19318329537</p>
+        <p>📱 19318329257</p>
+    </div>
+</body>
+</html>
