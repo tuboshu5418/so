@@ -318,6 +318,13 @@
                     selectedPlatform = item.dataset.platform;
                     dom.menuBtn.textContent = `${item.textContent.trim()} ▼`;
                     dom.menuSystem.style.display = 'none';
+
+                    // 根据所选平台隐藏或显示登录按钮
+                    if (selectedPlatform ==='sogou' || selectedPlatform === '360') {
+                        dom.loginBtn.style.display = 'none';
+                    } else {
+                        dom.loginBtn.style.display = 'block';
+                    }
                 });
             });
 
