@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -202,6 +202,28 @@
             background: #096dd9;
         }
 
+        .suggestions {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 200;
+        }
+
+        .suggestion-item {
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: #f5f5f5;
+        }
+
         @media (max-width: 768px) {
             .search-area {
                 margin-top: 5vh;
@@ -236,6 +258,7 @@
         <div class="search-area">
             <button class="login-btn">先登录</button>
             <input type="text" class="search-box" placeholder="输入搜索内容..." autofocus="">
+            <div class="suggestions"></div>
             <div class="platform-selector">
                 <button class="main-menu-btn">请选择搜索平台 ▼</button>
                 <div class="menu-system">
@@ -244,15 +267,15 @@
                             搜索引擎
                             <div class="sub-menu">
                                 <div class="sub-menu-item" data-platform="bing">
-                                    <img src="./全能搜索助手-ZMF_files/favicon.ico" alt="Bing">
+                                    <img src="https://www.bing.com/favicon.ico" alt="Bing">
                                     Bing
                                 </div>
                                 <div class="sub-menu-item" data-platform="sogou">
-                                    <img src="./全能搜索助手-ZMF_files/favicon(1).ico" alt="搜狗">
+                                    <img src="https://www.sogou.com/favicon.ico" alt="搜狗">
                                     搜狗
                                 </div>
                                 <div class="sub-menu-item" data-platform="360">
-                                    <img src="./全能搜索助手-ZMF_files/favicon(2).ico" alt="360搜索">
+                                    <img src="https://www.so.com/favicon.ico" alt="360搜索">
                                     360搜索
                                 </div>
                             </div>
@@ -261,15 +284,15 @@
                             短视频平台
                             <div class="sub-menu">
                                 <div class="sub-menu-item" data-platform="kuaishou">
-                                    <img src="./全能搜索助手-ZMF_files/favicon(3).ico" alt="快手">
+                                    <img src="https://www.kuaishou.com/favicon.ico" alt="快手">
                                     快手
                                 </div>
                                 <div class="sub-menu-item" data-platform="bilibili">
-                                    <img src="./全能搜索助手-ZMF_files/favicon(4).ico" alt="哔哩哔哩">
+                                    <img src="https://www.bilibili.com/favicon.ico" alt="哔哩哔哩">
                                     哔哩哔哩
                                 </div>
                                 <div class="sub-menu-item" data-platform="haokan">
-                                    <img src="./全能搜索助手-ZMF_files/favicon(5).ico" alt="好看视频">
+                                    <img src="https://haokan.baidu.com/favicon.ico" alt="好看视频">
                                     好看视频
                                 </div>
                             </div>
@@ -293,7 +316,8 @@
                 fullscreen: document.querySelector('.fullscreen-result'),
                 closeBtn: document.querySelector('.close-btn'),
                 iframe: document.querySelector('.result-iframe'),
-                loginBtn: document.querySelector('.login-btn')
+                loginBtn: document.querySelector('.login-btn'),
+                suggestions: document.querySelector('.suggestions')
             };
 
             let selectedPlatform = null;
@@ -331,6 +355,7 @@
             document.addEventListener('click', () => {
                 dom.menuSystem.style.display = 'none';
                 document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
+                dom.suggestions.style.display = 'none';
             });
 
             const search = () => {
@@ -379,6 +404,53 @@
                 window.open(loginUrlMap[selectedPlatform], '_blank');
             };
 
+            const getSuggestions = (query) => {
+                if (query.length === 0) {
+                    dom.suggestions.style.display = 'none';
+                    return;
+                }
+
+                const callbackName = `bingSuggestionCallback_${Date.now()}`;
+                const script = document.createElement('script');
+                const apiUrl = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(query)}&cb=${callbackName}&PC=EMMX01`;
+                script.src = apiUrl;
+
+                window[callbackName] = (data) => {
+                    console.log('API 返回数据:', data);
+                    dom.suggestions.innerHTML = '';
+                    if (data && data.AS && data.AS.Results && data.AS.Results.length > 0) {
+                        data.AS.Results[0].Suggests.forEach(suggestion => {
+                            const item = document.createElement('div');
+                            item.classList.add('suggestion-item');
+                            item.textContent = suggestion.T;
+                            item.addEventListener('click', () => {
+                                dom.searchBox.value = suggestion.T;
+                                dom.suggestions.style.display = 'none';
+                                search();
+                            });
+                            dom.suggestions.appendChild(item);
+                        });
+                        dom.suggestions.style.display = 'block';
+                    } else {
+                        dom.suggestions.style.display = 'none';
+                    }
+                    delete window[callbackName];
+                };
+
+                script.onerror = () => {
+                    console.error('API 请求出错，URL:', apiUrl);
+                    dom.suggestions.style.display = 'none';
+                    delete window[callbackName];
+                };
+
+                document.body.appendChild(script);
+            };
+
+            dom.searchBox.addEventListener('input', () => {
+                const query = dom.searchBox.value.trim();
+                getSuggestions(query);
+            });
+
             document.querySelector('.search-btn').addEventListener('click', search);
             dom.searchBox.addEventListener('keypress', (e) => e.key === 'Enter' && search());
             dom.closeBtn.addEventListener('click', () => dom.fullscreen.style.display = 'none');
@@ -396,4 +468,4 @@
     </div>
 </body>
 
-</html>
+</html>    
