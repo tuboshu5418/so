@@ -1,471 +1,277 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全能搜索助手-ZMF</title>
+    <title>云境搜索 - 诗意探索</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+        :root {
+            --山黛: #2c3e50;
+            --月白: #ecf0f1;
+            --烟青: linear-gradient(135deg, #89c7b6, #c6e4d9);
+            --云影: rgba(255,255,255,0.15);
         }
 
         body {
-            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
-            color: #e0e0e0;
-        }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(5px);
-        }
-
-        .search-area {
+            background: var(--烟青);
+            min-height: 100vh;
+            margin: 0;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            margin-top: 10vh;
-            gap: 10px;
+            font-family: '方正清刻本悦宋', cursive;
             position: relative;
-            flex-wrap: wrap;
+            overflow: hidden;
         }
 
+        /* 动态山水背景 */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300vw;
+            height: 300vh;
+            background: 
+                radial-gradient(circle at 20% 80%, 
+                    rgba(255,255,255,0.1) 10%,
+                    transparent 30%),
+                linear-gradient(25deg, 
+                    transparent 60%,
+                    rgba(255,255,255,0.2) 80%);
+            animation: 云卷云舒 80s infinite linear;
+        }
+
+        .search-container {
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 2rem 3rem;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 0 12px rgba(255,255,255,0.3) inset;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        /* 搜索输入框 */
         .search-box {
-            width: min(600px, 90vw);
-            height: 56px;
-            padding: 0 30px;
-            font-size: 18px;
-            border: 2px solid #e0e0e0;
+            width: min(600px, 80vw);
+            height: 60px;
+            padding: 0 2rem;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50px;
-            outline: none;
-            transition: all 0.3s;
-            background: #fff;
+            background: rgba(255,255,255,0.9);
+            transition: all 0.3s ease;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
         }
 
-        .search-box:focus {
-            border-color: #1890ff;
-            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.2);
-        }
-
-        .platform-selector {
+        /* 平台选择菜单 */
+        .platform-menu {
             position: relative;
-            z-index: 100;
+            margin-bottom: 1.5rem;
         }
 
-        .main-menu-btn {
-            background: #1890ff;
-            color: white;
-            border: none;
+        .menu-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
             border-radius: 30px;
-            padding: 14px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .main-menu-btn:hover {
-            background: #096dd9;
-        }
-
-        .menu-system {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 0;
-            display: none;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            min-width: 240px;
-        }
-
-        .main-menu {
-            padding: 8px 0;
-        }
-
-        .main-menu-item {
             padding: 12px 24px;
+            color: var(--山黛);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+        }
+
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .menu-list {
+            position: absolute;
+            top: 120%;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            padding: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
             cursor: pointer;
             transition: all 0.2s;
+        }
+
+        .menu-item:hover {
+            background: rgba(236, 240, 241, 0.6);
+            transform: translateX(10px);
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .poetic-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.2);
+            color: var(--山黛);
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
             position: relative;
         }
 
-        .main-menu-item:hover {
-            background: #f5f5f5;
+        .poetic-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
         }
 
-        .sub-menu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            background: #fff;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.05);
-            display: none;
-            min-width: 240px;
-        }
-
-        .sub-menu-item {
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .sub-menu-item:hover {
-            background: #f5f5f5;
-        }
-
-        .sub-menu-item img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-        }
-
-        .fullscreen-result {
+        /* 全屏结果页 */
+        .result-frame {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: white;
+            background: rgba(255,255,255,0.95);
             z-index: 1000;
             display: none;
-            flex-direction: column;
+            border: none;
         }
 
-        .close-btn {
+        /* 登录提示 */
+        .login-tip {
             position: fixed;
-            top: 24px;
-            right: 24px;
-            width: 48px;
-            height: 48px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .close-btn:hover {
-            transform: rotate(90deg);
-            background: rgba(0, 0, 0, 1);
-        }
-
-        .close-btn::before,
-        .close-btn::after {
-            content: '';
-            position: absolute;
-            width: 24px;
-            height: 2px;
-            background: white;
-        }
-
-        .close-btn::before {
-            transform: rotate(45deg);
-        }
-
-        .close-btn::after {
-            transform: rotate(-45deg);
-        }
-
-        .result-iframe {
-            flex: 1;
-            width: 100%;
-            border: none;
-            margin-top: 60px;
-        }
-
-        .login-btn {
-            background: #1890ff;
-            color: white;
-            border: none;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
             border-radius: 30px;
-            padding: 14px 24px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-        }
-
-        .login-btn:hover {
-            background: #096dd9;
-        }
-
-        .suggestions {
-            position: absolute;
-            top: calc(100% + 5px);
-            left: 0;
-            width: 100%;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             display: none;
-            z-index: 200;
         }
 
-        .suggestion-item {
-            padding: 12px 24px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .suggestion-item:hover {
-            background: #f5f5f5;
-        }
-
-        @media (max-width: 768px) {
-            .search-area {
-                margin-top: 5vh;
-                flex-direction: column;
-            }
-
-            .platform-selector {
-                width: 100%;
-                text-align: center;
-            }
-
-            .main-menu-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .menu-system {
-                width: 100%;
-            }
-
-            .sub-menu {
-                position: static;
-                border-radius: 12px;
-                box-shadow: none;
-            }
+        @keyframes 云卷云舒 {
+            0% { transform: translate(0,0); }
+            33% { transform: translate(-30%, -15%); }
+            66% { transform: translate(-20%, 10%); }
+            100% { transform: translate(0,0); }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="search-area">
-            <button class="login-btn">先登录</button>
-            <input type="text" class="search-box" placeholder="输入搜索内容..." autofocus="">
-            <div class="suggestions"></div>
-            <div class="platform-selector">
-                <button class="main-menu-btn">请选择搜索平台 ▼</button>
-                <div class="menu-system">
-                    <div class="main-menu">
-                        <div class="main-menu-item" data-category="search">
-                            搜索引擎
-                            <div class="sub-menu">
-                                <div class="sub-menu-item" data-platform="bing">
-                                    <img src="https://www.bing.com/favicon.ico" alt="Bing">
-                                    Bing
-                                </div>
-                                <div class="sub-menu-item" data-platform="sogou">
-                                    <img src="https://www.sogou.com/favicon.ico" alt="搜狗">
-                                    搜狗
-                                </div>
-                                <div class="sub-menu-item" data-platform="360">
-                                    <img src="https://www.so.com/favicon.ico" alt="360搜索">
-                                    360搜索
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-menu-item" data-category="video">
-                            短视频平台
-                            <div class="sub-menu">
-                                <div class="sub-menu-item" data-platform="kuaishou">
-                                    <img src="https://www.kuaishou.com/favicon.ico" alt="快手">
-                                    快手
-                                </div>
-                                <div class="sub-menu-item" data-platform="bilibili">
-                                    <img src="https://www.bilibili.com/favicon.ico" alt="哔哩哔哩">
-                                    哔哩哔哩
-                                </div>
-                                <div class="sub-menu-item" data-platform="haokan">
-                                    <img src="https://haokan.baidu.com/favicon.ico" alt="好看视频">
-                                    好看视频
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="青天有月来几时？我今停杯一问之...">
+        
+        <div class="platform-menu">
+            <button class="menu-btn">🕊️ 选择搜索平台 ▼</button>
+            <div class="menu-list">
+                <div class="menu-item" data-platform="bing" 
+                     data-login="https://login.live.com/">
+                    🌄 必应搜索
+                </div>
+                <div class="menu-item" data-platform="bilibili" 
+                     data-login="https://passport.bilibili.com/login">
+                    🎋 哔哩哔哩
+                </div>
+                <div class="menu-item" data-platform="ximalaya" 
+                     data-login="https://www.ximalaya.com/passport/login">
+                    🎵 喜马拉雅
+                </div>
+                <div class="menu-item" data-platform="github" 
+                     data-login="https://github.com/login">
+                    💻 GitHub
                 </div>
             </div>
-            <button class="search-btn main-menu-btn">立即搜索</button>
+        </div>
+
+        <div class="action-buttons">
+            <button class="poetic-btn" id="searchBtn">🕊️ 云中寻</button>
+            <button class="poetic-btn" id="loginBtn" style="display:none;">
+                🎋 先登录
+            </button>
         </div>
     </div>
-    <div class="fullscreen-result">
-        <div class="close-btn"></div>
-        <iframe class="result-iframe" src="./全能搜索助手-ZMF_files/saved_resource.html" title="搜索结果"></iframe>
-    </div>
+
+    <iframe class="result-frame" id="resultFrame"></iframe>
+    <div class="login-tip" id="loginTip">点击上方按钮登录当前平台</div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const dom = {
-                menuBtn: document.querySelector('.main-menu-btn'),
-                menuSystem: document.querySelector('.menu-system'),
-                searchBox: document.querySelector('.search-box'),
-                fullscreen: document.querySelector('.fullscreen-result'),
-                closeBtn: document.querySelector('.close-btn'),
-                iframe: document.querySelector('.result-iframe'),
-                loginBtn: document.querySelector('.login-btn'),
-                suggestions: document.querySelector('.suggestions')
+        let selectedPlatform = null;
+
+        // 平台菜单交互
+        document.querySelector('.menu-btn').addEventListener('click', function() {
+            const menu = document.querySelector('.menu-list');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                selectedPlatform = {
+                    name: item.dataset.platform,
+                    login: item.dataset.login
+                };
+                
+                document.querySelector('.menu-btn').textContent = 
+                    `${item.textContent.trim()} ▼`;
+                
+                // 显示/隐藏登录按钮
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.style.display = selectedPlatform.login ? 'block' : 'none';
+                
+                document.querySelector('.menu-list').style.display = 'none';
+                document.getElementById('loginTip').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loginTip').style.display = 'none';
+                }, 2000);
+            });
+        });
+
+        // 搜索功能
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.querySelector('.search-box').value.trim();
+            if (!query) return alert('请输入搜索内容');
+            if (!selectedPlatform) return alert('请选择搜索平台');
+
+            const searchUrls = {
+                bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+                bilibili: `https://search.bilibili.com/all?keyword=${encodeURIComponent(query)}`,
+                ximalaya: `https://www.ximalaya.com/search/${encodeURIComponent(query)}`,
+                github: `https://github.com/search?q=${encodeURIComponent(query)}`
             };
 
-            let selectedPlatform = null;
+            const frame = document.getElementById('resultFrame');
+            frame.src = searchUrls[selectedPlatform.name];
+            frame.style.display = 'block';
+        });
 
-            dom.menuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                dom.menuSystem.style.display = dom.menuSystem.style.display === 'block'? 'none' : 'block';
-            });
+        // 登录功能
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            if (selectedPlatform && selectedPlatform.login) {
+                window.open(selectedPlatform.login, '_blank');
+            }
+        });
 
-            document.querySelectorAll('.main-menu-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const subMenu = item.querySelector('.sub-menu');
-                    document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
-                    subMenu.style.display = 'block';
-                });
-            });
-
-            document.querySelectorAll('.sub-menu-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    selectedPlatform = item.dataset.platform;
-                    dom.menuBtn.textContent = `${item.textContent.trim()} ▼`;
-                    dom.menuSystem.style.display = 'none';
-
-                    // 根据所选平台隐藏或显示登录按钮
-                    if (selectedPlatform ==='sogou' || selectedPlatform === '360') {
-                        dom.loginBtn.style.display = 'none';
-                    } else {
-                        dom.loginBtn.style.display = 'block';
-                    }
-                });
-            });
-
-            document.addEventListener('click', () => {
-                dom.menuSystem.style.display = 'none';
-                document.querySelectorAll('.sub-menu').forEach(m => m.style.display = 'none');
-                dom.suggestions.style.display = 'none';
-            });
-
-            const search = () => {
-                const query = dom.searchBox.value.trim();
-                if (!query ||!selectedPlatform) {
-                    alert(selectedPlatform? '请输入搜索内容' : '请选择搜索平台');
-                    return;
-                }
-
-                const urlMap = {
-                    // 搜索引擎
-                    bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
-                    sogou: `https://www.sogou.com/web?query=${encodeURIComponent(query)}`,
-                    360: `https://www.so.com/s?q=${encodeURIComponent(query)}`,
-                    // 短视频
-                    kuaishou: `https://www.kuaishou.com/search/video?searchKey=${encodeURIComponent(query)}`,
-                    bilibili: `https://search.bilibili.com/all?keyword=${encodeURIComponent(query)}`,
-                    haokan: `https://haokan.baidu.com/search?query=${encodeURIComponent(query)}`,
-                    // 听书软件
-                    ximalaya: `https://www.ximalaya.com/search/${encodeURIComponent(query)}`,
-                    lazy: `https://www.lrts.me/search?keyword=${encodeURIComponent(query)}`,
-                    missevan: `https://www.missevan.com/search/?keyword=${encodeURIComponent(query)}`
-                };
-
-                dom.iframe.src = urlMap[selectedPlatform];
-                dom.fullscreen.style.display = 'flex';
-            };
-
-            const login = () => {
-                if (!selectedPlatform) {
-                    alert('请选择搜索平台');
-                    return;
-                }
-
-                const loginUrlMap = {
-                    // 搜索引擎
-                    bing: `https://login.live.com/`,
-                    sogou: `https://account.sogou.com/passport/login`,
-                    360: `https://login.360.cn/?from=so`,
-                    // 短视频
-                    kuaishou: `https://www.kuaishou.com/login`,
-                    bilibili: `https://passport.bilibili.com/login`,
-                    haokan: `https://passport.baidu.com/v2/?login`
-                };
-
-                window.open(loginUrlMap[selectedPlatform], '_blank');
-            };
-
-            const getSuggestions = (query) => {
-                if (query.length === 0) {
-                    dom.suggestions.style.display = 'none';
-                    return;
-                }
-
-                const callbackName = `bingSuggestionCallback_${Date.now()}`;
-                const script = document.createElement('script');
-                const apiUrl = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(query)}&cb=${callbackName}&PC=EMMX01`;
-                script.src = apiUrl;
-
-                window[callbackName] = (data) => {
-                    console.log('API 返回数据:', data);
-                    dom.suggestions.innerHTML = '';
-                    if (data && data.AS && data.AS.Results && data.AS.Results.length > 0) {
-                        data.AS.Results[0].Suggests.forEach(suggestion => {
-                            const item = document.createElement('div');
-                            item.classList.add('suggestion-item');
-                            item.textContent = suggestion.T;
-                            item.addEventListener('click', () => {
-                                dom.searchBox.value = suggestion.T;
-                                dom.suggestions.style.display = 'none';
-                                search();
-                            });
-                            dom.suggestions.appendChild(item);
-                        });
-                        dom.suggestions.style.display = 'block';
-                    } else {
-                        dom.suggestions.style.display = 'none';
-                    }
-                    delete window[callbackName];
-                };
-
-                script.onerror = () => {
-                    console.error('API 请求出错，URL:', apiUrl);
-                    dom.suggestions.style.display = 'none';
-                    delete window[callbackName];
-                };
-
-                document.body.appendChild(script);
-            };
-
-            dom.searchBox.addEventListener('input', () => {
-                const query = dom.searchBox.value.trim();
-                getSuggestions(query);
-            });
-
-            document.querySelector('.search-btn').addEventListener('click', search);
-            dom.searchBox.addEventListener('keypress', (e) => e.key === 'Enter' && search());
-            dom.closeBtn.addEventListener('click', () => dom.fullscreen.style.display = 'none');
-            dom.loginBtn.addEventListener('click', login);
+        // 关闭结果页
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                document.querySelector('.menu-list').style.display = 'none';
+            }
+            if (e.target === document.getElementById('resultFrame')) {
+                document.getElementById('resultFrame').style.display = 'none';
+            }
         });
     </script>
-    <div class="tool-panel">
-        <button onclick="window.open('tools.html')">在线编译器</button>
-        <button onclick="window.open('game.html')">小游戏</button>
-    </div>
-    <div class="contact-info">
-        <p>📧 tuboshu5418@163.com</p>
-        <p>📱 19318329537</p>
-        <p>📱 19318329257</p>
-    </div>
 </body>
-
-</html>    
+</html>
