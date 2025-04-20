@@ -212,44 +212,20 @@
     <div class="signature">署名: zmf</div>
 
     <script>
-        // 静态随机诗词数组
-        const staticPoems = [
-            "行到水穷处，坐看云起时。 —— 王维《终南别业》",
-            "千山鸟飞绝，万径人踪灭。孤舟蓑笠翁，独钓寒江雪。 —— 柳宗元《江雪》",
-            "春有百花秋有月，夏有凉风冬有雪。若无闲事挂心头，便是人间好时节。 —— 无门慧开禅师《颂古》"
-        ];
-
-        // 随机显示文本（优先从API获取，失败则用静态诗词）
-        async function showRandomText() {
-            const apiUrls = ['https://v1.hitokoto.cn/?c=i', 'https://v1.hitokoto.cn/?c=i&encode=json'];
-            let responseData;
-            for (const url of apiUrls) {
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        const data = await response.json();
-                        responseData = data;
-                        break;
-                    }
-                } catch (error) {
-                    console.error(`获取API数据失败: ${url}`, error);
-                }
-            }
-
-            const poetryElement = document.getElementById('poetry');
-            if (responseData) {
-                const { hitokoto, from } = responseData;
-                const formattedText = `<span class="verse">${hitokoto}</span><br><span class="author">—— ${from}</span>`;
-                poetryElement.innerHTML = formattedText;
-            } else {
-                const randomIndex = Math.floor(Math.random() * staticPoems.length);
-                const [verse, author] = staticPoems[randomIndex].split(' —— ');
-                const formattedPoem = `<span class="verse">${verse}</span><br><span class="author">${author}</span>`;
-                poetryElement.innerHTML = formattedPoem;
+        // 随机显示一条一言语句
+        async function showRandomHitokoto() {
+            try {
+                const response = await fetch('https://v1.hitokoto.cn/?c=i');
+                const data = await response.json();
+                const poetryElement = document.getElementById('poetry');
+                const formattedHitokoto = `<span class="verse">${data.hitokoto}</span><br><span class="author">—— ${data.from}</span>`;
+                poetryElement.innerHTML = formattedHitokoto;
+            } catch (error) {
+                console.error('获取一言语句时出错:', error);
             }
         }
 
-        // 使用API数据设置背景图片
+        // 使用 API 数据设置背景图片
         const apiData = {
             "images": [
                 {
@@ -364,7 +340,7 @@
         function renderPlatforms() {
             const grid = document.getElementById('platformGrid');
             grid.innerHTML = platforms.map(platform => `
-                <div class="platform-card"
+                <div class="platform-card" 
                      data-id="${platform.id}"
                      data-login="${platform.login || ''}">
                     <div class="platform-icon">${platform.icon}</div>
@@ -385,7 +361,7 @@
                     // 显示/隐藏登录按钮
                     const showLogin = card.dataset.login;
                     document.getElementById('loginBtn').style.display =
-                        showLogin? 'block' : 'none';
+                        showLogin ? 'block' : 'none';
                 });
             });
         }
@@ -395,7 +371,7 @@
             const suggestionsElement = document.getElementById('suggestions');
             suggestionsElement.innerHTML = '';
 
-            // 调用Bing搜索建议API
+            // 调用 Bing 搜索建议 API
             if (input.length > 0) {
                 const callbackName = `bingSuggestionCallback_${Date.now()}`;
                 const script = document.createElement('script');
@@ -414,4 +390,54 @@
                             });
                             suggestionsElement.appendChild(suggestionElement);
                         });
-                        suggestions
+                        suggestionsElement.style.display = 'block';
+                    } else {
+                        suggestionsElement.style.display = 'none';
+                    }
+                    // 移除脚本元素
+                    document.body.removeChild(script);
+                    // 删除全局回调函数
+                    delete window[callbackName];
+                };
+
+                document.body.appendChild(script);
+            } else {
+                suggestionsElement.style.display = 'none';
+            }
+        }
+
+        // 搜索功能
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return alert('请输入搜索内容');
+
+            const selected = document.querySelector('.platform-card[style*="0.3"]');
+            if (!selected) return alert('请选择搜索平台');
+
+            const platform = platforms.find(p => p.id === selected.dataset.id);
+            window.open(platform.search + encodeURIComponent(query), '_blank');
+        });
+
+        // 登录功能
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const selected = document.querySelector('.platform-card[style*="0.3"]');
+            if (selected && selected.dataset.login) {
+                window.open(selected.dataset.login, '_blank');
+            }
+        });
+
+        // 输入框事件监听
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const input = this.value;
+            showSuggestions(input);
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            showRandomHitokoto();
+            renderPlatforms();
+        });
+    </script>
+</body>
+
+</html>
