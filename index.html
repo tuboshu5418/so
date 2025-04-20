@@ -1,277 +1,539 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>云境搜索 - 诗意探索</title>
+    <title>星汉搜索 - 诗意探索</title>
     <style>
         :root {
-            --山黛: #2c3e50;
-            --月白: #ecf0f1;
-            --烟青: linear-gradient(135deg, #89c7b6, #c6e4d9);
-            --云影: rgba(255,255,255,0.15);
+            --墨色: #2c3e50;
+            --月白: #f0f2f5;
+            --青空: linear-gradient(135deg, #89c7b6 0%, #c6e4d9 100%);
+            --云纹: rgba(255, 255, 255, 0.15);
+            --禅意-font: '宋体', serif;
         }
 
         body {
-            background: var(--烟青);
             min-height: 100vh;
             margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: '方正清刻本悦宋', cursive;
+            font-family: var(--禅意-font);
             position: relative;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
 
-        /* 动态山水背景 */
-        body::before {
+        /* 动态云纹背景 */
+        body::after {
             content: '';
             position: absolute;
-            width: 300vw;
-            height: 300vh;
-            background: 
-                radial-gradient(circle at 20% 80%, 
-                    rgba(255,255,255,0.1) 10%,
+            width: 300%;
+            height: 300%;
+            background:
+                radial-gradient(circle at 10% 20%,
+                    rgba(255, 255, 255, 0.1) 15%,
                     transparent 30%),
-                linear-gradient(25deg, 
+                linear-gradient(15deg,
                     transparent 60%,
-                    rgba(255,255,255,0.2) 80%);
-            animation: 云卷云舒 80s infinite linear;
+                    rgba(255, 255, 255, 0.08) 80%);
+            animation: 云游 60s infinite linear;
         }
 
-        .search-container {
+        .container {
             position: relative;
             z-index: 1;
+            width: min(800px, 90vw);
+            padding: 2rem;
             backdrop-filter: blur(12px);
-            border-radius: 24px;
-            padding: 2rem 3rem;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                0 0 12px rgba(255,255,255,0.3) inset;
+            border-radius: 1.5rem;
             background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-sizing: border-box;
+            text-align: center;
         }
 
-        /* 搜索输入框 */
         .search-box {
-            width: min(600px, 80vw);
-            height: 60px;
-            padding: 0 2rem;
-            font-size: 1.2rem;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50px;
-            background: rgba(255,255,255,0.9);
-            transition: all 0.3s ease;
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-        }
-
-        /* 平台选择菜单 */
-        .platform-menu {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-
-        .menu-btn {
-            background: rgba(255,255,255,0.2);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 30px;
-            padding: 12px 24px;
-            color: var(--山黛);
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-        }
-
-        .menu-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .menu-list {
-            position: absolute;
-            top: 120%;
             width: 100%;
-            background: rgba(255,255,255,0.95);
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            display: none;
-            max-height: 400px;
-            overflow-y: auto;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            color: var(--墨色);
+            margin-bottom: 1.5rem;
+            box-sizing: border-box;
+            font-family: var(--禅意-font);
         }
 
-        .menu-item {
-            padding: 12px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .platform-card {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            text-align: center;
+            backdrop-filter: blur(5px);
         }
 
-        .menu-item:hover {
-            background: rgba(236, 240, 241, 0.6);
-            transform: translateX(10px);
+        .platform-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
         }
 
-        /* 操作按钮组 */
-        .action-buttons {
+        .platform-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-bar {
             display: flex;
             gap: 1rem;
             margin-top: 1.5rem;
+            justify-content: center;
         }
 
         .poetic-btn {
             flex: 1;
-            padding: 12px;
+            padding: 0.8rem;
             border: none;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.2);
-            color: var(--山黛);
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--墨色);
             cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-            position: relative;
+            transition: all 0.3s ease;
+            font-family: var(--禅意-font);
         }
 
         .poetic-btn:hover {
-            background: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
         }
 
-        /* 全屏结果页 */
-        .result-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(255,255,255,0.95);
-            z-index: 1000;
+        @keyframes 云游 {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(-30%, -15%);
+            }
+
+            66% {
+                transform: translate(-20%, 10%);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .poetry {
+            font-style: italic;
+            color: var(--墨色);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .verse {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+        }
+
+        .author {
+            font-size: 0.9rem;
+            color: rgba(44, 62, 80, 0.8);
+        }
+
+        #suggestions {
+            position: absolute;
+            width: calc(100% - 4rem);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 2;
             display: none;
-            border: none;
         }
 
-        /* 登录提示 */
-        .login-tip {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255,255,255,0.9);
-            padding: 10px 20px;
-            border-radius: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: none;
+        .suggestion {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
 
-        @keyframes 云卷云舒 {
-            0% { transform: translate(0,0); }
-            33% { transform: translate(-30%, -15%); }
-            66% { transform: translate(-20%, 10%); }
-            100% { transform: translate(0,0); }
+        .suggestion:hover {
+            background: rgba(137, 199, 182, 0.3);
+        }
+
+        .signature {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: var(--墨色);
+            opacity: 0.8;
         }
     </style>
 </head>
-<body>
-    <div class="search-container">
-        <input type="text" class="search-box" placeholder="青天有月来几时？我今停杯一问之...">
-        
-        <div class="platform-menu">
-            <button class="menu-btn">🕊️ 选择搜索平台 ▼</button>
-            <div class="menu-list">
-                <div class="menu-item" data-platform="bing" 
-                     data-login="https://login.live.com/">
-                    🌄 必应搜索
-                </div>
-                <div class="menu-item" data-platform="bilibili" 
-                     data-login="https://passport.bilibili.com/login">
-                    🎋 哔哩哔哩
-                </div>
-                <div class="menu-item" data-platform="ximalaya" 
-                     data-login="https://www.ximalaya.com/passport/login">
-                    🎵 喜马拉雅
-                </div>
-                <div class="menu-item" data-platform="github" 
-                     data-login="https://github.com/login">
-                    💻 GitHub
-                </div>
-            </div>
-        </div>
 
-        <div class="action-buttons">
-            <button class="poetic-btn" id="searchBtn">🕊️ 云中寻</button>
-            <button class="poetic-btn" id="loginBtn" style="display:none;">
-                🎋 先登录
+<body>
+    <div class="container">
+        <div class="poetry" id="poetry"></div>
+        <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
+        <div id="suggestions"></div>
+        <div class="platform-grid" id="platformGrid"></div>
+        <div class="action-bar">
+            <button class="poetic-btn" id="searchBtn">🕊️ 云中觅</button>
+            <button class="poetic-btn" id="loginBtn" style="display: none;">
+                🔑 先登录
             </button>
         </div>
     </div>
-
-    <iframe class="result-frame" id="resultFrame"></iframe>
-    <div class="login-tip" id="loginTip">点击上方按钮登录当前平台</div>
+    <div class="signature">署名: zmf</div>
 
     <script>
-        let selectedPlatform = null;
+        // 更多随机诗歌数据，增添禅意诗歌
+        const poems = [
+            "行到水穷处，坐看云起时。 —— 王维《终南别业》",
+            "千山鸟飞绝，万径人踪灭。孤舟蓑笠翁，独钓寒江雪。 —— 柳宗元《江雪》",
+            "春有百花秋有月，夏有凉风冬有雪。若无闲事挂心头，便是人间好时节。 —— 无门慧开禅师《颂古》",
+            "云淡风轻近午天，傍花随柳过前川。时人不识余心乐，将谓偷闲学少年。 —— 程颢《春日偶成》",
+            "空山新雨后，天气晚来秋。明月松间照，清泉石上流。 —— 王维《山居秋暝》",
+            "菩提本无树，明镜亦非台。本来无一物，何处惹尘埃。 —— 惠能《菩提偈》",
+            "水流心不竞，云在意俱迟。 —— 杜甫《江亭》",
+            "寒梅最堪恨，常作去年花。 —— 李商隐《忆梅》",
+            "大漠孤烟直，长河落日圆。 —— 王维《使至塞上》",
+            "海上生明月，天涯共此时。 —— 张九龄《望月怀远》",
+            "会当凌绝顶，一览众山小。 —— 杜甫《望岳》",
+            "野旷天低树，江清月近人。 —— 孟浩然《宿建德江》",
+            "采菊东篱下，悠然见南山。 —— 陶渊明《饮酒·其五》",
+            "人生得意须尽欢，莫使金樽空对月。 —— 李白《将进酒》",
+            "长风破浪会有时，直挂云帆济沧海。 —— 李白《行路难·其一》",
+            "夕阳无限好，只是近黄昏。 —— 李商隐《乐游原》",
+            "春蚕到死丝方尽，蜡炬成灰泪始干。 —— 李商隐《无题》",
+            "不识庐山真面目，只缘身在此山中。 —— 苏轼《题西林壁》",
+            "欲把西湖比西子，淡妆浓抹总相宜。 —— 苏轼《饮湖上初晴后雨》",
+            "竹外桃花三两枝，春江水暖鸭先知。 —— 苏轼《惠崇春江晚景》",
+            "小荷才露尖尖角，早有蜻蜓立上头。 —— 杨万里《小池》",
+            "接天莲叶无穷碧，映日荷花别样红。 —— 杨万里《晓出净慈寺送林子方》",
+            "春风又绿江南岸，明月何时照我还。 —— 王安石《泊船瓜洲》",
+            "生当作人杰，死亦为鬼雄。 —— 李清照《夏日绝句》",
+            "醉后不知天在水，满船清梦压星河。 —— 唐温如《题龙阳县青草湖》",
+            "落霞与孤鹜齐飞，秋水共长天一色。 —— 王勃《滕王阁序》",
+            "曾经沧海难为水，除却巫山不是云。 —— 元稹《离思五首·其四》",
+            "疏影横斜水清浅，暗香浮动月黄昏。 —— 林逋《山园小梅》",
+            "身无彩凤双飞翼，心有灵犀一点通。 —— 李商隐《无题》",
+            "此情可待成追忆，只是当时已惘然。 —— 李商隐《锦瑟》",
+            "山重水复疑无路，柳暗花明又一村。 —— 陆游《游山西村》",
+            "纸上得来终觉浅，绝知此事要躬行。 —— 陆游《冬夜读书示子聿》",
+            "问君能有几多愁？恰似一江春水向东流。 —— 李煜《虞美人》",
+            "昨夜西风凋碧树，独上高楼，望尽天涯路。 —— 晏殊《蝶恋花》",
+            "衣带渐宽终不悔，为伊消得人憔悴。 —— 柳永《蝶恋花》",
+            "众里寻他千百度，蓦然回首，那人却在灯火阑珊处。 —— 辛弃疾《青玉案·元夕》",
+            "两情若是久长时，又岂在朝朝暮暮。 —— 秦观《鹊桥仙》",
+            "先天下之忧而忧，后天下之乐而乐。 —— 范仲淹《岳阳楼记》",
+            "醉翁之意不在酒，在乎山水之间也。 —— 欧阳修《醉翁亭记》",
+            "莫道桑榆晚，为霞尚满天。 —— 刘禹锡《酬乐天咏老见示》",
+            "沉舟侧畔千帆过，病树前头万木春。 —— 刘禹锡《酬乐天扬州初逢席上见赠》",
+            "晴空一鹤排云上，便引诗情到碧霄。 —— 刘禹锡《秋词》",
+            "黄沙百战穿金甲，不破楼兰终不还。 —— 王昌龄《从军行》",
+            "洛阳亲友如相问，一片冰心在玉壶。 —— 王昌龄《芙蓉楼送辛渐》",
+            "羌笛何须怨杨柳，春风不度玉门关。 —— 王之涣《凉州词》",
+            "欲穷千里目，更上一层楼。 —— 王之涣《登鹳雀楼》",
+            "近乡情更怯，不敢问来人。 —— 宋之问《渡汉江》",
+            "年年岁岁花相似，岁岁年年人不同。 —— 刘希夷《代悲白头翁》",
+            "黑发不知勤学早，白首方悔读书迟。 —— 颜真卿《劝学》",
+            "慈母手中线，游子身上衣。 —— 孟郊《游子吟》",
+            "春风得意马蹄疾，一日看尽长安花。 —— 孟郊《登科后》",
+            "曲径通幽处，禅房花木深。 —— 常建《题破山寺后禅院》",
+            "海内存知己，天涯若比邻。 —— 王勃《送杜少府之任蜀州》",
+            "露从今夜白，月是故乡明。 —— 杜甫《月夜忆舍弟》",
+            "星垂平野阔，月涌大江流。 —— 杜甫《旅夜书怀》",
+            "随风潜入夜，润物细无声。 —— 杜甫《春夜喜雨》",
+            "出师未捷身先死，长使英雄泪满襟。 —— 杜甫《蜀相》",
+            "无边落木萧萧下，不尽长江滚滚来。 —— 杜甫《登高》",
+            "同是天涯沦落人，相逢何必曾相识。 —— 白居易《琵琶行》",
+            "回眸一笑百媚生，六宫粉黛无颜色。 —— 白居易《长恨歌》",
+            "在天愿作比翼鸟，在地愿为连理枝。 —— 白居易《长恨歌》",
+            "乱花渐欲迷人眼，浅草才能没马蹄。 —— 白居易《钱塘湖春行》",
+            "千呼万唤始出来，犹抱琵琶半遮面。 —— 白居易《琵琶行》",
+            "一道残阳铺水中，半江瑟瑟半江红。 —— 白居易《暮江吟》",
+            "停车坐爱枫林晚，霜叶红于二月花。 —— 杜牧《山行》",
+            "南朝四百八十寺，多少楼台烟雨中。 —— 杜牧《江南春》",
+            "商女不知亡国恨，隔江犹唱后庭花。 —— 杜牧《泊秦淮》",
+            "二十四桥明月夜，玉人何处教吹箫。 —— 杜牧《寄扬州韩绰判官》",
+            "天阶夜色凉如水，坐看牵牛织女星。 —— 杜牧《秋夕》",
+            "东风不与周郎便，铜雀春深锁二乔。 —— 杜牧《赤壁》",
+            "春潮带雨晚来急，野渡无人舟自横。 —— 韦应物《滁州西涧》",
+            "柴门闻犬吠，风雪夜归人。 —— 刘长卿《逢雪宿芙蓉山主人》",
+            "姑苏城外寒山寺，夜半钟声到客船。 —— 张继《枫桥夜泊》",
+            "劝君更尽一杯酒，西出阳关无故人。 —— 王维《送元二使安西》",
+            "独在异乡为异客，每逢佳节倍思亲。 —— 王维《九月九日忆山东兄弟》",
+            "大漠风尘日色昏，红旗半卷出辕门。 —— 王昌龄《从军行》",
+            "但使龙城飞将在，不教胡马度阴山。 —— 王昌龄《出塞》",
+            "黄鹤一去不复返，白云千载空悠悠。 —— 崔颢《黄鹤楼》",
+            "日暮乡关何处是？烟波江上使人愁。 —— 崔颢《黄鹤楼》",
+            "人面不知何处去，桃花依旧笑春风。 —— 崔护《题都城南庄》",
+            "仰天大笑出门去，我辈岂是蓬蒿人。 —— 李白《南陵别儿童入京》",
+            "抽刀断水水更流，举杯消愁愁更愁。 —— 李白《宣州谢朓楼饯别校书叔云》",
+            "天生我材必有用，千金散尽还复来。 —— 李白《将进酒》",
+            "安能摧眉折腰事权贵，使我不得开心颜！ —— 李白《梦游天姥吟留别》",
+            "飞流直下三千尺，疑是银河落九天。 —— 李白《望庐山瀑布》",
+            "两岸猿声啼不住，轻舟已过万重山。 —— 李白《早发白帝城》",
+            "我寄愁心与明月，随君直到夜郎西。 —— 李白《闻王昌龄左迁龙标遥有此寄》",
+            "今人不见古时月，今月曾经照古人。 —— 李白《把酒问月》",
+            "忽如一夜春风来，千树万树梨花开。 —— 岑参《白雪歌送武判官归京》",
+            "马上相逢无纸笔，凭君传语报平安。 —— 岑参《逢入京使》",
+            "今夜偏知春气暖，虫声新透绿窗纱。 —— 刘方平《月夜》",
+            "旧时王谢堂前燕，飞入寻常百姓家。 —— 刘禹锡《乌衣巷》",
+            "东边日出西边雨，道是无晴却有晴。 —— 刘禹锡《竹枝词》",
+            "自古逢秋悲寂寥，我言秋日胜春朝。 —— 刘禹锡《秋词》",
+            "何当共剪西窗烛，却话巴山夜雨时。 —— 李商隐《夜雨寄北》",
+            "春心莫共花争发，一寸相思一寸灰。 —— 李商隐《无题》",
+            "天意怜幽草，人间重晚晴。 —— 李商隐《晚晴》",
+            "嫦娥应悔偷灵药，碧海青天夜夜心。 —— 李商隐《嫦娥》",
+            "鸡声茅店月，人迹板桥霜。 —— 温庭筠《商山早行》",
+            "因过竹院逢僧话，偷得浮生半日闲。 —— 李涉《题鹤林寺僧舍》"
+        ];
 
-        // 平台菜单交互
-        document.querySelector('.menu-btn').addEventListener('click', function() {
-            const menu = document.querySelector('.menu-list');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
+        // 随机显示一首诗歌
+        function showRandomPoetry() {
+            const randomIndex = Math.floor(Math.random() * poems.length);
+            const poetryElement = document.getElementById('poetry');
+            const poem = poems[randomIndex];
+            const [verse, author] = poem.split(' —— ');
+            const formattedPoem = `<span class="verse">${verse}</span><br><span class="author">${author}</span>`;
+            poetryElement.innerHTML = formattedPoem;
+        }
 
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', () => {
-                selectedPlatform = {
-                    name: item.dataset.platform,
-                    login: item.dataset.login
-                };
-                
-                document.querySelector('.menu-btn').textContent = 
-                    `${item.textContent.trim()} ▼`;
-                
-                // 显示/隐藏登录按钮
-                const loginBtn = document.getElementById('loginBtn');
-                loginBtn.style.display = selectedPlatform.login ? 'block' : 'none';
-                
-                document.querySelector('.menu-list').style.display = 'none';
-                document.getElementById('loginTip').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('loginTip').style.display = 'none';
-                }, 2000);
+        // 使用 API 数据设置背景图片
+        const apiData = {
+            "images": [
+                {
+                    "startdate": "20250419",
+                    "fullstartdate": "202504191600",
+                    "enddate": "20250420",
+                    "url": "/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp",
+                    "urlbase": "/th?id=OHR.BunnyLove_ZH-CN1145897965",
+                    "copyright": "春天里的野生小兔子 (© Fiona McAllister Photography/Getty Images)",
+                    "copyrightlink": "https://www.bing.com/search?q=%E5%A4%8D%E6%B4%BB%E8%8A%82%E5%AD%90&form=hpcapt&mkt=zh-cn",
+                    "title": "复活节兔子要来了",
+                    "quiz": "/search?q=Bing+homepage+quiz&filters=WQOskey:%22HPQuiz_20250419_BunnyLove%22&FORM=HPQUIZ",
+                    "wp": true,
+                    "hsh": "b4047d46ca416fbf5bbf5b0a0204b565",
+                    "drk": 1,
+                    "top": 1,
+                    "bot": 1,
+                    "hs": []
+                }
+            ],
+            "tooltips": {
+                "loading": "正在加载...",
+                "previous": "上一个图像",
+                "next": "下一个图像",
+                "walle": "此图片不能下载用作壁纸。",
+                "walls": "下载今日美图。仅限用作桌面壁纸。"
+            }
+        };
+
+        const imageUrl = 'https://bing.com' + apiData.images[0].url;
+        document.body.style.backgroundImage = `url(${imageUrl})`;
+
+        // 更多平台配置数据
+        const platforms = [
+            {
+                id: 'google',
+                name: '谷歌搜索',
+                icon: '🌍',
+                search: 'https://www.google.com/search?q=',
+                login: 'https://accounts.google.com/'
+            },
+            {
+                id: 'bing',
+                name: '必应搜索',
+                icon: '🌄',
+                search: 'https://www.bing.com/search?q=',
+                login: 'https://login.live.com/'
+            },
+            {
+                id: 'github',
+                name: '代码星辰',
+                icon: '💻',
+                search: 'https://github.com/search?q=',
+                login: 'https://github.com/login'
+            },
+            {
+                id: 'youtube',
+                name: '视频星河',
+                icon: '🎥',
+                search: 'https://www.youtube.com/results?search_query=',
+                login: 'https://accounts.google.com/'
+            },
+            {
+                id: 'bilibili',
+                name: '哔哩星海',
+                icon: '🎋',
+                search: 'https://search.bilibili.com/all?keyword=',
+                login: 'https://passport.bilibili.com/login'
+            },
+            {
+                id: 'zhihu',
+                name: '知乎星云',
+                icon: '📚',
+                search: 'https://www.zhihu.com/search?q=',
+                login: 'https://www.zhihu.com/signin'
+            },
+            {
+                id: 'baidu',
+                name: '百度瀚海',
+                icon: '🌐',
+                search: 'https://www.baidu.com/s?wd=',
+                login: 'https://passport.baidu.com/v2/?login'
+            },
+            {
+                id: 'douyin',
+                name: '抖音幻域',
+                icon: '🎵',
+                search: 'https://www.douyin.com/search/',
+                login: 'https://www.douyin.com/login'
+            },
+            {
+                id: 'weibo',
+                name: '微博星澜',
+                icon: '📣',
+                search: 'https://s.weibo.com/weibo/',
+                login: 'https://weibo.com/login.php'
+            },
+            {
+                id: 'stackoverflow',
+                name: '技术星河',
+                icon: '💡',
+                search: 'https://stackoverflow.com/search?q=',
+                login: 'https://stackoverflow.com/users/login'
+            }
+        ];
+
+        // 动态生成平台卡片
+        function renderPlatforms() {
+            const grid = document.getElementById('platformGrid');
+            grid.innerHTML = platforms.map(platform => `
+                <div class="platform-card" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon">${platform.icon}</div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            // 绑定点击事件
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    // 移除所有选中状态
+                    document.querySelectorAll('.platform-card').forEach(c =>
+                        c.style.background = 'rgba(255, 255, 255, 0.15)');
+
+                    // 设置当前选中
+                    card.style.background = 'rgba(255, 255, 255, 0.3)';
+
+                    // 显示/隐藏登录按钮
+                    const showLogin = card.dataset.login;
+                    document.getElementById('loginBtn').style.display =
+                        showLogin ? 'block' : 'none';
+                });
             });
-        });
+        }
+
+        // 显示搜索建议
+        function showSuggestions(input) {
+            const suggestionsElement = document.getElementById('suggestions');
+            suggestionsElement.innerHTML = '';
+
+            // 调用 Bing 搜索建议 API
+            if (input.length > 0) {
+                const callbackName = `bingSuggestionCallback_${Date.now()}`;
+                const script = document.createElement('script');
+                script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
+
+                window[callbackName] = function (data) {
+                    if (data && data.AS && data.AS.Results && data.AS.Results.length > 0) {
+                        const bingSuggestions = data.AS.Results[0].Suggests;
+                        bingSuggestions.forEach(suggestion => {
+                            const suggestionElement = document.createElement('div');
+                            suggestionElement.classList.add('suggestion');
+                            suggestionElement.textContent = suggestion.Txt;
+                            suggestionElement.addEventListener('click', () => {
+                                document.getElementById('searchInput').value = suggestion.Txt;
+                                suggestionsElement.style.display = 'none';
+                            });
+                            suggestionsElement.appendChild(suggestionElement);
+                        });
+                        suggestionsElement.style.display = 'block';
+                    } else {
+                        suggestionsElement.style.display = 'none';
+                    }
+                    // 移除脚本元素
+                    document.body.removeChild(script);
+                    // 删除全局回调函数
+                    delete window[callbackName];
+                };
+
+                document.body.appendChild(script);
+            } else {
+                suggestionsElement.style.display = 'none';
+            }
+        }
 
         // 搜索功能
         document.getElementById('searchBtn').addEventListener('click', () => {
-            const query = document.querySelector('.search-box').value.trim();
+            const query = document.getElementById('searchInput').value.trim();
             if (!query) return alert('请输入搜索内容');
-            if (!selectedPlatform) return alert('请选择搜索平台');
 
-            const searchUrls = {
-                bing: `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
-                bilibili: `https://search.bilibili.com/all?keyword=${encodeURIComponent(query)}`,
-                ximalaya: `https://www.ximalaya.com/search/${encodeURIComponent(query)}`,
-                github: `https://github.com/search?q=${encodeURIComponent(query)}`
-            };
+            const selected = document.querySelector('.platform-card[style*="0.3"]');
+            if (!selected) return alert('请选择搜索平台');
 
-            const frame = document.getElementById('resultFrame');
-            frame.src = searchUrls[selectedPlatform.name];
-            frame.style.display = 'block';
+            const platform = platforms.find(p => p.id === selected.dataset.id);
+            window.open(platform.search + encodeURIComponent(query), '_blank');
         });
 
         // 登录功能
         document.getElementById('loginBtn').addEventListener('click', () => {
-            if (selectedPlatform && selectedPlatform.login) {
-                window.open(selectedPlatform.login, '_blank');
+            const selected = document.querySelector('.platform-card[style*="0.3"]');
+            if (selected && selected.dataset.login) {
+                window.open(selected.dataset.login, '_blank');
             }
         });
 
-        // 关闭结果页
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                document.querySelector('.menu-list').style.display = 'none';
-            }
-            if (e.target === document.getElementById('resultFrame')) {
-                document.getElementById('resultFrame').style.display = 'none';
-            }
+        // 输入框事件监听
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const input = this.value;
+            showSuggestions(input);
         });
+
+        // 初始化
+        showRandomPoetry();
+        renderPlatforms();
     </script>
 </body>
+
 </html>
+    
