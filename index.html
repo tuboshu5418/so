@@ -25,9 +25,14 @@
             overflow: hidden;
             background-size: cover;
             background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease;
         }
 
-        /* 动态云纹背景 */
+        body.fade-in {
+            opacity: 1;
+        }
+
         body::after {
             content: '';
             position: absolute;
@@ -194,7 +199,6 @@
             opacity: 0.8;
         }
 
-        /* 加载动画样式 */
         .loading {
             position: fixed;
             top: 0;
@@ -218,14 +222,18 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- 加载动画 -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
@@ -244,87 +252,33 @@
     <div class="signature">署名: zmf</div>
 
     <script>
+        let hitokotoCache;
+
         // 随机显示一条一言语句
         async function showRandomHitokoto() {
+            if (hitokotoCache) {
+                const poetryElement = document.getElementById('poetry');
+                poetryElement.innerHTML = hitokotoCache;
+                return;
+            }
+
             try {
                 const response = await fetch('https://v1.hitokoto.cn/?c=i');
                 const data = await response.json();
                 const poetryElement = document.getElementById('poetry');
                 const formattedHitokoto = `<span class="verse">${data.hitokoto}</span><br><span class="author">—— ${data.from}</span>`;
                 poetryElement.innerHTML = formattedHitokoto;
+                hitokotoCache = formattedHitokoto;
             } catch (error) {
                 console.error('获取一言语句时出错:', error);
             }
         }
 
-        // 尝试获取 Bing 壁纸
-        async function getBingWallpaper() {
-            try {
-                const apiUrl = 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp';
-                const response = await fetch(apiUrl, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36'
-                    }
-                });
-                const data = await response.json();
-
-                if (data?.images?.length > 0) {
-                    const imagePath = data.images[0].url.split('&')[0];
-                    return `https://www.bing.com${imagePath}_1920x1080.jpg`;
-                }
-            } catch (error) {
-                console.error('获取 Bing 壁纸失败:', error);
-                return null;
-            }
-        }
-
-        // 尝试获取 Unsplash 随机壁纸（需要替换为自己的 API Key）
-        async function getUnsplashWallpaper() {
-            try {
-                const apiKey = 'YOUR_UNSPLASH_API_KEY';
-                const apiUrl = `https://api.unsplash.com/photos/random?orientation=landscape&client_id=${apiKey}`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                return data.urls.full;
-            } catch (error) {
-                console.error('获取 Unsplash 壁纸失败:', error);
-                return null;
-            }
-        }
-
-        // 尝试获取 Pixabay 随机壁纸（需要替换为自己的 API Key）
-        async function getPixabayWallpaper() {
-            try {
-                const apiKey = 'YOUR_PIXABAY_API_KEY';
-                const apiUrl = `https://pixabay.com/api/?key=${apiKey}&image_type=photo&orientation=horizontal&per_page=1`;
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                if (data.hits.length > 0) {
-                    return data.hits[0].largeImageURL;
-                }
-            } catch (error) {
-                console.error('获取 Pixabay 壁纸失败:', error);
-                return null;
-            }
-        }
-
-        // 按顺序尝试不同的图片 API
+        // 按要求使用固定的 API 地址获取壁纸
         async function getWallpaper() {
-            let wallpaperUrl = await getBingWallpaper();
-            if (!wallpaperUrl) {
-                wallpaperUrl = await getUnsplashWallpaper();
-            }
-            if (!wallpaperUrl) {
-                wallpaperUrl = await getPixabayWallpaper();
-            }
-            if (!wallpaperUrl) {
-                // 最终备用图片
-                wallpaperUrl = 'https://cn.bing.com/th?id=OHR.MountFujiStrawberry_ZH-CN7490739774_1920x1080.jpg';
-            }
-            return wallpaperUrl;
+            return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp';
         }
 
-        // 更多平台配置数据
         const platforms = [
             {
                 id: 'google',
@@ -390,7 +344,7 @@
                 login: 'https://weibo.com/login.php'
             },
             {
-                id: 'stackoverflow',
+                id:'stackoverflow',
                 name: '技术星河',
                 icon: '💡',
                 search: 'https://stackoverflow.com/search?q=',
@@ -410,17 +364,12 @@
                 </div>
             `).join('');
 
-            // 绑定点击事件
             document.querySelectorAll('.platform-card').forEach(card => {
                 card.addEventListener('click', () => {
-                    // 移除所有选中状态
                     document.querySelectorAll('.platform-card').forEach(c =>
                         c.style.background = 'rgba(255, 255, 255, 0.15)');
-
-                    // 设置当前选中
                     card.style.background = 'rgba(255, 255, 255, 0.3)';
 
-                    // 显示/隐藏登录按钮
                     const showLogin = card.dataset.login;
                     document.getElementById('loginBtn').style.display =
                         showLogin ? 'block' : 'none';
@@ -428,12 +377,10 @@
             });
         }
 
-        // 显示搜索建议
         function showSuggestions(input) {
             const suggestionsElement = document.getElementById('suggestions');
             suggestionsElement.innerHTML = '';
 
-            // 调用 Bing 搜索建议 API
             if (input.length > 0) {
                 const callbackName = `bingSuggestionCallback_${Date.now()}`;
                 const script = document.createElement('script');
@@ -456,9 +403,7 @@
                     } else {
                         suggestionsElement.style.display = 'none';
                     }
-                    // 移除脚本元素
                     document.body.removeChild(script);
-                    // 删除全局回调函数
                     delete window[callbackName];
                 };
 
@@ -468,7 +413,6 @@
             }
         }
 
-        // 搜索功能
         document.getElementById('searchBtn').addEventListener('click', () => {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return alert('请输入搜索内容');
@@ -480,7 +424,6 @@
             window.open(platform.search + encodeURIComponent(query), '_blank');
         });
 
-        // 登录功能
         document.getElementById('loginBtn').addEventListener('click', () => {
             const selected = document.querySelector('.platform-card[style*="0.3"]');
             if (selected && selected.dataset.login) {
@@ -488,44 +431,40 @@
             }
         });
 
-        // 输入框事件监听
         document.getElementById('searchInput').addEventListener('input', function () {
             const input = this.value;
             showSuggestions(input);
         });
 
-        // 初始化函数
         async function init() {
-            // 显示加载动画
             const loadingElement = document.getElementById('loading');
             loadingElement.style.display = 'flex';
 
-            // 获取并设置壁纸
             const imageUrl = await getWallpaper();
             const img = new Image();
             img.src = imageUrl;
             img.onload = function () {
                 document.body.style.backgroundImage = `url(${imageUrl})`;
-                // 隐藏加载动画
                 loadingElement.style.display = 'none';
+                document.body.classList.add('fade-in');
             };
             img.onerror = function () {
-                // 隐藏加载动画
                 loadingElement.style.display = 'none';
-                console.error('图片加载失败，使用最终备用图片');
-                document.body.style.backgroundImage = 'url(https://cn.bing.com/th?id=OHR.MountFujiStrawberry_ZH-CN7490739774_1920x1080.jpg)';
+                console.error('图片加载失败');
+                document.body.classList.add('fade-in');
             };
 
-            // 显示随机诗词
             showRandomHitokoto();
-
-            // 渲染平台卡片
             renderPlatforms();
+
+            // 聚焦到搜索输入框
+            document.getElementById('searchInput').focus();
         }
 
-        // 页面加载后初始化
+        // 页面加载完成后执行初始化函数
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 
-</html>    
+</html>
+    
