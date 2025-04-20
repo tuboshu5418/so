@@ -420,6 +420,22 @@
             showRandomHitokoto();
             renderPlatforms();
         });
+        // 初始化函数（新增动态壁纸逻辑）
+        async function init() {
+            // 1. 获取并设置壁纸
+            const imageUrl = await getBingWallpaper();
+            const img = new Image();
+            img.src = imageUrl;
+            img.onload = function () {
+                document.body.style.backgroundImage = `url(${imageUrl})`;
+            };
+
+            // 2. 显示随机诗词
+            showRandomHitokoto();
+
+            // 3. 渲染平台卡片
+            renderPlatforms();
+        }
     </script>
 </body>
 
