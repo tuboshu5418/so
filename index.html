@@ -65,16 +65,21 @@
             text-align: center;
         }
 
+        .search-container {
+            position: relative;
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+
         .search-box {
             width: 100%;
-            padding: 1rem 2rem;
+            padding: 1rem 4rem;
             font-size: 1.1rem;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
             transition: all 0.3s ease;
             color: var(--墨色);
-            margin-bottom: 1.5rem;
             box-sizing: border-box;
             font-family: var(--禅意-font);
         }
@@ -82,6 +87,33 @@
         .search-box:focus {
             outline: none;
             box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
+        }
+
+        .search-btn {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--墨色);
+            padding: 0.5rem;
+        }
+
+        .login-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--墨色);
+            padding: 0.5rem;
+            display: none;
         }
 
         /* 平台网格布局 - 横屏2×5 */
@@ -94,7 +126,7 @@
         }
 
         /* 竖屏5×2 */
-        @media screen and (max-width: 767px) and (orientation: portrait) {
+        @media screen and (max-width: 767px) {
             .platform-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(5, 1fr);
@@ -146,30 +178,6 @@
         .fa-weibo { color: #DF2029; }
         .fa-stack-overflow { color: #F48024; }
 
-        .action-bar {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-            justify-content: center;
-        }
-
-        .poetic-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 2rem;
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--墨色);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: var(--禅意-font);
-        }
-
-        .poetic-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
-        }
-
         @keyframes 云游 {
             0% {
                 transform: translate(0, 0);
@@ -216,6 +224,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 2;
             display: none;
+            margin-top: 0.5rem;
         }
 
         .suggestion {
@@ -357,73 +366,6 @@
             display: none;
         }
 
-        /* 大屏设备样式 */
-        @media screen and (min-width: 1200px) {
-            body {
-                justify-content: flex-start;
-                padding-left: 5vw;
-            }
-
-            .container {
-                width: 600px;
-                margin-right: 5vw;
-            }
-
-            .poetry-container {
-                position: fixed;
-                right: 5vw;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 300px;
-                padding: 2rem;
-                backdrop-filter: blur(12px);
-                border-radius: 1.5rem;
-                background: rgba(255, 255, 255, 0.12);
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                writing-mode: vertical-rl;
-                text-orientation: upright;
-                height: 70vh;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .poetry {
-                writing-mode: vertical-rl;
-                text-orientation: upright;
-                text-align: left;
-                margin: 0.5rem 0;
-                font-size: 1.5rem;
-                line-height: 2;
-                letter-spacing: 0.5rem;
-            }
-
-            .verse {
-                font-size: 1.8rem;
-                letter-spacing: 0.8rem;
-            }
-
-            .author {
-                writing-mode: horizontal-tb;
-                margin-top: 1rem;
-                font-size: 1rem;
-            }
-        }
-
-        /* 中等屏幕设备样式 */
-        @media screen and (max-width: 1199px) and (min-width: 768px) {
-            .poetry {
-                font-size: 1.4rem;
-            }
-
-            .verse {
-                font-size: 1.5rem;
-            }
-        }
-
         /* 手机设备样式 */
         @media screen and (max-width: 767px) {
             .container {
@@ -432,8 +374,12 @@
             }
 
             .search-box {
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 3.5rem;
                 font-size: 1rem;
+            }
+
+            .search-btn, .login-btn {
+                font-size: 1.2rem;
             }
 
             .platform-card {
@@ -444,15 +390,6 @@
                 font-size: 1.8rem;
             }
 
-            .action-bar {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-
-            .poetic-btn {
-                width: 100%;
-            }
-
             .poetry {
                 font-size: 1.1rem;
                 margin-bottom: 1rem;
@@ -460,6 +397,10 @@
 
             .verse {
                 font-size: 1.2rem;
+            }
+
+            .author {
+                font-size: 0.8rem;
             }
 
             .signature {
@@ -477,15 +418,13 @@
     </div>
     <div class="container">
         <div class="poetry" id="poetry"></div>
-        <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-        <div id="suggestions"></div>
-        <div class="platform-grid" id="platformGrid"></div>
-        <div class="action-bar">
-            <button class="poetic-btn" id="searchBtn">🕊️ 云中觅</button>
-            <button class="poetic-btn" id="loginBtn" style="display: none;">
-                🔑 先登录
-            </button>
+        <div class="search-container">
+            <button class="search-btn" id="searchBtn">🕊️</button>
+            <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
+            <button class="login-btn" id="loginBtn">🔑</button>
+            <div id="suggestions"></div>
         </div>
+        <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
 
@@ -618,6 +557,7 @@
         let lastClickTime = 0;
         const CLICK_THRESHOLD = 7;
         const CLICK_TIMEOUT = 1000;
+        let selectedPlatform = null;
 
         // 初始化函数
         async function init() {
@@ -751,6 +691,7 @@
                             div.addEventListener('click', () => {
                                 elements.searchInput.value = suggestion.Txt;
                                 elements.suggestions.style.display = 'none';
+                                performSearch(suggestion.Txt);
                             });
                             elements.suggestions.appendChild(div);
                         });
@@ -768,16 +709,22 @@
             }
         }
 
+        // 执行搜索
+        function performSearch(query) {
+            if (!selectedPlatform) {
+                alert('请先选择搜索平台');
+                return;
+            }
+
+            const platform = config.platforms.find(p => p.id === selectedPlatform);
+            if (platform) {
+                window.open(platform.search + encodeURIComponent(query), '_blank');
+            }
+        }
+
         // 检查屏幕尺寸
         function checkScreenSize() {
-            const poetryContainer = document.getElementById('poetryContainer');
-            if (window.innerWidth >= 1200) {
-                if (poetryContainer) poetryContainer.style.display = 'block';
-                if (elements.poetry) elements.poetry.style.display = 'none';
-            } else {
-                if (poetryContainer) poetryContainer.style.display = 'none';
-                if (elements.poetry) elements.poetry.style.display = 'block';
-            }
+            // 可以根据需要添加响应式调整
         }
 
         // 处理方向变化
@@ -807,6 +754,7 @@
                         c.style.background = 'rgba(255, 255, 255, 0.15)');
                     card.style.background = 'rgba(255, 255, 255, 0.3)';
 
+                    selectedPlatform = card.dataset.id;
                     const showLogin = card.dataset.login;
                     elements.loginBtn.style.display = showLogin ? 'block' : 'none';
                 });
@@ -831,25 +779,32 @@
             elements.searchBtn.addEventListener('click', () => {
                 const query = elements.searchInput.value.trim();
                 if (!query) return alert('请输入搜索内容');
-
-                const selected = document.querySelector('.platform-card[style*="0.3"]');
-                if (!selected) return alert('请选择搜索平台');
-
-                const platform = config.platforms.find(p => p.id === selected.dataset.id);
-                window.open(platform.search + encodeURIComponent(query), '_blank');
+                if (!selectedPlatform) return alert('请选择搜索平台');
+                performSearch(query);
             });
 
             // 登录按钮
             elements.loginBtn.addEventListener('click', () => {
-                const selected = document.querySelector('.platform-card[style*="0.3"]');
-                if (selected && selected.dataset.login) {
-                    window.open(selected.dataset.login, '_blank');
+                if (!selectedPlatform) return;
+                const platform = config.platforms.find(p => p.id === selectedPlatform);
+                if (platform && platform.login) {
+                    window.open(platform.login, '_blank');
                 }
             });
 
             // 搜索输入
             elements.searchInput.addEventListener('input', function() {
                 showSuggestions(this.value);
+            });
+
+            // 回车键搜索
+            elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = elements.searchInput.value.trim();
+                    if (!query) return alert('请输入搜索内容');
+                    if (!selectedPlatform) return alert('请选择搜索平台');
+                    performSearch(query);
+                }
             });
 
             // 署名点击 - 连点7次打开设置
