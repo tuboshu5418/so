@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>星汉搜索 - zmf</title>
+    <title>星汉搜索 - 诗意探索</title>
+    <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --墨色: #2c3e50;
@@ -106,7 +108,20 @@
         .platform-icon {
             font-size: 2rem;
             margin-bottom: 0.5rem;
+            color: var(--墨色);
         }
+
+        /* 各平台图标颜色 */
+        .fa-google { color: #4285F4; }
+        .fa-bing { color: #00809D; }
+        .fa-github { color: #181717; }
+        .fa-youtube { color: #FF0000; }
+        .fa-bilibili { color: #00A1D6; }
+        .fa-zhihu { color: #0084FF; }
+        .fa-baidu { color: #2932E1; }
+        .fa-tiktok { color: #000000; }
+        .fa-weibo { color: #DF2029; }
+        .fa-stack-overflow { color: #F48024; }
 
         .action-bar {
             display: flex;
@@ -379,70 +394,70 @@
             {
                 id: 'google',
                 name: '谷歌搜索',
-                icon: '🌍',
+                icon: 'fa-brands fa-google',
                 search: 'https://www.google.com/search?q=',
                 login: 'https://accounts.google.com/'
             },
             {
                 id: 'bing',
                 name: '必应搜索',
-                icon: '🌄',
+                icon: 'fa-brands fa-microsoft',
                 search: 'https://www.bing.com/search?q=',
                 login: 'https://login.live.com/'
             },
             {
                 id: 'github',
                 name: '代码星辰',
-                icon: '💻',
+                icon: 'fa-brands fa-github',
                 search: 'https://github.com/search?q=',
                 login: 'https://github.com/login'
             },
             {
                 id: 'youtube',
                 name: '视频星河',
-                icon: '🎥',
+                icon: 'fa-brands fa-youtube',
                 search: 'https://www.youtube.com/results?search_query=',
                 login: 'https://accounts.google.com/'
             },
             {
                 id: 'bilibili',
                 name: '哔哩星海',
-                icon: '🎋',
+                icon: 'fa-brands fa-bilibili',
                 search: 'https://search.bilibili.com/all?keyword=',
                 login: 'https://passport.bilibili.com/login'
             },
             {
                 id: 'zhihu',
                 name: '知乎星云',
-                icon: '📚',
+                icon: 'fa-brands fa-zhihu',
                 search: 'https://www.zhihu.com/search?q=',
                 login: 'https://www.zhihu.com/signin'
             },
             {
                 id: 'baidu',
                 name: '百度瀚海',
-                icon: '🌐',
+                icon: 'fa-brands fa-baidu',
                 search: 'https://www.baidu.com/s?wd=',
                 login: 'https://passport.baidu.com/v2/?login'
             },
             {
                 id: 'douyin',
                 name: '抖音幻域',
-                icon: '🎵',
+                icon: 'fa-brands fa-tiktok',
                 search: 'https://www.douyin.com/search/',
                 login: 'https://www.douyin.com/login'
             },
             {
                 id: 'weibo',
                 name: '微博星澜',
-                icon: '📣',
+                icon: 'fa-brands fa-weibo',
                 search: 'https://s.weibo.com/weibo/',
                 login: 'https://weibo.com/login.php'
             },
             {
                 id:'stackoverflow',
                 name: '技术星河',
-                icon: '💡',
+                icon: 'fa-brands fa-stack-overflow',
                 search: 'https://stackoverflow.com/search?q=',
                 login: 'https://stackoverflow.com/users/login'
             }
@@ -455,7 +470,7 @@
                 <div class="platform-card" 
                      data-id="${platform.id}"
                      data-login="${platform.login || ''}">
-                    <div class="platform-icon">${platform.icon}</div>
+                    <div class="platform-icon"><i class="${platform.icon}"></i></div>
                     <div>${platform.name}</div>
                 </div>
             `).join('');
