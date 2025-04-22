@@ -357,71 +357,6 @@
             display: none;
         }
 
-        /* 收藏夹 */
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .favorite-item {
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 60px;
-            position: relative;
-        }
-
-        .favorite-item:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .favorite-remove {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: rgba(255, 0, 0, 0.7);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        .add-favorite-form {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .add-favorite-input {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-        }
-
-        .add-favorite-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(137, 199, 182, 0.8);
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-        }
-
         /* 大屏设备样式 */
         @media screen and (min-width: 1200px) {
             body {
@@ -545,19 +480,12 @@
         <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
         <div id="suggestions"></div>
         <div class="platform-grid" id="platformGrid"></div>
-        <div id="favoritesContainer" style="display: none;">
-            <h3 style="text-align: center; margin-bottom: 0.5rem;">收藏夹</h3>
-            <div class="favorites-grid" id="favoritesGrid"></div>
-        </div>
         <div class="action-bar">
             <button class="poetic-btn" id="searchBtn">🕊️ 云中觅</button>
             <button class="poetic-btn" id="loginBtn" style="display: none;">
                 🔑 先登录
             </button>
         </div>
-    </div>
-    <div id="poetryContainer" class="poetry-container" style="display: none;">
-        <div id="largeScreenPoetry"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
 
@@ -569,51 +497,13 @@
         <div class="setting-item">
             <label>显示选项</label>
             <div>
-                <input type="checkbox" id="showSearchBox" checked>
-                <label for="showSearchBox">显示搜索框</label>
+                <input type="checkbox" id="showDailyImage" checked>
+                <label for="showDailyImage">显示每日一图</label>
             </div>
             <div>
-                <input type="checkbox" id="showPlatforms" checked>
-                <label for="showPlatforms">显示平台网格</label>
+                <input type="checkbox" id="useLegacyVersion">
+                <label for="useLegacyVersion">使用历史版本</label>
             </div>
-            <div>
-                <input type="checkbox" id="showPoetry" checked>
-                <label for="showPoetry">显示诗词</label>
-            </div>
-            <div>
-                <input type="checkbox" id="showFavorites" checked>
-                <label for="showFavorites">显示收藏夹</label>
-            </div>
-        </div>
-        
-        <div class="setting-item">
-            <label for="themeSelect">主题颜色</label>
-            <select id="themeSelect" class="setting-control">
-                <option value="default">默认</option>
-                <option value="dark">暗黑</option>
-                <option value="light">明亮</option>
-                <option value="green">青绿</option>
-            </select>
-        </div>
-        
-        <div class="setting-item">
-            <label for="fontSelect">字体</label>
-            <select id="fontSelect" class="setting-control">
-                <option value="Noto Serif SC">思源宋体</option>
-                <option value="KaiTi">楷体</option>
-                <option value="SimHei">黑体</option>
-                <option value="FangSong">仿宋</option>
-            </select>
-        </div>
-        
-        <div class="setting-item">
-            <label>收藏管理</label>
-            <div class="add-favorite-form">
-                <input type="text" id="favoriteName" class="add-favorite-input" placeholder="网站名称">
-                <input type="text" id="favoriteUrl" class="add-favorite-input" placeholder="网址 (https://)">
-                <button id="addFavoriteBtn" class="add-favorite-btn">添加</button>
-            </div>
-            <div class="favorites-grid" id="settingsFavoritesGrid"></div>
         </div>
         
         <div class="settings-actions">
@@ -698,14 +588,10 @@
                 }
             ],
             settings: {
-                showSearchBox: true,
-                showPlatforms: true,
-                showPoetry: true,
-                showFavorites: true,
-                theme: 'default',
-                font: 'Noto Serif SC',
-                favorites: []
-            }
+                showDailyImage: true,
+                useLegacyVersion: false
+            },
+            legacyWallpaper: 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp'
         };
 
         // DOM元素
@@ -715,23 +601,13 @@
             searchInput: document.getElementById('searchInput'),
             suggestions: document.getElementById('suggestions'),
             platformGrid: document.getElementById('platformGrid'),
-            favoritesContainer: document.getElementById('favoritesContainer'),
-            favoritesGrid: document.getElementById('favoritesGrid'),
             searchBtn: document.getElementById('searchBtn'),
             loginBtn: document.getElementById('loginBtn'),
             signature: document.getElementById('signature'),
             settingsOverlay: document.getElementById('settingsOverlay'),
             settingsPanel: document.getElementById('settingsPanel'),
-            showSearchBox: document.getElementById('showSearchBox'),
-            showPlatforms: document.getElementById('showPlatforms'),
-            showPoetry: document.getElementById('showPoetry'),
-            showFavorites: document.getElementById('showFavorites'),
-            themeSelect: document.getElementById('themeSelect'),
-            fontSelect: document.getElementById('fontSelect'),
-            favoriteName: document.getElementById('favoriteName'),
-            favoriteUrl: document.getElementById('favoriteUrl'),
-            addFavoriteBtn: document.getElementById('addFavoriteBtn'),
-            settingsFavoritesGrid: document.getElementById('settingsFavoritesGrid'),
+            showDailyImage: document.getElementById('showDailyImage'),
+            useLegacyVersion: document.getElementById('useLegacyVersion'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings')
         };
@@ -761,7 +637,7 @@
             const img = new Image();
             img.src = imageUrl;
             img.onload = function() {
-                document.body.style.backgroundImage = `url(${imageUrl})`;
+                document.body.style.backgroundImage = config.settings.showDailyImage ? `url(${imageUrl})` : 'none';
                 elements.loading.style.display = 'none';
                 document.body.classList.add('fade-in');
             };
@@ -774,8 +650,6 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
-            renderFavorites();
-            applySettings();
             
             // 聚焦搜索框
             elements.searchInput.focus();
@@ -793,12 +667,8 @@
                     config.settings = {...config.settings, ...parsed};
                     
                     // 更新UI控件
-                    elements.showSearchBox.checked = config.settings.showSearchBox;
-                    elements.showPlatforms.checked = config.settings.showPlatforms;
-                    elements.showPoetry.checked = config.settings.showPoetry;
-                    elements.showFavorites.checked = config.settings.showFavorites;
-                    elements.themeSelect.value = config.settings.theme;
-                    elements.fontSelect.value = config.settings.font;
+                    elements.showDailyImage.checked = config.settings.showDailyImage;
+                    elements.useLegacyVersion.checked = config.settings.useLegacyVersion;
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
@@ -808,133 +678,22 @@
         // 保存设置
         function saveSettings() {
             config.settings = {
-                showSearchBox: elements.showSearchBox.checked,
-                showPlatforms: elements.showPlatforms.checked,
-                showPoetry: elements.showPoetry.checked,
-                showFavorites: elements.showFavorites.checked,
-                theme: elements.themeSelect.value,
-                font: elements.fontSelect.value,
-                favorites: config.settings.favorites
+                showDailyImage: elements.showDailyImage.checked,
+                useLegacyVersion: elements.useLegacyVersion.checked
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-            applySettings();
-            closeSettings();
-        }
-
-        // 应用设置
-        function applySettings() {
-            // 显示/隐藏元素
-            elements.searchInput.style.display = config.settings.showSearchBox ? 'block' : 'none';
-            elements.platformGrid.style.display = config.settings.showPlatforms ? 'grid' : 'none';
-            elements.poetry.style.display = config.settings.showPoetry ? 'block' : 'none';
-            elements.favoritesContainer.style.display = config.settings.showFavorites ? 'block' : 'none';
             
-            // 应用字体
-            document.documentElement.style.setProperty('--禅意-font', `'${config.settings.font}', serif`);
-            
-            // 应用主题
-            applyTheme(config.settings.theme);
-        }
-
-        // 应用主题
-        function applyTheme(theme) {
-            document.body.className = 'fade-in';
-            if (theme === 'dark') {
-                document.body.classList.add('dark-theme');
-            } else if (theme === 'light') {
-                document.body.classList.add('light-theme');
-            } else if (theme === 'green') {
-                document.body.classList.add('green-theme');
-            }
-        }
-
-        // 渲染平台网格
-        function renderPlatforms() {
-            elements.platformGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-card" 
-                     data-id="${platform.id}"
-                     data-login="${platform.login || ''}">
-                    <div class="platform-icon"><i class="${platform.icon}"></i></div>
-                    <div>${platform.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.platform-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.platform-card').forEach(c =>
-                        c.style.background = 'rgba(255, 255, 255, 0.15)');
-                    card.style.background = 'rgba(255, 255, 255, 0.3)';
-
-                    const showLogin = card.dataset.login;
-                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
-                });
-            });
-        }
-
-        // 渲染收藏夹
-        function renderFavorites() {
-            if (!config.settings.favorites || config.settings.favorites.length === 0) {
-                elements.favoritesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;">暂无收藏</div>';
-                elements.settingsFavoritesGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;">暂无收藏</div>';
-                return;
-            }
-            
-            elements.favoritesGrid.innerHTML = config.settings.favorites.map((fav, index) => `
-                <div class="favorite-item" data-url="${fav.url}">
-                    <div>${fav.name}</div>
-                </div>
-            `).join('');
-            
-            elements.settingsFavoritesGrid.innerHTML = config.settings.favorites.map((fav, index) => `
-                <div class="favorite-item" data-url="${fav.url}">
-                    <div>${fav.name}</div>
-                    <div class="favorite-remove" data-index="${index}">×</div>
-                </div>
-            `).join('');
-            
-            // 添加收藏项点击事件
-            document.querySelectorAll('.favorite-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('favorite-remove')) return;
-                    const url = item.getAttribute('data-url');
-                    if (url) window.open(url, '_blank');
-                });
-            });
-            
-            // 添加删除按钮事件
-            document.querySelectorAll('.favorite-remove').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const index = parseInt(btn.getAttribute('data-index'));
-                    config.settings.favorites.splice(index, 1);
-                    renderFavorites();
-                });
-            });
-        }
-
-        // 添加收藏
-        function addFavorite() {
-            const name = elements.favoriteName.value.trim();
-            let url = elements.favoriteUrl.value.trim();
-            
-            if (!name || !url) {
-                alert('请填写网站名称和网址');
-                return;
-            }
-            
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-            
-            config.settings.favorites.push({ name, url });
-            elements.favoriteName.value = '';
-            elements.favoriteUrl.value = '';
-            renderFavorites();
+            // 重新加载页面应用设置
+            location.reload();
         }
 
         // 获取壁纸
         async function getWallpaper() {
+            if (config.settings.useLegacyVersion) {
+                return config.legacyWallpaper;
+            }
+            
             const width = window.screen.width;
             const height = window.screen.height;
             
@@ -972,11 +731,6 @@
         function updatePoetryDisplay(data) {
             const formatted = `<span class="verse">${data.hitokoto}</span><br><span class="author">—— ${data.from}</span>`;
             elements.poetry.innerHTML = formatted;
-            
-            const largePoetry = document.getElementById('largeScreenPoetry');
-            if (largePoetry) {
-                largePoetry.innerHTML = formatted;
-            }
         }
 
         // 显示搜索建议
@@ -1034,6 +788,29 @@
             grid.style.display = 'none';
             grid.offsetHeight;
             grid.style.display = 'grid';
+        }
+
+        // 渲染平台网格
+        function renderPlatforms() {
+            elements.platformGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-card" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon"><i class="${platform.icon}"></i></div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-card').forEach(c =>
+                        c.style.background = 'rgba(255, 255, 255, 0.15)');
+                    card.style.background = 'rgba(255, 255, 255, 0.3)';
+
+                    const showLogin = card.dataset.login;
+                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                });
+            });
         }
 
         // 打开设置
@@ -1095,12 +872,6 @@
             elements.cancelSettings.addEventListener('click', closeSettings);
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
-            elements.addFavoriteBtn.addEventListener('click', addFavorite);
-            
-            // 回车键添加收藏
-            elements.favoriteUrl.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addFavorite();
-            });
         }
 
         // 初始化
