@@ -230,6 +230,73 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* 大屏设备样式 */
+        @media screen and (min-width: 1200px) {
+            body {
+                justify-content: flex-start;
+                padding-left: 5vw;
+            }
+
+            .container {
+                width: 600px;
+                margin-right: 5vw;
+            }
+
+            .poetry-container {
+                position: fixed;
+                right: 5vw;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 300px;
+                padding: 2rem;
+                backdrop-filter: blur(12px);
+                border-radius: 1.5rem;
+                background: rgba(255, 255, 255, 0.12);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                writing-mode: vertical-rl;
+                text-orientation: upright;
+                height: 70vh;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .poetry {
+                writing-mode: vertical-rl;
+                text-orientation: upright;
+                text-align: left;
+                margin: 0.5rem 0;
+                font-size: 1.5rem;
+                line-height: 2;
+                letter-spacing: 0.5rem;
+            }
+
+            .verse {
+                font-size: 1.8rem;
+                letter-spacing: 0.8rem;
+            }
+
+            .author {
+                writing-mode: horizontal-tb;
+                margin-top: 1rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* 中等屏幕设备样式 */
+        @media screen and (max-width: 1199px) and (min-width: 768px) {
+            .poetry {
+                font-size: 1.4rem;
+            }
+
+            .verse {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -249,6 +316,9 @@
             </button>
         </div>
     </div>
+    <div id="poetryContainer" class="poetry-container" style="display: none;">
+        <div id="largeScreenPoetry"></div>
+    </div>
     <div class="signature">署名: zmf</div>
 
     <script>
@@ -258,7 +328,13 @@
         async function showRandomHitokoto() {
             if (hitokotoCache) {
                 const poetryElement = document.getElementById('poetry');
-                poetryElement.innerHTML = hitokotoCache;
+                const largePoetryElement = document.getElementById('largeScreenPoetry');
+                const formattedHitokoto = `<span class="verse">${hitokotoCache.hitokoto}</span><br><span class="author">—— ${hitokotoCache.from}</span>`;
+                poetryElement.innerHTML = formattedHitokoto;
+                
+                if (largePoetryElement) {
+                    largePoetryElement.innerHTML = formattedHitokoto;
+                }
                 return;
             }
 
@@ -266,17 +342,37 @@
                 const response = await fetch('https://v1.hitokoto.cn/?c=i');
                 const data = await response.json();
                 const poetryElement = document.getElementById('poetry');
+                const largePoetryElement = document.getElementById('largeScreenPoetry');
+                
                 const formattedHitokoto = `<span class="verse">${data.hitokoto}</span><br><span class="author">—— ${data.from}</span>`;
                 poetryElement.innerHTML = formattedHitokoto;
-                hitokotoCache = formattedHitokoto;
+                
+                if (largePoetryElement) {
+                    largePoetryElement.innerHTML = formattedHitokoto;
+                }
+                
+                hitokotoCache = data;
             } catch (error) {
                 console.error('获取一言语句时出错:', error);
             }
         }
 
-        // 按要求使用固定的 API 地址获取壁纸
+        // 根据设备分辨率获取不同尺寸的壁纸
         async function getWallpaper() {
-            return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp';
+            const width = window.screen.width;
+            const height = window.screen.height;
+            
+            // 根据屏幕尺寸选择不同的图片API
+            if (width >= 1920 && height >= 1080) {
+                // 大屏设备使用高分辨率壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
+            } else if (width >= 1280 && height >= 720) {
+                // 中等屏幕设备使用中等分辨率壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg';
+            } else {
+                // 小屏设备使用低分辨率壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg';
+            }
         }
 
         const platforms = [
@@ -413,6 +509,20 @@
             }
         }
 
+        // 检查屏幕尺寸并调整布局
+        function checkScreenSize() {
+            const poetryContainer = document.getElementById('poetryContainer');
+            if (window.innerWidth >= 1200) {
+                // 大屏设备
+                poetryContainer.style.display = 'block';
+                document.getElementById('poetry').style.display = 'none';
+            } else {
+                // 小屏设备
+                poetryContainer.style.display = 'none';
+                document.getElementById('poetry').style.display = 'block';
+            }
+        }
+
         document.getElementById('searchBtn').addEventListener('click', () => {
             const query = document.getElementById('searchInput').value.trim();
             if (!query) return alert('请输入搜索内容');
@@ -439,6 +549,10 @@
         async function init() {
             const loadingElement = document.getElementById('loading');
             loadingElement.style.display = 'flex';
+
+            // 检查屏幕尺寸并调整布局
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
 
             const imageUrl = await getWallpaper();
             const img = new Image();
@@ -467,4 +581,3 @@
 </body>
 
 </html>
-    
