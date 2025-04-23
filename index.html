@@ -589,7 +589,7 @@
             background: #000;
             color: #0f0;
             font-family: 'Courier New', monospace;
-            padding: 20px;
+            padding: 15px;
             box-sizing: border-box;
             z-index: 10000;
             overflow: auto;
@@ -599,6 +599,7 @@
             flex-grow: 1;
             overflow-y: auto;
             margin-bottom: 10px;
+            max-height: calc(100vh - 60px);
         }
 
         .dos-output {
@@ -608,13 +609,28 @@
         }
 
         .dos-prompt {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            right: 15px;
+            background: #000;
+            padding: 5px 0;
             display: flex;
             align-items: center;
-            margin-bottom: 0;
         }
 
         .dos-cursor {
             animation: blink 1s infinite;
+            margin-right: 5px;
+        }
+
+        .dos-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            flex-grow: 1;
+            outline: none;
         }
 
         @keyframes blink {
@@ -1504,12 +1520,18 @@
             const width = window.screen.width;
             const height = window.screen.height;
             
-            if (width >= 1920 && height >= 1080) {
+            // 精确到1像素的分辨率检测
+            if (width >= 3840 && height >= 2160) {
                 return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
-            } else if (width >= 1280 && height >= 720) {
+            } else if (width >= 1920 && height >= 1080) {
                 return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg';
-            } else {
+            } else if (width >= 1280 && height >= 720) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1280x720.jpg';
+            } else if (width >= 1024 && height >= 768) {
                 return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg';
+            } else {
+                // 默认返回适合移动设备的壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg';
             }
         }
 
