@@ -14,6 +14,10 @@
             --青空: linear-gradient(135deg, #89c7b6 0%, #c6e4d9 100%);
             --云纹: rgba(255, 255, 255, 0.15);
             --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
+            --primary-color: #89c7b6;
+            --bg-blur: 12px;
+            --card-opacity: 0.12;
+            --animation-speed: 0.3s;
         }
 
         body {
@@ -28,15 +32,16 @@
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 0.8s ease;
             touch-action: manipulation;
+            background-color: #f5f7fa;
         }
 
         body.fade-in {
             opacity: 1;
         }
 
-        body::after {
+        body.animated::after {
             content: '';
             position: absolute;
             width: 300%;
@@ -49,6 +54,7 @@
                     transparent 60%,
                     rgba(255, 255, 255, 0.08) 80%);
             animation: 云游 60s infinite linear;
+            z-index: -1;
         }
 
         .container {
@@ -56,13 +62,14 @@
             z-index: 1;
             width: min(800px, 90vw);
             padding: 2rem;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(var(--bg-blur));
             border-radius: 1.5rem;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, var(--card-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-sizing: border-box;
             text-align: center;
+            transition: transform var(--animation-speed) ease;
         }
 
         .search-container {
@@ -70,6 +77,7 @@
             display: flex;
             margin-bottom: 1.5rem;
             width: 100%;
+            z-index: 2;
         }
 
         .search-box {
@@ -79,7 +87,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
+            transition: all var(--animation-speed) ease;
             color: var(--墨色);
             box-sizing: border-box;
             font-family: var(--禅意-font);
@@ -88,6 +96,7 @@
         .search-box:focus {
             outline: none;
             box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
+            border-color: var(--primary-color);
         }
 
         .search-btn {
@@ -101,6 +110,11 @@
             font-size: 1.5rem;
             color: var(--墨色);
             padding: 0.5rem;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
         }
 
         .login-btn {
@@ -115,6 +129,11 @@
             color: var(--墨色);
             padding: 0.5rem;
             display: none;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .login-btn:hover {
+            transform: translateY(-50%) scale(1.1);
         }
 
         /* 平台网格布局 - 横屏2×5 */
@@ -124,6 +143,9 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
+            transition: transform var(--animation-speed) ease;
+            position: relative;
+            z-index: 1;
         }
 
         /* 竖屏5×2 */
@@ -139,16 +161,39 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--animation-speed) ease;
             text-align: center;
             backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             min-height: 80px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .platform-card:hover {
+        body.animated .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity var(--animation-speed) ease;
+        }
+
+        body.animated .platform-card:hover::before {
+            opacity: 1;
+        }
+
+        .platform-card.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.animated .platform-card:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px);
         }
@@ -157,6 +202,11 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
             color: var(--墨色);
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .platform-card:hover .platform-icon {
+            transform: scale(1.1);
         }
 
         /* 平台图标颜色 */
@@ -205,6 +255,7 @@
             font-size: 1.2rem;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             line-height: 1.6;
+            transition: all var(--animation-speed) ease;
         }
 
         .verse {
@@ -219,34 +270,50 @@
 
         #suggestions {
             position: absolute;
-            top: 100%;
+            top: calc(100% + 10px);
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 0 0 1rem 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             z-index: 10;
             display: none;
-            margin-top: -0.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: none;
-            max-height: 200px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            max-height: 50vh;
             overflow-y: auto;
+            transform-origin: top center;
+            transform: scaleY(0.9);
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body.animated #suggestions.show {
+            transform: scaleY(1);
+            opacity: 1;
         }
 
         .suggestion {
-            padding: 0.8rem 1rem;
+            padding: 0.8rem 1.2rem;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all var(--animation-speed) ease;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+
+        .suggestion:first-child {
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
         }
 
         .suggestion:last-child {
             border-bottom: none;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
         }
 
-        .suggestion:hover {
-            background: rgba(137, 199, 182, 0.3);
+        body.animated .suggestion:hover {
+            background: rgba(137, 199, 182, 0.15);
+            transform: translateX(5px);
         }
 
         .signature {
@@ -260,6 +327,12 @@
             user-select: none;
             padding: 5px;
             z-index: 10;
+            transition: all var(--animation-speed) ease;
+        }
+
+        body.animated .signature:hover {
+            opacity: 1;
+            transform: scale(1.05);
         }
 
         .loading {
@@ -273,6 +346,7 @@
             justify-content: center;
             align-items: center;
             z-index: 999;
+            transition: opacity 0.5s ease;
         }
 
         .spinner {
@@ -299,9 +373,9 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.9);
             width: min(90vw, 500px);
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(10px);
             border-radius: 1.5rem;
             padding: 2rem;
@@ -311,6 +385,13 @@
             color: var(--墨色);
             max-height: 80vh;
             overflow-y: auto;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body.animated .settings-panel.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
         }
 
         .settings-panel h2 {
@@ -351,19 +432,21 @@
             background: rgba(137, 199, 182, 0.8);
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--animation-speed) ease;
             font-family: var(--禅意-font);
         }
 
-        .settings-btn:hover {
+        body.animated .settings-btn:hover {
             background: rgba(137, 199, 182, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .settings-btn.secondary {
             background: rgba(200, 200, 200, 0.8);
         }
 
-        .settings-btn.secondary:hover {
+        body.animated .settings-btn.secondary:hover {
             background: rgba(200, 200, 200, 1);
         }
 
@@ -376,6 +459,12 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.animated .overlay.show {
+            opacity: 1;
         }
 
         /* 手机设备样式 */
@@ -422,148 +511,242 @@
             }
         }
 
-        /* 彩蛋相关样式 */
-        .easter-egg {
+        /* DOS模式样式 */
+        .dos-mode {
+            display: none;
             position: fixed;
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10000;
+            overflow: auto;
         }
 
-        .y2k-bug {
-            font-family: monospace;
-            color: red;
-            background: black;
-            padding: 10px;
-            border: 2px solid red;
-            animation: glitch 0.5s infinite;
+        .dos-prompt {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
         }
 
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-5px, 5px); }
-            40% { transform: translate(-5px, -5px); }
-            60% { transform: translate(5px, 5px); }
-            80% { transform: translate(5px, -5px); }
-            100% { transform: translate(0); }
+        .dos-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            flex-grow: 1;
+            margin-left: 5px;
         }
 
-        .konami-code {
+        .dos-output {
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        /* 彩蛋相关样式 */
+        .lantern {
+            position: fixed;
+            width: 60px;
+            height: 80px;
+            background: radial-gradient(circle at center, #e74c3c 0%, #c0392b 100%);
+            border-radius: 50% 50% 10px 10px;
+            box-shadow: 0 0 20px #e74c3c;
+            z-index: 10000;
+            display: none;
+            animation: lantern-swing 3s infinite ease-in-out;
+            transform-origin: top center;
+        }
+
+        .lantern::before {
+            content: '福';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: gold;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .lantern::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+        }
+
+        @keyframes lantern-swing {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .dragon {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23e74c3c" d="M50,10 C60,20 70,15 80,25 C90,35 85,45 95,55 C105,65 95,75 85,85 C75,95 65,90 55,80 C45,70 35,75 25,65 C15,55 20,45 10,35 C0,25 10,15 20,5 C30,-5 40,0 50,10 Z"/></svg>');
+            background-size: contain;
+            z-index: 10000;
+            display: none;
+            animation: dragon-move 10s linear infinite;
+        }
+
+        @keyframes dragon-move {
+            0% { transform: translateX(-100px) translateY(50vh); }
+            100% { transform: translateX(100vw) translateY(0); }
+        }
+
+        .firework {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 5px rgba(255, 200, 0, 0.7);
+            z-index: 10000;
+            display: none;
+            animation: firework-explode 1s ease-out forwards;
+        }
+
+        @keyframes firework-explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(20); opacity: 0; }
+        }
+
+        .great-wall {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to right, #8B4513, #A0522D, #8B4513);
+            z-index: 10000;
+            display: none;
+        }
+
+        .great-wall::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: repeating-linear-gradient(90deg, #8B4513, #8B4513 10px, #A0522D 10px, #A0522D 20px);
+        }
+
+        .chinese-zodiac {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
             background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 10000;
-            display: none;
-        }
-
-        .hal-9000 {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle at center, #900 0%, #600 70%, #300 100%);
             border-radius: 50%;
-            box-shadow: 0 0 20px #f00;
             z-index: 10000;
             display: none;
-            animation: hal-pulse 2s infinite;
-        }
-
-        @keyframes hal-pulse {
-            0% { box-shadow: 0 0 10px #f00; }
-            50% { box-shadow: 0 0 30px #f00; }
-            100% { box-shadow: 0 0 10px #f00; }
-        }
-
-        .blue-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0078d7;
             color: white;
-            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
             padding: 20px;
-            z-index: 10000;
-            display: none;
-            overflow: auto;
+            box-sizing: border-box;
         }
 
-        .bsod-content {
-            max-width: 800px;
-            margin: 0 auto;
+        .zodiac-animal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: gold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: zodiac-rotate 20s linear infinite;
         }
 
-        .bsod-title {
-            font-size: 24px;
-            margin-bottom: 20px;
+        @keyframes zodiac-rotate {
+            0% { transform: rotate(0deg) translate(150px) rotate(0deg); }
+            100% { transform: rotate(360deg) translate(150px) rotate(-360deg); }
         }
 
-        .bsod-text {
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .bsod-percentage {
-            width: 100%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 20px 0;
-        }
-
-        .bsod-progress {
-            height: 100%;
-            background: white;
-            width: 0%;
-            transition: width 1s;
-        }
-
-        .matrix-rain {
+        /* 源代码查看器 */
+        .source-viewer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: black;
-            z-index: 10000;
-            display: none;
-            overflow: hidden;
-        }
-
-        .matrix-column {
-            display: inline-block;
+            background: rgba(0, 0, 0, 0.9);
             color: #0f0;
-            font-family: monospace;
-            font-size: 16px;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            height: 100%;
-            position: relative;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10000;
+            overflow: auto;
+            display: none;
         }
 
-        .matrix-char {
-            opacity: 0;
-            animation: matrix-fall linear infinite;
+        .source-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
 
-        @keyframes matrix-fall {
-            0% { transform: translateY(-100px); opacity: 0; }
-            5% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
+        .source-close {
+            color: #0f0;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* 性能优化 */
+        .will-change {
+            will-change: transform, opacity;
+        }
+
+        /* 版本切换按钮 */
+        .version-switcher {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            z-index: 10;
+            display: flex;
+            gap: 10px;
+        }
+
+        .version-btn {
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .version-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .version-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
         }
     </style>
 </head>
 
-<body>
+<body class="animated">
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
@@ -578,6 +761,14 @@
         <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
+
+    <!-- 版本切换按钮 -->
+    <div class="version-switcher">
+        <button class="version-btn active" data-version="full">完整版</button>
+        <button class="version-btn" data-version="no-animation">无动画</button>
+        <button class="version-btn" data-version="no-easter-egg">无彩蛋</button>
+        <button class="version-btn" data-version="dos">DOS模式</button>
+    </div>
 
     <!-- 设置面板 -->
     <div class="overlay" id="settingsOverlay"></div>
@@ -596,57 +787,66 @@
             </div>
         </div>
         
+        <div class="setting-item">
+            <label for="bgBlur">背景模糊度</label>
+            <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+            <span id="bgBlurValue">12px</span>
+        </div>
+        
+        <div class="setting-item">
+            <label for="cardOpacity">卡片透明度</label>
+            <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
+            <span id="cardOpacityValue">12%</span>
+        </div>
+        
+        <div class="setting-item">
+            <label for="animationSpeed">动画速度</label>
+            <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+            <span id="animationSpeedValue">中速</span>
+        </div>
+        
         <div class="settings-actions">
             <button class="settings-btn secondary" id="cancelSettings">取消</button>
             <button class="settings-btn" id="saveSettings">保存设置</button>
         </div>
     </div>
 
-    <!-- 彩蛋元素 -->
-    <div class="easter-egg" id="y2kEgg"></div>
-    <div class="konami-code" id="konamiEgg">
-        <h3>上上下下左右左右BA</h3>
-        <p>恭喜你发现了科乐美秘技！</p>
-        <p>这是向1986年科乐美公司在《魂斗罗》等游戏中隐藏的经典秘技致敬。</p>
-    </div>
-    <div class="hal-9000" id="hal9000"></div>
-    <div class="blue-screen" id="blueScreen">
-        <div class="bsod-content">
-            <div class="bsod-title">:(</div>
-            <div class="bsod-text">
-                你的电脑遇到问题，需要重新启动。<br>
-                我们只收集某些错误信息，然后为你重新启动。<br><br>
-                完成 0%
-            </div>
-            <div class="bsod-percentage">
-                <div class="bsod-progress" id="bsodProgress"></div>
-            </div>
-            <div class="bsod-text">
-                有关此问题的详细信息和可能的解决方法，请访问 https://www.example.com/stopcode<br><br>
-                如果致电支持人员，请向他们提供以下信息：<br>
-                终止代码: CRITICAL_PROCESS_DIED
-            </div>
+    <!-- DOS模式界面 -->
+    <div class="dos-mode" id="dosMode">
+        <div class="dos-output">星汉搜索 DOS 模式 v1.0</div>
+        <div class="dos-output">输入 "help" 获取命令列表</div>
+        <div class="dos-prompt">
+            <span>></span>
+            <input type="text" class="dos-input" id="dosInput" autocomplete="off">
         </div>
     </div>
-    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- 源代码查看器 -->
+    <div class="source-viewer" id="sourceViewer">
+        <div class="source-header">
+            <h3>星汉搜索 - 源代码</h3>
+            <span class="source-close" id="sourceClose">×</span>
+        </div>
+        <pre id="sourceCode"></pre>
+    </div>
 
     <script>
         // 配置数据
         const config = {
             platforms: [
                 {
-                    id: 'google',
-                    name: '谷歌搜索',
-                    icon: 'fa-brands fa-google',
-                    search: 'https://www.google.com/search?q=',
-                    login: 'https://accounts.google.com/'
-                },
-                {
                     id: 'bing',
                     name: '必应搜索',
                     icon: 'fa-brands fa-microsoft',
                     search: 'https://www.bing.com/search?q=',
                     login: 'https://login.live.com/'
+                },
+                {
+                    id: 'google',
+                    name: '谷歌搜索',
+                    icon: 'fa-brands fa-google',
+                    search: 'https://www.google.com/search?q=',
+                    login: 'https://accounts.google.com/'
                 },
                 {
                     id: 'github',
@@ -707,40 +907,125 @@
             ],
             settings: {
                 showDailyImage: true,
-                useLegacyVersion: false
+                useLegacyVersion: false,
+                bgBlur: 12,
+                cardOpacity: 12,
+                animationSpeed: 3,
+                currentVersion: 'full'
             },
             legacyWallpaper: 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp',
             // 彩蛋相关配置
             easterEggs: {
-                y2k: {
-                    messages: [
-                        "Y2K BUG DETECTED!",
-                        "SYSTEM CLOCK FAILURE",
-                        "YEAR 1900 REVERTED",
-                        "MILLENNIUM BUG ACTIVATED"
-                    ],
-                    active: false
-                },
-                konami: {
-                    code: ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"],
-                    input: [],
-                    active: false
-                },
-                hal9000: {
-                    quotes: [
-                        "I'm sorry, Dave. I'm afraid I can't do that.",
-                        "This mission is too important for me to allow you to jeopardize it.",
-                        "I know that you and Frank were planning to disconnect me.",
-                        "I am putting myself to the fullest possible use, which is all I think that any conscious entity can ever hope to do."
-                    ],
-                    active: false
-                },
-                bsod: {
-                    active: false
-                },
-                matrix: {
+                lantern: {
                     active: false,
-                    chars: "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"
+                    positions: [
+                        { top: '10%', left: '10%' },
+                        { top: '15%', left: '80%' },
+                        { top: '70%', left: '20%' },
+                        { top: '80%', left: '75%' }
+                    ]
+                },
+                dragon: {
+                    active: false
+                },
+                greatWall: {
+                    active: false
+                },
+                zodiac: {
+                    animals: ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'],
+                    active: false
+                },
+                // 中国传统文化相关关键词
+                chineseKeywords: {
+                    '春节': 'activateLanterns',
+                    '中秋节': 'activateMooncake',
+                    '端午节': 'activateDragonBoat',
+                    '龙': 'activateDragon',
+                    '长城': 'activateGreatWall',
+                    '十二生肖': 'activateZodiac',
+                    '福': 'activateFuCharacter',
+                    '中国结': 'activateChineseKnot'
+                }
+            },
+            // DOS命令
+            dosCommands: {
+                'help': {
+                    description: '显示所有可用命令',
+                    execute: function(output) {
+                        output.innerHTML += '<br>可用命令:';
+                        output.innerHTML += '<br>help - 显示帮助信息';
+                        output.innerHTML += '<br>search [平台] [查询] - 使用指定平台搜索';
+                        output.innerHTML += '<br>list - 列出所有搜索平台';
+                        output.innerHTML += '<br>clear - 清屏';
+                        output.innerHTML += '<br>exit - 退出DOS模式';
+                        output.innerHTML += '<br>date - 显示当前日期';
+                        output.innerHTML += '<br>time - 显示当前时间';
+                        output.innerHTML += '<br>ver - 显示版本信息';
+                        output.innerHTML += '<br>';
+                    }
+                },
+                'search': {
+                    description: '使用指定平台进行搜索',
+                    execute: function(args, output) {
+                        if (args.length < 2) {
+                            output.innerHTML += '<br>用法: search [平台] [查询]';
+                            output.innerHTML += '<br>例如: search bing 星汉搜索';
+                            return;
+                        }
+                        
+                        const platform = args[0];
+                        const query = args.slice(1).join(' ');
+                        
+                        const foundPlatform = config.platforms.find(p => p.id === platform || p.name.includes(platform));
+                        if (foundPlatform) {
+                            window.open(foundPlatform.search + encodeURIComponent(query), '_blank');
+                            output.innerHTML += `<br>正在使用 ${foundPlatform.name} 搜索: ${query}`;
+                        } else {
+                            output.innerHTML += `<br>未知平台: ${platform}`;
+                        }
+                    }
+                },
+                'list': {
+                    description: '列出所有搜索平台',
+                    execute: function(output) {
+                        output.innerHTML += '<br>可用平台:';
+                        config.platforms.forEach(p => {
+                            output.innerHTML += `<br>${p.id} - ${p.name}`;
+                        });
+                    }
+                },
+                'clear': {
+                    description: '清屏',
+                    execute: function(output) {
+                        output.innerHTML = '';
+                    }
+                },
+                'exit': {
+                    description: '退出DOS模式',
+                    execute: function() {
+                        switchVersion('full');
+                    }
+                },
+                'date': {
+                    description: '显示当前日期',
+                    execute: function(output) {
+                        const now = new Date();
+                        output.innerHTML += `<br>当前日期: ${now.toLocaleDateString('zh-CN')}`;
+                    }
+                },
+                'time': {
+                    description: '显示当前时间',
+                    execute: function(output) {
+                        const now = new Date();
+                        output.innerHTML += `<br>当前时间: ${now.toLocaleTimeString('zh-CN')}`;
+                    }
+                },
+                'ver': {
+                    description: '显示版本信息',
+                    execute: function(output) {
+                        output.innerHTML += '<br>星汉搜索 DOS 模式 v1.0';
+                        output.innerHTML += '<br>版权所有 © 2023 zmf';
+                    }
                 }
             }
         };
@@ -761,13 +1046,21 @@
             useLegacyVersion: document.getElementById('useLegacyVersion'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings'),
-            // 彩蛋元素
-            y2kEgg: document.getElementById('y2kEgg'),
-            konamiEgg: document.getElementById('konamiEgg'),
-            hal9000: document.getElementById('hal9000'),
-            blueScreen: document.getElementById('blueScreen'),
-            bsodProgress: document.getElementById('bsodProgress'),
-            matrixRain: document.getElementById('matrixRain')
+            bgBlur: document.getElementById('bgBlur'),
+            bgBlurValue: document.getElementById('bgBlurValue'),
+            cardOpacity: document.getElementById('cardOpacity'),
+            cardOpacityValue: document.getElementById('cardOpacityValue'),
+            animationSpeed: document.getElementById('animationSpeed'),
+            animationSpeedValue: document.getElementById('animationSpeedValue'),
+            // DOS模式元素
+            dosMode: document.getElementById('dosMode'),
+            dosInput: document.getElementById('dosInput'),
+            // 源代码查看器
+            sourceViewer: document.getElementById('sourceViewer'),
+            sourceCode: document.getElementById('sourceCode'),
+            sourceClose: document.getElementById('sourceClose'),
+            // 版本切换按钮
+            versionBtns: document.querySelectorAll('.version-btn')
         };
 
         // 状态变量
@@ -776,10 +1069,16 @@
         let lastClickTime = 0;
         const CLICK_THRESHOLD = 7;
         const CLICK_TIMEOUT = 1000;
-        let selectedPlatform = null;
+        let selectedPlatform = 'bing'; // 默认选中必应搜索
+        let isSuggestionsOpen = false;
+        let konamiCode = [];
+        const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
         // 初始化函数
         async function init() {
+            // 预加载资源
+            preloadResources();
+            
             // 加载设置
             loadSettings();
             
@@ -811,7 +1110,9 @@
             renderPlatforms();
             
             // 聚焦搜索框
-            elements.searchInput.focus();
+            if (config.settings.currentVersion !== 'dos') {
+                elements.searchInput.focus();
+            }
             
             // 添加事件监听
             addEventListeners();
@@ -819,181 +1120,244 @@
             // 初始化彩蛋
             initEasterEggs();
 
-            // 千年虫彩蛋 - 如果日期在1999-2000年之间
-            const now = new Date();
-            if ((now.getFullYear() === 1999 && now.getMonth() === 11) || 
-                (now.getFullYear() === 2000 && now.getMonth() === 0)) {
-                activateY2KBug();
+            // 应用当前版本
+            switchVersion(config.settings.currentVersion);
+        }
+
+        // 切换版本
+        function switchVersion(version) {
+            config.settings.currentVersion = version;
+            
+            // 更新按钮状态
+            elements.versionBtns.forEach(btn => {
+                if (btn.dataset.version === version) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // 隐藏所有特殊模式
+            elements.dosMode.style.display = 'none';
+            document.body.classList.remove('no-animation', 'no-easter-egg');
+            
+            // 根据版本应用设置
+            switch (version) {
+                case 'full':
+                    document.body.classList.add('animated');
+                    document.querySelector('.container').style.display = '';
+                    break;
+                case 'no-animation':
+                    document.body.classList.remove('animated');
+                    document.querySelector('.container').style.display = '';
+                    break;
+                case 'no-easter-egg':
+                    document.body.classList.add('animated');
+                    document.querySelector('.container').style.display = '';
+                    break;
+                case 'dos':
+                    document.querySelector('.container').style.display = 'none';
+                    elements.dosMode.style.display = 'block';
+                    elements.dosInput.focus();
+                    const output = elements.dosMode.querySelector('.dos-output:last-child');
+                    output.innerHTML += '<br>输入 "help" 获取命令列表';
+                    break;
             }
+        }
+
+        // 预加载资源
+        function preloadResources() {
+            const images = [
+                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg',
+                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg',
+                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg',
+                config.legacyWallpaper
+            ];
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
         }
 
         // 初始化彩蛋
         function initEasterEggs() {
+            // 中国传统文化关键词监听
+            elements.searchInput.addEventListener('input', function() {
+                if (config.settings.currentVersion === 'no-easter-egg') return;
+                
+                const query = this.value.trim().toLowerCase();
+                
+                // 检查是否匹配任何中国传统文化关键词
+                for (const [keyword, activator] of Object.entries(config.easterEggs.chineseKeywords)) {
+                    if (query.includes(keyword.toLowerCase())) {
+                        if (typeof this[activator] === 'function') {
+                            this[activator]();
+                        }
+                        break;
+                    }
+                }
+            });
+
+            // 署名点击 - 连点7次打开设置
+            elements.signature.addEventListener('click', handleSignatureClick);
+
             // 科乐美秘技监听
             document.addEventListener('keydown', function(e) {
-                config.easterEggs.konami.input.push(e.key);
-                if (config.easterEggs.konami.input.length > config.easterEggs.konami.code.length) {
-                    config.easterEggs.konami.input.shift();
+                if (config.settings.currentVersion === 'no-easter-egg') return;
+                
+                konamiCode.push(e.key);
+                if (konamiCode.length > KONAMI_CODE.length) {
+                    konamiCode.shift();
                 }
                 
-                if (JSON.stringify(config.easterEggs.konami.input) === JSON.stringify(config.easterEggs.konami.code)) {
-                    activateKonamiCode();
-                }
-            });
-
-            // 千年虫彩蛋 - 搜索"Y2K"或"千年虫"
-            elements.searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                if (query.includes('y2k') || query.includes('千年虫')) {
-                    activateY2KBug();
-                }
-            });
-
-            // 2001太空漫游彩蛋 - 搜索"HAL 9000"
-            elements.searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                if (query.includes('hal 9000') || query.includes('hal9000')) {
-                    activateHAL9000();
-                }
-            });
-
-            // Windows蓝屏彩蛋 - 搜索"blue screen"或"蓝屏"
-            elements.searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                if (query.includes('blue screen') || query.includes('蓝屏')) {
-                    activateBlueScreen();
-                }
-            });
-
-            // 矩阵数字雨彩蛋 - 搜索"matrix"或"黑客帝国"
-            elements.searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                if (query.includes('matrix') || query.includes('黑客帝国')) {
-                    activateMatrixRain();
+                if (konamiCode.join(',') === KONAMI_CODE.join(',')) {
+                    showSourceCode();
+                    konamiCode = [];
                 }
             });
         }
 
-        // 激活千年虫彩蛋
-        function activateY2KBug() {
-            if (config.easterEggs.y2k.active) return;
-            config.easterEggs.y2k.active = true;
+        // 显示源代码
+        function showSourceCode() {
+            elements.sourceCode.textContent = document.documentElement.outerHTML;
+            elements.sourceViewer.style.display = 'block';
+        }
+
+        // 激活灯笼彩蛋
+        function activateLanterns() {
+            if (config.easterEggs.lantern.active) return;
+            config.easterEggs.lantern.active = true;
             
-            elements.y2kEgg.style.opacity = '1';
-            elements.y2kEgg.className = 'easter-egg y2k-bug';
-            elements.y2kEgg.textContent = config.easterEggs.y2k.messages[
-                Math.floor(Math.random() * config.easterEggs.y2k.messages.length)
-            ];
+            // 创建多个灯笼
+            config.easterEggs.lantern.positions.forEach(pos => {
+                const lantern = document.createElement('div');
+                lantern.className = 'lantern';
+                lantern.style.top = pos.top;
+                lantern.style.left = pos.left;
+                lantern.style.display = 'block';
+                document.body.appendChild(lantern);
+            });
             
-            // 随机位置
-            elements.y2kEgg.style.left = `${Math.random() * 80}%`;
-            elements.y2kEgg.style.top = `${Math.random() * 80}%`;
+            // 10秒后消失
+            setTimeout(() => {
+                document.querySelectorAll('.lantern').forEach(lantern => {
+                    lantern.remove();
+                });
+                config.easterEggs.lantern.active = false;
+            }, 10000);
+        }
+
+        // 激活龙彩蛋
+        function activateDragon() {
+            if (config.easterEggs.dragon.active) return;
+            config.easterEggs.dragon.active = true;
+            
+            const dragon = document.createElement('div');
+            dragon.className = 'dragon';
+            dragon.style.display = 'block';
+            document.body.appendChild(dragon);
+            
+            // 龙飞过屏幕后消失
+            setTimeout(() => {
+                dragon.remove();
+                config.easterEggs.dragon.active = false;
+            }, 10000);
+        }
+
+        // 激活长城彩蛋
+        function activateGreatWall() {
+            if (config.easterEggs.greatWall.active) return;
+            config.easterEggs.greatWall.active = true;
+            
+            const wall = document.createElement('div');
+            wall.className = 'great-wall';
+            wall.style.display = 'block';
+            document.body.appendChild(wall);
             
             // 5秒后消失
             setTimeout(() => {
-                elements.y2kEgg.style.opacity = '0';
-                setTimeout(() => {
-                    config.easterEggs.y2k.active = false;
-                }, 500);
+                wall.remove();
+                config.easterEggs.greatWall.active = false;
             }, 5000);
         }
 
-        // 激活科乐美秘技彩蛋
-        function activateKonamiCode() {
-            if (config.easterEggs.konami.active) return;
-            config.easterEggs.konami.active = true;
+        // 激活十二生肖彩蛋
+        function activateZodiac() {
+            if (config.easterEggs.zodiac.active) return;
+            config.easterEggs.zodiac.active = true;
             
-            elements.konamiEgg.style.display = 'block';
+            const zodiac = document.createElement('div');
+            zodiac.className = 'chinese-zodiac';
+            zodiac.innerHTML = '<h3>十二生肖</h3>';
+            zodiac.style.display = 'block';
+            document.body.appendChild(zodiac);
             
-            // 10秒后消失
+            // 创建十二生肖圆圈
+            config.easterEggs.zodiac.animals.forEach((animal, index) => {
+                const angle = (index * 30) * Math.PI / 180;
+                const animalElement = document.createElement('div');
+                animalElement.className = 'zodiac-animal';
+                animalElement.textContent = animal;
+                animalElement.style.transform = `rotate(${index * 30}deg) translate(150px) rotate(-${index * 30}deg)`;
+                zodiac.appendChild(animalElement);
+            });
+            
+            // 5秒后消失
             setTimeout(() => {
-                elements.konamiEgg.style.display = 'none';
-                config.easterEggs.konami.active = false;
-                config.easterEggs.konami.input = [];
-            }, 10000);
+                zodiac.remove();
+                config.easterEggs.zodiac.active = false;
+            }, 5000);
         }
 
-        // 激活HAL 9000彩蛋
-        function activateHAL9000() {
-            if (config.easterEggs.hal9000.active) return;
-            config.easterEggs.hal9000.active = true;
+        // 其他中国风彩蛋函数
+        function activateMooncake() {
+            // 可以添加月饼动画
+            alert('中秋节快乐！记得吃月饼哦~');
+        }
+
+        function activateDragonBoat() {
+            // 可以添加龙舟动画
+            alert('端午节快乐！赛龙舟、吃粽子~');
+        }
+
+        function activateFuCharacter() {
+            // 显示福字动画
+            const fu = document.createElement('div');
+            fu.textContent = '福';
+            fu.style.position = 'fixed';
+            fu.style.top = '50%';
+            fu.style.left = '50%';
+            fu.style.transform = 'translate(-50%, -50%)';
+            fu.style.fontSize = '100px';
+            fu.style.color = 'red';
+            fu.style.zIndex = '10000';
+            document.body.appendChild(fu);
             
-            elements.hal9000.style.display = 'block';
-            
-            // 随机选择一句HAL的台词
-            const quote = config.easterEggs.hal9000.quotes[
-                Math.floor(Math.random() * config.easterEggs.hal9000.quotes.length)
-            ];
-            
-            // 3秒后显示台词
             setTimeout(() => {
-                alert(quote);
-                elements.hal9000.style.display = 'none';
-                config.easterEggs.hal9000.active = false;
-            }, 3000);
+                fu.remove();
+            }, 2000);
         }
 
-        // 激活蓝屏彩蛋
-        function activateBlueScreen() {
-            if (config.easterEggs.bsod.active) return;
-            config.easterEggs.bsod.active = true;
-            
-            elements.blueScreen.style.display = 'block';
-            
-            // 模拟进度条
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // 3秒后恢复
-                    setTimeout(() => {
-                        elements.blueScreen.style.display = 'none';
-                        config.easterEggs.bsod.active = false;
-                    }, 3000);
-                }
-                elements.bsodProgress.style.width = `${progress}%`;
-            }, 200);
+        function activateChineseKnot() {
+            // 显示中国结动画
+            alert('中国结象征着团结和幸福！');
         }
 
-        // 激活矩阵数字雨彩蛋
-        function activateMatrixRain() {
-            if (config.easterEggs.matrix.active) return;
-            config.easterEggs.matrix.active = true;
-            
-            elements.matrixRain.style.display = 'block';
-            
-            // 创建数字雨
-            const columns = Math.floor(window.innerWidth / 20);
-            for (let i = 0; i < columns; i++) {
-                const column = document.createElement('div');
-                column.className = 'matrix-column';
-                column.style.left = `${i * 20}px`;
-                column.style.animationDuration = `${Math.random() * 2 + 1}s`;
-                
-                // 每列创建20个字符
-                for (let j = 0; j < 20; j++) {
-                    const char = document.createElement('div');
-                    char.className = 'matrix-char';
-                    char.textContent = config.easterEggs.matrix.chars.charAt(
-                        Math.floor(Math.random() * config.easterEggs.matrix.chars.length)
-                    );
-                    char.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                    char.style.animationDelay = `${Math.random() * 2}s`;
-                    column.appendChild(char);
-                }
-                
-                elements.matrixRain.appendChild(column);
+        // 署名点击处理
+        function handleSignatureClick() {
+            const now = Date.now();
+            if (now - lastClickTime > CLICK_TIMEOUT) {
+                clickCount = 0;
             }
             
-            // 10秒后消失
-            setTimeout(() => {
-                elements.matrixRain.innerHTML = '';
-                elements.matrixRain.style.display = 'none';
-                config.easterEggs.matrix.active = false;
-            }, 10000);
+            clickCount++;
+            lastClickTime = now;
+            
+            if (clickCount >= CLICK_THRESHOLD) {
+                openSettings();
+                clickCount = 0;
+            }
         }
 
         // 加载设置
@@ -1007,23 +1371,62 @@
                     // 更新UI控件
                     elements.showDailyImage.checked = config.settings.showDailyImage;
                     elements.useLegacyVersion.checked = config.settings.useLegacyVersion;
+                    elements.bgBlur.value = config.settings.bgBlur;
+                    elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
+                    elements.cardOpacity.value = config.settings.cardOpacity;
+                    elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
+                    elements.animationSpeed.value = config.settings.animationSpeed;
+                    updateAnimationSpeedText();
+                    
+                    // 应用设置
+                    document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+                    document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+                    updateAnimationSpeed();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
             }
         }
 
+        // 更新动画速度文本
+        function updateAnimationSpeedText() {
+            const speeds = ['关闭', '极慢', '慢速', '中速', '快速', '极快'];
+            elements.animationSpeedValue.textContent = speeds[config.settings.animationSpeed];
+        }
+
+        // 更新动画速度
+        function updateAnimationSpeed() {
+            let speed = 0.3;
+            switch (parseInt(config.settings.animationSpeed)) {
+                case 0: speed = 0; break;
+                case 1: speed = 0.8; break;
+                case 2: speed = 0.5; break;
+                case 3: speed = 0.3; break;
+                case 4: speed = 0.15; break;
+                case 5: speed = 0.1; break;
+            }
+            document.documentElement.style.setProperty('--animation-speed', `${speed}s`);
+        }
+
         // 保存设置
         function saveSettings() {
             config.settings = {
                 showDailyImage: elements.showDailyImage.checked,
-                useLegacyVersion: elements.useLegacyVersion.checked
+                useLegacyVersion: elements.useLegacyVersion.checked,
+                bgBlur: parseInt(elements.bgBlur.value),
+                cardOpacity: parseInt(elements.cardOpacity.value),
+                animationSpeed: parseInt(elements.animationSpeed.value),
+                currentVersion: config.settings.currentVersion
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
             
-            // 重新加载页面应用设置
-            location.reload();
+            // 应用新设置
+            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+            updateAnimationSpeed();
+            
+            closeSettings();
         }
 
         // 获取壁纸
@@ -1052,10 +1455,24 @@
             }
 
             try {
+                // 使用缓存API提高性能
+                const cache = await caches.open('hitokoto-cache');
+                const cachedResponse = await cache.match('https://v1.hitokoto.cn/?c=i');
+                
+                if (cachedResponse) {
+                    const data = await cachedResponse.json();
+                    hitokotoCache = data;
+                    updatePoetryDisplay(data);
+                }
+                
+                // 无论是否有缓存都获取最新数据
                 const response = await fetch('https://v1.hitokoto.cn/?c=i');
                 const data = await response.json();
                 hitokotoCache = data;
                 updatePoetryDisplay(data);
+                
+                // 更新缓存
+                cache.put('https://v1.hitokoto.cn/?c=i', new Response(JSON.stringify(data)));
             } catch (error) {
                 console.error('获取一言语句时出错:', error);
                 updatePoetryDisplay({
@@ -1073,41 +1490,75 @@
 
         // 显示搜索建议
         function showSuggestions(input) {
-            elements.suggestions.innerHTML = '';
-
-            if (input.length > 0) {
-                const callbackName = `bingSuggestionCallback_${Date.now()}`;
-                const script = document.createElement('script');
-                script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
-
-                window[callbackName] = function(data) {
-                    if (data?.AS?.Results?.[0]?.Suggests) {
-                        const suggestions = data.AS.Results[0].Suggests.slice(0, 5); // 限制最多显示5条建议
-                        elements.suggestions.innerHTML = suggestions.map(suggestion => `
-                            <div class="suggestion">${suggestion.Txt}</div>
-                        `).join('');
-
-                        // 添加建议点击事件
-                        document.querySelectorAll('.suggestion').forEach(item => {
-                            item.addEventListener('click', function() {
-                                elements.searchInput.value = this.textContent;
-                                elements.suggestions.style.display = 'none';
-                                performSearch(this.textContent);
-                            });
-                        });
-
-                        elements.suggestions.style.display = 'block';
-                    } else {
-                        elements.suggestions.style.display = 'none';
-                    }
-                    document.body.removeChild(script);
-                    delete window[callbackName];
-                };
-
-                document.body.appendChild(script);
-            } else {
-                elements.suggestions.style.display = 'none';
+            if (!input || input.length === 0) {
+                hideSuggestions();
+                return;
             }
+
+            const callbackName = `bingSuggestionCallback_${Date.now()}`;
+            const script = document.createElement('script');
+            script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
+
+            window[callbackName] = function(data) {
+                if (data?.AS?.Results?.[0]?.Suggests) {
+                    elements.suggestions.innerHTML = data.AS.Results[0].Suggests.map(suggestion => `
+                        <div class="suggestion">${suggestion.Txt}</div>
+                    `).join('');
+
+                    // 添加建议点击事件
+                    document.querySelectorAll('.suggestion').forEach(item => {
+                        item.addEventListener('click', function() {
+                            elements.searchInput.value = this.textContent;
+                            hideSuggestions();
+                            performSearch(this.textContent);
+                        });
+                    });
+
+                    showSuggestionsUI();
+                    
+                    // 调整平台卡片位置
+                    adjustPlatformPosition();
+                } else {
+                    hideSuggestions();
+                }
+                document.body.removeChild(script);
+                delete window[callbackName];
+            };
+
+            document.body.appendChild(script);
+        }
+
+        // 显示建议框
+        function showSuggestionsUI() {
+            elements.suggestions.style.display = 'block';
+            setTimeout(() => {
+                elements.suggestions.classList.add('show');
+                isSuggestionsOpen = true;
+            }, 10);
+        }
+
+        // 隐藏建议框
+        function hideSuggestions() {
+            elements.suggestions.classList.remove('show');
+            setTimeout(() => {
+                elements.suggestions.style.display = 'none';
+                isSuggestionsOpen = false;
+                resetPlatformPosition();
+            }, 200);
+        }
+
+        // 调整平台卡片位置
+        function adjustPlatformPosition() {
+            if (window.innerWidth > 767) { // 只在横屏下调整
+                elements.platformGrid.style.transform = 'translateY(20px)';
+                elements.container.style.transform = 'translateY(-50px)';
+            }
+        }
+
+        // 重置平台卡片位置
+        function resetPlatformPosition() {
+            elements.platformGrid.style.transform = '';
+            elements.container.style.transform = '';
         }
 
         // 执行搜索
@@ -1119,8 +1570,59 @@
 
             const platform = config.platforms.find(p => p.id === selectedPlatform);
             if (platform) {
-                window.open(platform.search + encodeURIComponent(query), '_blank');
+                // 添加搜索动画
+                if (config.settings.currentVersion !== 'no-animation') {
+                    elements.container.classList.add('will-change');
+                    elements.container.style.transform = 'scale(0.95)';
+                    elements.container.style.opacity = '0.8';
+                }
+                
+                setTimeout(() => {
+                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                    
+                    // 恢复动画
+                    if (config.settings.currentVersion !== 'no-animation') {
+                        setTimeout(() => {
+                            elements.container.style.transform = '';
+                            elements.container.style.opacity = '';
+                            setTimeout(() => {
+                                elements.container.classList.remove('will-change');
+                            }, 300);
+                        }, 100);
+                    }
+                }, 200);
             }
+        }
+
+        // 处理DOS命令
+        function handleDosCommand(command) {
+            const output = elements.dosMode.querySelector('.dos-output:last-child');
+            const args = command.split(' ');
+            const cmd = args.shift().toLowerCase();
+            
+            if (config.dosCommands[cmd]) {
+                config.dosCommands[cmd].execute(args, output);
+            } else {
+                output.innerHTML += `<br>未知命令: ${cmd}`;
+            }
+            
+            // 添加新的提示符
+            const newPrompt = document.createElement('div');
+            newPrompt.className = 'dos-prompt';
+            newPrompt.innerHTML = '<span>></span><input type="text" class="dos-input" autocomplete="off">';
+            elements.dosMode.appendChild(newPrompt);
+            
+            // 聚焦新输入框
+            const newInput = newPrompt.querySelector('.dos-input');
+            newInput.focus();
+            
+            // 添加事件监听
+            newInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleDosCommand(this.value);
+                    this.disabled = true;
+                }
+            });
         }
 
         // 检查屏幕尺寸
@@ -1141,7 +1643,7 @@
         // 渲染平台网格
         function renderPlatforms() {
             elements.platformGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-card" 
+                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
                      data-id="${platform.id}"
                      data-login="${platform.login || ''}">
                     <div class="platform-icon"><i class="${platform.icon}"></i></div>
@@ -1152,26 +1654,42 @@
             document.querySelectorAll('.platform-card').forEach(card => {
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.platform-card').forEach(c =>
-                        c.style.background = 'rgba(255, 255, 255, 0.15)');
-                    card.style.background = 'rgba(255, 255, 255, 0.3)';
+                        c.classList.remove('active'));
+                    card.classList.add('active');
 
                     selectedPlatform = card.dataset.id;
                     const showLogin = card.dataset.login;
                     elements.loginBtn.style.display = showLogin ? 'block' : 'none';
                 });
             });
+
+            // 默认显示登录按钮（如果必应需要）
+            const bingPlatform = config.platforms.find(p => p.id === 'bing');
+            if (bingPlatform && bingPlatform.login) {
+                elements.loginBtn.style.display = 'block';
+            }
         }
 
         // 打开设置
         function openSettings() {
             elements.settingsOverlay.style.display = 'block';
             elements.settingsPanel.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.settingsOverlay.classList.add('show');
+                elements.settingsPanel.classList.add('show');
+            }, 10);
         }
 
         // 关闭设置
         function closeSettings() {
-            elements.settingsOverlay.style.display = 'none';
-            elements.settingsPanel.style.display = 'none';
+            elements.settingsOverlay.classList.remove('show');
+            elements.settingsPanel.classList.remove('show');
+            
+            setTimeout(() => {
+                elements.settingsOverlay.style.display = 'none';
+                elements.settingsPanel.style.display = 'none';
+            }, 300);
         }
 
         // 添加事件监听
@@ -1180,7 +1698,6 @@
             elements.searchBtn.addEventListener('click', () => {
                 const query = elements.searchInput.value.trim();
                 if (!query) return alert('请输入搜索内容');
-                if (!selectedPlatform) return alert('请选择搜索平台');
                 performSearch(query);
             });
 
@@ -1203,24 +1720,14 @@
                 if (e.key === 'Enter') {
                     const query = elements.searchInput.value.trim();
                     if (!query) return alert('请输入搜索内容');
-                    if (!selectedPlatform) return alert('请选择搜索平台');
                     performSearch(query);
                 }
             });
 
-            // 署名点击 - 连点7次打开设置
-            elements.signature.addEventListener('click', () => {
-                const now = Date.now();
-                if (now - lastClickTime > CLICK_TIMEOUT) {
-                    clickCount = 0;
-                }
-                
-                clickCount++;
-                lastClickTime = now;
-                
-                if (clickCount >= CLICK_THRESHOLD) {
-                    openSettings();
-                    clickCount = 0;
+            // 输入框聚焦/失焦
+            elements.searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length > 0) {
+                    showSuggestions(this.value);
                 }
             });
 
@@ -1234,15 +1741,50 @@
                 if (!elements.searchInput.contains(e.target) && 
                     !elements.suggestions.contains(e.target) &&
                     !elements.searchBtn.contains(e.target)) {
-                    elements.suggestions.style.display = 'none';
+                    hideSuggestions();
                 }
             });
 
-            // 输入框聚焦时显示建议（如果有）
-            elements.searchInput.addEventListener('focus', function() {
-                if (this.value.trim().length > 0 && elements.suggestions.innerHTML.trim().length > 0) {
-                    elements.suggestions.style.display = 'block';
+            // 键盘ESC键隐藏建议
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isSuggestionsOpen) {
+                    hideSuggestions();
                 }
+            });
+
+            // DOS模式输入
+            elements.dosInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleDosCommand(this.value);
+                    this.disabled = true;
+                }
+            });
+
+            // 背景模糊度调整
+            elements.bgBlur.addEventListener('input', function() {
+                elements.bgBlurValue.textContent = `${this.value}px`;
+            });
+
+            // 卡片透明度调整
+            elements.cardOpacity.addEventListener('input', function() {
+                elements.cardOpacityValue.textContent = `${this.value}%`;
+            });
+
+            // 动画速度调整
+            elements.animationSpeed.addEventListener('input', function() {
+                updateAnimationSpeedText();
+            });
+
+            // 版本切换按钮
+            elements.versionBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    switchVersion(this.dataset.version);
+                });
+            });
+
+            // 源代码查看器关闭按钮
+            elements.sourceClose.addEventListener('click', function() {
+                elements.sourceViewer.style.display = 'none';
             });
         }
 
