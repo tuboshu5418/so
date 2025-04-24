@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>星汉搜索 - 诗意探索</title>
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" as="style">
+    <link rel="preload" href="https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg" as="image">
     <style>
         :root {
             --墨色: #2c3e50;
@@ -35,6 +37,7 @@
             transition: opacity 0.8s ease;
             touch-action: manipulation;
             background-color: #f5f7fa;
+            background-repeat: no-repeat;
         }
 
         body.fade-in {
@@ -261,11 +264,14 @@
         .verse {
             font-size: 1.3rem;
             letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
         }
 
         .author {
             font-size: 0.9rem;
             color: rgba(44, 62, 80, 0.8);
+            display: block;
         }
 
         #suggestions {
@@ -529,6 +535,7 @@
             .container {
                 padding: 1.5rem;
                 width: 95vw;
+                margin: 1rem auto;
             }
 
             .search-box {
@@ -835,6 +842,36 @@
             90% { opacity: 1; }
             100% { transform: translateY(100vh); opacity: 0; }
         }
+        
+        /* 板块显示控制 */
+        .section-toggle {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-item:hover {
+            background: rgba(137, 199, 182, 0.15);
+        }
+        
+        .toggle-item.active {
+            background: rgba(137, 199, 182, 0.2);
+        }
+        
+        .toggle-item input {
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 
@@ -860,14 +897,32 @@
         <h2>设置</h2>
         
         <div class="setting-item">
-            <label>显示选项</label>
-            <div>
-                <input type="checkbox" id="showDailyImage" checked>
-                <label for="showDailyImage">显示每日一图</label>
-            </div>
-            <div>
-                <input type="checkbox" id="useLegacyVersion">
-                <label for="useLegacyVersion">使用历史版本壁纸</label>
+            <label>显示控制</label>
+            <div class="section-toggle">
+                <div class="toggle-item" data-section="poetry">
+                    <input type="checkbox" id="showPoetry" checked>
+                    <label for="showPoetry">诗句</label>
+                </div>
+                <div class="toggle-item" data-section="image">
+                    <input type="checkbox" id="showImage" checked>
+                    <label for="showImage">背景图片</label>
+                </div>
+                <div class="toggle-item" data-section="favorites">
+                    <input type="checkbox" id="showFavorites" checked>
+                    <label for="showFavorites">收藏夹</label>
+                </div>
+                <div class="toggle-item" data-section="platforms">
+                    <input type="checkbox" id="showPlatforms" checked>
+                    <label for="showPlatforms">平台</label>
+                </div>
+                <div class="toggle-item" data-section="login">
+                    <input type="checkbox" id="showLogin" checked>
+                    <label for="showLogin">登录</label>
+                </div>
+                <div class="toggle-item" data-section="easterEgg">
+                    <input type="checkbox" id="showEasterEgg" checked>
+                    <label for="showEasterEgg">彩蛋</label>
+                </div>
             </div>
         </div>
         
@@ -1024,13 +1079,19 @@
             ],
             settings: {
                 showDailyImage: true,
-                useLegacyVersion: false,
                 bgBlur: 12,
                 cardOpacity: 12,
                 animationSpeed: 3,
-                currentVersion: 'full'
+                currentVersion: 'full',
+                showSections: {
+                    poetry: true,
+                    image: true,
+                    favorites: true,
+                    platforms: true,
+                    login: true,
+                    easterEgg: true
+                }
             },
-            legacyWallpaper: 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp',
             
             // 中国法定节假日(农历日期转换为公历近似日期)
             holidays: {
@@ -1084,188 +1145,6 @@
                 }
             },
             
-            // DOS命令
-            dosCommands: {
-                'help': {
-                    description: '显示所有可用命令',
-                    execute: function(output) {
-                        this.appendOutput(output, '可用命令:');
-                        this.appendOutput(output, 'help\t\t- 显示帮助信息');
-                        this.appendOutput(output, 'search [平台] [查询]\t- 使用指定平台搜索');
-                        this.appendOutput(output, 'list\t\t- 列出所有搜索平台');
-                        this.appendOutput(output, 'clear\t\t- 清屏');
-                        this.appendOutput(output, 'exit\t\t- 退出DOS模式');
-                        this.appendOutput(output, 'date\t\t- 显示当前日期');
-                        this.appendOutput(output, 'time\t\t- 显示当前时间');
-                        this.appendOutput(output, 'ver\t\t- 显示版本信息');
-                        this.appendOutput(output, 'festival\t- 显示当前节日信息');
-                        this.appendOutput(output, 'tribute\t\t- 显示致敬名单');
-                        this.appendOutput(output, 'matrix\t\t- 激活矩阵数字雨');
-                        this.appendOutput(output, 'secret\t\t- 神秘命令');
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'search': {
-                    description: '使用指定平台进行搜索',
-                    execute: function(args, output) {
-                        if (args.length < 2) {
-                            this.appendOutput(output, '用法: search [平台] [查询]');
-                            this.appendOutput(output, '例如: search bing 星汉搜索');
-                            return;
-                        }
-                        
-                        const platform = args[0];
-                        const query = args.slice(1).join(' ');
-                        
-                        const foundPlatform = config.platforms.find(p => p.id === platform || p.name.includes(platform));
-                        if (foundPlatform) {
-                            window.open(foundPlatform.search + encodeURIComponent(query), '_blank');
-                            this.appendOutput(output, `正在使用 ${foundPlatform.name} 搜索: ${query}`);
-                        } else {
-                            this.appendOutput(output, `未知平台: ${platform}`);
-                        }
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'list': {
-                    description: '列出所有搜索平台',
-                    execute: function(output) {
-                        this.appendOutput(output, '可用平台:');
-                        config.platforms.forEach(p => {
-                            this.appendOutput(output, `${p.id.padEnd(8)} - ${p.name}`);
-                        });
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'clear': {
-                    description: '清屏',
-                    execute: function(output) {
-                        output.innerHTML = '';
-                    }
-                },
-                'exit': {
-                    description: '退出DOS模式',
-                    execute: function() {
-                        switchVersion('full');
-                    }
-                },
-                'date': {
-                    description: '显示当前日期',
-                    execute: function(output) {
-                        const now = new Date();
-                        this.appendOutput(output, `当前日期: ${now.toLocaleDateString('zh-CN', {year: 'numeric', month: 'long', day: 'numeric'})}`);
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'time': {
-                    description: '显示当前时间',
-                    execute: function(output) {
-                        const now = new Date();
-                        this.appendOutput(output, `当前时间: ${now.toLocaleTimeString('zh-CN')}`);
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'ver': {
-                    description: '显示版本信息',
-                    execute: function(output) {
-                        this.appendOutput(output, '星汉搜索 DOS 模式 v2.0');
-                        this.appendOutput(output, '版权所有 © 2023 zmf');
-                        this.appendOutput(output, '致敬经典命令行界面');
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'festival': {
-                    description: '显示当前节日信息',
-                    execute: function(output) {
-                        const today = new Date();
-                        const holiday = checkHoliday(today);
-                        
-                        if (holiday) {
-                            this.appendOutput(output, `今天是: ${holiday.name}`);
-                            this.appendOutput(output, `${getHolidayGreeting(holiday.id)}`);
-                            
-                            if (config.settings.currentVersion === 'dos') {
-                                activateDOSEgg(holiday.id);
-                            }
-                        } else {
-                            this.appendOutput(output, '今天不是法定节假日');
-                        }
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'tribute': {
-                    description: '显示致敬名单',
-                    execute: function(output) {
-                        this.appendOutput(output, '致敬以下人物和产品:');
-                        this.appendOutput(output, '======================');
-                        this.appendOutput(output, '1. MS-DOS - 经典命令行操作系统');
-                        this.appendOutput(output, '2. Linus Torvalds - Linux之父');
-                        this.appendOutput(output, '3. Dennis Ritchie - C语言之父');
-                        this.appendOutput(output, '4. Bill Gates - Microsoft创始人');
-                        this.appendOutput(output, '5. Steve Jobs - Apple创始人');
-                        this.appendOutput(output, '6. Tim Berners-Lee - 万维网发明者');
-                        this.appendOutput(output, '7. 马化腾 - 腾讯创始人');
-                        this.appendOutput(output, '8. 马云 - 阿里巴巴创始人');
-                        this.appendOutput(output, '9. 李彦宏 - 百度创始人');
-                        this.appendOutput(output, '10. 雷军 - 小米创始人');
-                        this.appendOutput(output, '======================');
-                        this.appendOutput(output, '输入"secret"查看神秘致敬');
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'matrix': {
-                    description: '激活矩阵数字雨',
-                    execute: function(output) {
-                        this.appendOutput(output, '正在激活矩阵数字雨...');
-                        activateDOSMatrix();
-                        setTimeout(() => {
-                            this.appendOutput(output, '输入"exit"退出矩阵模式');
-                        }, 1000);
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                },
-                'secret': {
-                    description: '神秘命令',
-                    execute: function(output) {
-                        this.appendOutput(output, '你发现了秘密命令！');
-                        this.appendOutput(output, '======================');
-                        this.appendOutput(output, '特别致敬:');
-                        this.appendOutput(output, '1. 星汉搜索开发者 zmf');
-                        this.appendOutput(output, '2. 所有开源贡献者');
-                        this.appendOutput(output, '3. 中国互联网先驱们');
-                        this.appendOutput(output, '======================');
-                        this.appendOutput(output, '感谢使用星汉搜索！');
-                        
-                        if (config.settings.currentVersion === 'dos') {
-                            createDOSFirework();
-                            setTimeout(() => createDOSFirework(), 300);
-                            setTimeout(() => createDOSFirework(), 600);
-                        }
-                    },
-                    appendOutput: function(output, text) {
-                        output.innerHTML += '\n' + text;
-                    }
-                }
-            },
-            
             // 中国传统文化相关关键词
             chineseKeywords: {
                 '春节': 'activateSpringFestival',
@@ -1291,10 +1170,12 @@
             signature: document.getElementById('signature'),
             settingsOverlay: document.getElementById('settingsOverlay'),
             settingsPanel: document.getElementById('settingsPanel'),
-            showDailyImage: document.getElementById('showDailyImage'),
-            useLegacyVersion: document.getElementById('useLegacyVersion'),
-            cancelSettings: document.getElementById('cancelSettings'),
-            saveSettings: document.getElementById('saveSettings'),
+            showPoetry: document.getElementById('showPoetry'),
+            showImage: document.getElementById('showImage'),
+            showFavorites: document.getElementById('showFavorites'),
+            showPlatforms: document.getElementById('showPlatforms'),
+            showLogin: document.getElementById('showLogin'),
+            showEasterEgg: document.getElementById('showEasterEgg'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
             cardOpacity: document.getElementById('cardOpacity'),
@@ -1349,7 +1230,7 @@
             const img = new Image();
             img.src = imageUrl;
             img.onload = function() {
-                document.body.style.backgroundImage = config.settings.showDailyImage ? `url(${imageUrl})` : 'none';
+                document.body.style.backgroundImage = config.settings.showSections.image ? `url(${imageUrl})` : 'none';
                 elements.loading.style.display = 'none';
                 document.body.classList.add('fade-in');
             };
@@ -1362,6 +1243,9 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
+            
+            // 应用板块显示设置
+            applySectionSettings();
             
             // 聚焦搜索框
             if (config.settings.currentVersion !== 'dos') {
@@ -1378,13 +1262,30 @@
             checkTodayHoliday();
         }
 
+        // 应用板块显示设置
+        function applySectionSettings() {
+            // 诗句
+            elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
+            
+            // 背景图片
+            document.body.style.backgroundImage = config.settings.showSections.image ? 
+                document.body.style.backgroundImage : 'none';
+            
+            // 平台
+            elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
+            
+            // 登录按钮
+            elements.loginBtn.style.display = config.settings.showSections.login ? 
+                (elements.loginBtn.style.display === 'block' ? 'block' : 'none') : 'none';
+        }
+
         // 预加载资源
         function preloadResources() {
             const images = [
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg',
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg',
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg',
-                config.legacyWallpaper
+                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg'
             ];
             
             images.forEach(src => {
@@ -1402,8 +1303,13 @@
                     config.settings = {...config.settings, ...parsed};
                     
                     // 更新UI控件
-                    elements.showDailyImage.checked = config.settings.showDailyImage;
-                    elements.useLegacyVersion.checked = config.settings.useLegacyVersion;
+                    elements.showPoetry.checked = config.settings.showSections.poetry;
+                    elements.showImage.checked = config.settings.showSections.image;
+                    elements.showFavorites.checked = config.settings.showSections.favorites;
+                    elements.showPlatforms.checked = config.settings.showSections.platforms;
+                    elements.showLogin.checked = config.settings.showSections.login;
+                    elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+                    
                     elements.bgBlur.value = config.settings.bgBlur;
                     elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
                     elements.cardOpacity.value = config.settings.cardOpacity;
@@ -1458,8 +1364,14 @@
         // 保存设置
         function saveSettings() {
             config.settings = {
-                showDailyImage: elements.showDailyImage.checked,
-                useLegacyVersion: elements.useLegacyVersion.checked,
+                showSections: {
+                    poetry: elements.showPoetry.checked,
+                    image: elements.showImage.checked,
+                    favorites: elements.showFavorites.checked,
+                    platforms: elements.showPlatforms.checked,
+                    login: elements.showLogin.checked,
+                    easterEgg: elements.showEasterEgg.checked
+                },
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
@@ -1472,6 +1384,9 @@
             document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
             document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
             updateAnimationSpeed();
+            
+            // 应用板块显示设置
+            applySectionSettings();
             
             closeSettings();
         }
@@ -1513,10 +1428,6 @@
 
         // 获取壁纸
         async function getWallpaper() {
-            if (config.settings.useLegacyVersion) {
-                return config.legacyWallpaper;
-            }
-            
             const width = window.screen.width;
             const height = window.screen.height;
             
@@ -1537,6 +1448,11 @@
 
         // 显示随机一言
         async function showRandomHitokoto() {
+            if (!config.settings.showSections.poetry) {
+                elements.poetry.style.display = 'none';
+                return;
+            }
+
             if (hitokotoCache) {
                 updatePoetryDisplay(hitokotoCache);
                 return;
@@ -1572,8 +1488,9 @@
 
         // 更新诗词显示
         function updatePoetryDisplay(data) {
-            const formatted = `<span class="verse">${data.hitokoto}</span><br><span class="author">—— ${data.from}</span>`;
+            const formatted = `<span class="verse">${data.hitokoto}</span><span class="author">—— ${data.from}</span>`;
             elements.poetry.innerHTML = formatted;
+            elements.poetry.style.display = 'block';
         }
 
         // 显示搜索建议
@@ -1722,6 +1639,11 @@
 
         // 渲染平台网格
         function renderPlatforms() {
+            if (!config.settings.showSections.platforms) {
+                elements.platformGrid.style.display = 'none';
+                return;
+            }
+
             elements.platformGrid.innerHTML = config.platforms.map(platform => `
                 <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
                      data-id="${platform.id}"
@@ -1738,14 +1660,14 @@
                     card.classList.add('active');
 
                     selectedPlatform = card.dataset.id;
-                    const showLogin = card.dataset.login;
+                    const showLogin = card.dataset.login && config.settings.showSections.login;
                     elements.loginBtn.style.display = showLogin ? 'block' : 'none';
                 });
             });
 
             // 默认显示登录按钮（如果必应需要）
             const bingPlatform = config.platforms.find(p => p.id === 'bing');
-            if (bingPlatform && bingPlatform.login) {
+            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
                 elements.loginBtn.style.display = 'block';
             }
         }
@@ -1774,6 +1696,8 @@
 
         // 初始化彩蛋
         function initEasterEggs() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 中国传统文化关键词监听
             elements.searchInput.addEventListener('input', function() {
                 if (config.settings.currentVersion === 'no-easter-egg') return;
@@ -1812,6 +1736,8 @@
 
         // 检查今天是否是节日
         function checkTodayHoliday() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             const today = new Date();
             const holiday = checkHoliday(today);
             if (holiday && config.settings.currentVersion !== 'no-easter-egg') {
@@ -1884,6 +1810,8 @@
 
         // 节日彩蛋激活函数
         function activateSpringFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 春节彩蛋 - 显示灯笼和烟花
             activateLanterns();
             
@@ -1899,23 +1827,31 @@
         }
         
         function activateLanternFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 元宵节彩蛋 - 显示灯笼
             activateLanterns();
             alert('元宵节快乐！吃汤圆，赏花灯！');
         }
         
         function activateQingmingFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 清明节彩蛋 - 显示柳枝
             alert('清明节安康！缅怀先人，踏青赏春！');
         }
         
         function activateDragonBoatFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 端午节彩蛋 - 显示龙舟
             activateDragon();
             alert('端午节快乐！粽香四溢，龙舟竞渡！');
         }
         
         function activateMidAutumnFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 中秋节彩蛋 - 显示月亮和月饼
             alert('中秋节快乐！月圆人圆，阖家幸福！');
             
@@ -1939,6 +1875,8 @@
         }
         
         function activateNationalDay() {
+            if (!config.settings.showSections.easterEgg) return;
+            
             // 国庆节彩蛋 - 显示国旗和烟花
             alert('国庆节快乐！繁荣昌盛，国泰民安！');
             
@@ -2270,6 +2208,15 @@
             // 源代码查看器关闭按钮
             elements.sourceClose.addEventListener('click', function() {
                 elements.sourceViewer.style.display = 'none';
+            });
+            
+            // 板块显示切换
+            document.querySelectorAll('.toggle-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const checkbox = this.querySelector('input');
+                    checkbox.checked = !checkbox.checked;
+                    this.classList.toggle('active');
+                });
             });
         }
 
