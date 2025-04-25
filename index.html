@@ -18,9 +18,12 @@
             --云纹: rgba(255, 255, 255, 0.15);
             --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
             --primary-color: #89c7b6;
+            --accent-color: #4CAF50;
+            --win11-accent: #0078D7;
             --bg-blur: 12px;
             --card-opacity: 0.12;
             --animation-speed: 0.3s;
+            --win11-animation-curve: cubic-bezier(0.1, 0.9, 0.2, 1);
         }
 
         body {
@@ -73,7 +76,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-sizing: border-box;
             text-align: center;
-            transition: transform var(--animation-speed) ease;
+            transition: transform var(--animation-speed) var(--win11-animation-curve);
         }
 
         .search-container {
@@ -91,7 +94,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
             color: var(--墨色);
             box-sizing: border-box;
             font-family: var(--禅意-font);
@@ -114,7 +117,7 @@
             font-size: 1.5rem;
             color: var(--墨色);
             padding: 0.5rem;
-            transition: transform var(--animation-speed) ease;
+            transition: transform var(--animation-speed) var(--win11-animation-curve);
         }
 
         body.animated .search-btn:hover {
@@ -133,7 +136,7 @@
             color: var(--墨色);
             padding: 0.5rem;
             display: none;
-            transition: transform var(--animation-speed) ease;
+            transition: transform var(--animation-speed) var(--win11-animation-curve);
         }
 
         body.animated .login-btn:hover {
@@ -147,7 +150,7 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
-            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
+            transition: transform var(--animation-speed) var(--win11-animation-curve), opacity var(--animation-speed) var(--win11-animation-curve);
             position: relative;
             z-index: 1;
         }
@@ -165,7 +168,7 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 1rem;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
             text-align: center;
             backdrop-filter: blur(5px);
             display: flex;
@@ -185,7 +188,7 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
             opacity: 0;
-            transition: opacity var(--animation-speed) ease;
+            transition: opacity var(--animation-speed) var(--win11-animation-curve);
         }
 
         body.animated .platform-card:hover::before {
@@ -206,7 +209,7 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
             color: var(--墨色);
-            transition: transform var(--animation-speed) ease;
+            transition: transform var(--animation-speed) var(--win11-animation-curve);
         }
 
         body.animated .platform-card:hover .platform-icon {
@@ -251,7 +254,7 @@
             font-size: 1.2rem;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             line-height: 1.6;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
         }
 
         .verse {
@@ -285,7 +288,7 @@
             overflow-y: auto;
             transform-origin: top center;
             opacity: 0;
-            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.25s var(--win11-animation-curve);
             backdrop-filter: blur(5px);
         }
 
@@ -297,7 +300,7 @@
         .suggestion {
             padding: 0.8rem 1.2rem;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             text-align: left;
             white-space: nowrap;
@@ -330,7 +333,7 @@
             user-select: none;
             padding: 5px;
             z-index: 10;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
         }
 
         body.animated .signature:hover {
@@ -349,7 +352,7 @@
             justify-content: center;
             align-items: center;
             z-index: 999;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s var(--win11-animation-curve);
         }
 
         .spinner {
@@ -389,7 +392,7 @@
             max-height: 80vh;
             overflow-y: auto;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s var(--win11-animation-curve);
         }
 
         body.animated .settings-panel.show {
@@ -435,7 +438,7 @@
             background: rgba(137, 199, 182, 0.8);
             color: white;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
             font-family: var(--禅意-font);
         }
 
@@ -463,7 +466,7 @@
             z-index: 999;
             display: none;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s var(--win11-animation-curve);
         }
 
         body.animated .overlay.show {
@@ -483,7 +486,7 @@
             background: rgba(0, 0, 0, 0.05);
             border-radius: 0.8rem;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
+            transition: all var(--animation-speed) var(--win11-animation-curve);
             position: relative;
         }
 
@@ -520,7 +523,7 @@
             z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity var(--animation-speed) ease;
+            transition: opacity var(--animation-speed) var(--win11-animation-curve);
         }
 
         .version-option:hover .version-tooltip {
@@ -587,7 +590,7 @@
             }
         }
 
-        /* 搜索动画效果 */
+        /* 搜索动画效果 - Win11风格 */
         .search-animation {
             position: fixed;
             top: 0;
@@ -601,7 +604,7 @@
             align-items: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.5s var(--win11-animation-curve);
         }
         
         .search-animation.active {
@@ -612,7 +615,7 @@
             text-align: center;
             transform: translateY(20px);
             opacity: 0;
-            transition: all 0.5s ease;
+            transition: all 0.5s var(--win11-animation-curve);
         }
         
         .search-animation.active .search-animation-content {
@@ -623,7 +626,8 @@
         .search-animation-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
-            color: var(--primary-color);
+            color: var(--win11-accent);
+            animation: pulse 2s infinite var(--win11-animation-curve);
         }
         
         .search-animation-text {
@@ -631,7 +635,13 @@
             color: var(--墨色);
         }
 
-        /* 流畅动画 */
+        /* Win11风格动画 */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -654,7 +664,71 @@
         
         /* 流畅过渡 */
         .fluent-transition {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s var(--win11-animation-curve);
+        }
+
+        /* 开关控件 - Win11风格 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-left: 10px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--win11-accent);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* 设置项布局 */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-control-container {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -693,49 +767,89 @@
         <div class="setting-item">
             <label>显示控制</label>
             <div class="section-toggle">
-                <div class="toggle-item" data-section="poetry">
-                    <input type="checkbox" id="showPoetry" checked>
-                    <label for="showPoetry">诗句</label>
+                <div class="setting-row">
+                    <span class="setting-label">诗句</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showPoetry" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="toggle-item" data-section="image">
-                    <input type="checkbox" id="showImage" checked>
-                    <label for="showImage">背景图片</label>
+                <div class="setting-row">
+                    <span class="setting-label">背景图片</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showImage" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="toggle-item" data-section="platforms">
-                    <input type="checkbox" id="showPlatforms" checked>
-                    <label for="showPlatforms">平台</label>
+                <div class="setting-row">
+                    <span class="setting-label">平台</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showPlatforms" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="toggle-item" data-section="login">
-                    <input type="checkbox" id="showLogin" checked>
-                    <label for="showLogin">登录</label>
+                <div class="setting-row">
+                    <span class="setting-label">登录</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showLogin" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="toggle-item" data-section="easterEgg">
-                    <input type="checkbox" id="showEasterEgg" checked>
-                    <label for="showEasterEgg">彩蛋</label>
+                <div class="setting-row">
+                    <span class="setting-label">彩蛋</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showEasterEgg" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="toggle-item" data-section="animation">
-                    <input type="checkbox" id="showAnimation" checked>
-                    <label for="showAnimation">搜索动画</label>
+                <div class="setting-row">
+                    <span class="setting-label">搜索动画</span>
+                    <div class="setting-control-container">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showAnimation" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
         
         <div class="setting-item">
-            <label for="bgBlur">背景模糊度</label>
-            <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
-            <span id="bgBlurValue">12px</span>
+            <div class="setting-row">
+                <span class="setting-label">背景模糊度: <span id="bgBlurValue">12px</span></span>
+                <input type="range" id="bgBlur" min="0" max="20" value="12" step="1" class="win11-slider">
+            </div>
         </div>
         
         <div class="setting-item">
-            <label for="cardOpacity">卡片透明度</label>
-            <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
-            <span id="cardOpacityValue">12%</span>
+            <div class="setting-row">
+                <span class="setting-label">卡片透明度: <span id="cardOpacityValue">12%</span></span>
+                <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1" class="win11-slider">
+            </div>
         </div>
         
         <div class="setting-item">
-            <label for="animationSpeed">动画速度</label>
-            <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
-            <span id="animationSpeedValue">中速</span>
+            <div class="setting-row">
+                <span class="setting-label">动画速度</span>
+                <select id="animationSpeed" class="setting-control">
+                    <option value="0">关闭</option>
+                    <option value="1">极慢</option>
+                    <option value="2">慢速</option>
+                    <option value="3" selected>中速</option>
+                    <option value="4">快速</option>
+                    <option value="5">极快</option>
+                </select>
+            </div>
         </div>
         
         <div class="settings-actions">
@@ -921,7 +1035,9 @@
             cardOpacityValue: document.getElementById('cardOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
-            searchAnimation: document.getElementById('searchAnimation')
+            searchAnimation: document.getElementById('searchAnimation'),
+            cancelSettings: document.getElementById('cancelSettings'),
+            saveSettings: document.getElementById('saveSettings')
         };
 
         // 状态变量
@@ -1226,8 +1342,12 @@
         function performSearch(query) {
             if (!query) return;
             
-            // 检查是否是URL
-            if (isValidUrl(query)) {
+            query = query.trim();
+            
+            // 更严格的URL检查
+            const isUrl = isValidUrl(query);
+            
+            if (isUrl) {
                 navigateToUrl(query);
                 return;
             }
@@ -1260,15 +1380,20 @@
 
         // 检查是否是有效的URL
         function isValidUrl(string) {
+            if (!string || !string.trim()) return false;
+            
+            // 排除纯空格或常见搜索词
+            if (string.trim().length < 5 || 
+                string.indexOf(' ') >= 0 || 
+                string.indexOf('.') === -1) {
+                return false;
+            }
+            
             try {
-                // 检查是否包含协议
-                if (!string.match(/^https?:\/\//i)) {
-                    // 如果没有协议，尝试添加http://
-                    string = 'http://' + string;
-                }
-                new URL(string);
+                // 尝试创建URL对象验证
+                new URL(string.startsWith('http') ? string : `http://${string}`);
                 return true;
-            } catch (_) {
+            } catch (e) {
                 return false;
             }
         }
@@ -1701,17 +1826,23 @@
             // 背景模糊度调整
             elements.bgBlur.addEventListener('input', function() {
                 elements.bgBlurValue.textContent = `${this.value}px`;
+                document.documentElement.style.setProperty('--bg-blur', `${this.value}px`);
             });
 
             // 卡片透明度调整
             elements.cardOpacity.addEventListener('input', function() {
                 elements.cardOpacityValue.textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--card-opacity', `${this.value/100}`);
             });
 
             // 动画速度调整
-            elements.animationSpeed.addEventListener('input', function() {
+            elements.animationSpeed.addEventListener('change', function() {
                 updateAnimationSpeedText();
+                updateAnimationSpeed();
             });
+
+            // 署名点击事件
+            elements.signature.addEventListener('click', handleSignatureClick);
         }
 
         // 初始化
