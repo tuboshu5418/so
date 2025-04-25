@@ -146,7 +146,7 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
-            transition: transform var(--animation-speed) ease;
+            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
             position: relative;
             z-index: 1;
         }
@@ -277,8 +277,11 @@
         #suggestions {
             position: absolute;
             top: calc(100% + 10px);
-            left: 0;
-            width: 100%;
+            left: 50%;
+            transform: translateX(-50%) scaleY(0.9);
+            width: auto;
+            min-width: 100%;
+            max-width: min(800px, 90vw);
             background: rgba(255, 255, 255, 0.98);
             border-radius: 1rem;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -288,13 +291,13 @@
             max-height: 50vh;
             overflow-y: auto;
             transform-origin: top center;
-            transform: scaleY(0.9);
             opacity: 0;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
         }
 
         body.animated #suggestions.show {
-            transform: scaleY(1);
+            transform: translateX(-50%) scaleY(1);
             opacity: 1;
         }
 
@@ -304,6 +307,7 @@
             transition: all var(--animation-speed) ease;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             text-align: left;
+            white-space: nowrap;
         }
 
         .suggestion:first-child {
@@ -582,6 +586,11 @@
                 transform: translateX(-50%);
                 width: 80%;
                 margin-left: 0;
+            }
+            
+            #suggestions {
+                width: 100%;
+                max-width: 100%;
             }
         }
 
@@ -872,6 +881,143 @@
         .toggle-item input {
             margin-right: 0.5rem;
         }
+        
+        /* 纸飞机动画 */
+        .paper-plane {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2389c7b6"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 1000;
+            pointer-events: none;
+            transform-origin: center;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        
+        /* 捐赠按钮 */
+        .donate-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 99, 71, 0.8);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            border: none;
+            cursor: pointer;
+            font-family: var(--禅意-font);
+            z-index: 10;
+            transition: all var(--animation-speed) ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        body.animated .donate-btn:hover {
+            background: rgba(255, 99, 71, 1);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 捐赠面板 */
+        .donate-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(90vw, 400px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            color: var(--墨色);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .donate-panel.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .donate-panel h3 {
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        .donate-methods {
+            display: flex;
+            justify-content: space-around;
+            margin: 1.5rem 0;
+        }
+        
+        .donate-method {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .donate-method:hover {
+            transform: scale(1.05);
+        }
+        
+        .donate-method img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 0.5rem;
+        }
+        
+        .donate-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--墨色);
+        }
+        
+        /* 平台卡片移动动画 */
+        .platform-card.moving-left {
+            transform: translateX(-50%) scale(0.9);
+            opacity: 0.5;
+        }
+        
+        .platform-card.moving-right {
+            transform: translateX(50%) scale(0.9);
+            opacity: 0.5;
+        }
+        
+        /* 流畅动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 流畅过渡 */
+        .fluent-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
 </head>
 
@@ -890,6 +1036,7 @@
         <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
+    <button class="donate-btn" id="donateBtn">支持开发者</button>
 
     <!-- 设置面板 -->
     <div class="overlay" id="settingsOverlay"></div>
@@ -922,6 +1069,14 @@
                 <div class="toggle-item" data-section="easterEgg">
                     <input type="checkbox" id="showEasterEgg" checked>
                     <label for="showEasterEgg">彩蛋</label>
+                </div>
+                <div class="toggle-item" data-section="donate">
+                    <input type="checkbox" id="showDonate" checked>
+                    <label for="showDonate">捐赠按钮</label>
+                </div>
+                <div class="toggle-item" data-section="animation">
+                    <input type="checkbox" id="showAnimation" checked>
+                    <label for="showAnimation">搜索动画</label>
                 </div>
             </div>
         </div>
@@ -972,6 +1127,23 @@
         <div class="settings-actions">
             <button class="settings-btn secondary" id="cancelSettings">取消</button>
             <button class="settings-btn" id="saveSettings">保存设置</button>
+        </div>
+    </div>
+
+    <!-- 捐赠面板 -->
+    <div class="donate-panel" id="donatePanel">
+        <span class="donate-close" id="donateClose">×</span>
+        <h3>感谢您的支持</h3>
+        <p style="text-align: center; margin-bottom: 1.5rem;">您的支持是我持续开发的动力</p>
+        <div class="donate-methods">
+            <div class="donate-method" id="wechatPay">
+                <img src="https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/wechat-pay.png" alt="微信支付">
+                <div>微信支付</div>
+            </div>
+            <div class="donate-method" id="alipay">
+                <img src="https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/alipay.png" alt="支付宝">
+                <div>支付宝</div>
+            </div>
         </div>
     </div>
 
@@ -1089,7 +1261,9 @@
                     favorites: true,
                     platforms: true,
                     login: true,
-                    easterEgg: true
+                    easterEgg: true,
+                    donate: true,
+                    animation: true
                 }
             },
             
@@ -1155,6 +1329,67 @@
                 '十二生肖': 'activateZodiac',
                 '福': 'activateFuCharacter',
                 '中国结': 'activateChineseKnot'
+            },
+            
+            // DOS命令
+            dosCommands: {
+                help: {
+                    description: '显示帮助信息',
+                    execute: function(args, output) {
+                        output.innerHTML += '\n可用命令:';
+                        output.innerHTML += '\nhelp - 显示帮助';
+                        output.innerHTML += '\nsearch [内容] - 执行搜索';
+                        output.innerHTML += '\nclear - 清屏';
+                        output.innerHTML += '\nversion - 显示版本信息';
+                        output.innerHTML += '\nsettings - 打开设置';
+                        output.innerHTML += '\nexit - 退出DOS模式';
+                    }
+                },
+                search: {
+                    description: '执行搜索',
+                    execute: function(args, output) {
+                        if (args.length === 0) {
+                            output.innerHTML += '\n请输入搜索内容';
+                            return;
+                        }
+                        const query = args.join(' ');
+                        output.innerHTML += `\n正在搜索: ${query}`;
+                        setTimeout(() => {
+                            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                        }, 500);
+                    }
+                },
+                clear: {
+                    description: '清屏',
+                    execute: function(args, output) {
+                        output.innerHTML = '';
+                    }
+                },
+                version: {
+                    description: '显示版本信息',
+                    execute: function(args, output) {
+                        output.innerHTML += '\n星汉搜索 DOS 模式 v2.0';
+                        output.innerHTML += '\nCopyright © 2023 zmf. 保留所有权利。';
+                    }
+                },
+                settings: {
+                    description: '打开设置',
+                    execute: function(args, output) {
+                        output.innerHTML += '\n正在打开设置...';
+                        setTimeout(() => {
+                            openSettings();
+                        }, 500);
+                    }
+                },
+                exit: {
+                    description: '退出DOS模式',
+                    execute: function(args, output) {
+                        output.innerHTML += '\n正在退出DOS模式...';
+                        setTimeout(() => {
+                            switchVersion('full');
+                        }, 500);
+                    }
+                }
             }
         };
 
@@ -1176,6 +1411,8 @@
             showPlatforms: document.getElementById('showPlatforms'),
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
+            showDonate: document.getElementById('showDonate'),
+            showAnimation: document.getElementById('showAnimation'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
             cardOpacity: document.getElementById('cardOpacity'),
@@ -1193,7 +1430,12 @@
             sourceViewer: document.getElementById('sourceViewer'),
             sourceCode: document.getElementById('sourceCode'),
             sourceClose: document.getElementById('sourceClose'),
-            dosMatrix: document.getElementById('dosMatrix')
+            dosMatrix: document.getElementById('dosMatrix'),
+            donateBtn: document.getElementById('donateBtn'),
+            donatePanel: document.getElementById('donatePanel'),
+            donateClose: document.getElementById('donateClose'),
+            wechatPay: document.getElementById('wechatPay'),
+            alipay: document.getElementById('alipay')
         };
 
         // 状态变量
@@ -1216,6 +1458,9 @@
             
             // 加载设置
             loadSettings();
+            
+            // 注册Service Worker
+            registerServiceWorker();
             
             // 等待字体加载
             await document.fonts.ready;
@@ -1262,6 +1507,19 @@
             checkTodayHoliday();
         }
 
+        // 注册Service Worker
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker 注册失败:', error);
+                    });
+            }
+        }
+
         // 应用板块显示设置
         function applySectionSettings() {
             // 诗句
@@ -1277,6 +1535,9 @@
             // 登录按钮
             elements.loginBtn.style.display = config.settings.showSections.login ? 
                 (elements.loginBtn.style.display === 'block' ? 'block' : 'none') : 'none';
+            
+            // 捐赠按钮
+            elements.donateBtn.style.display = config.settings.showSections.donate ? 'block' : 'none';
         }
 
         // 预加载资源
@@ -1285,7 +1546,9 @@
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg',
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg',
                 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg',
-                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg'
+                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg',
+                'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/wechat-pay.png',
+                'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/alipay.png'
             ];
             
             images.forEach(src => {
@@ -1309,6 +1572,8 @@
                     elements.showPlatforms.checked = config.settings.showSections.platforms;
                     elements.showLogin.checked = config.settings.showSections.login;
                     elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+                    elements.showDonate.checked = config.settings.showSections.donate;
+                    elements.showAnimation.checked = config.settings.showSections.animation;
                     
                     elements.bgBlur.value = config.settings.bgBlur;
                     elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
@@ -1370,7 +1635,9 @@
                     favorites: elements.showFavorites.checked,
                     platforms: elements.showPlatforms.checked,
                     login: elements.showLogin.checked,
-                    easterEgg: elements.showEasterEgg.checked
+                    easterEgg: elements.showEasterEgg.checked,
+                    donate: elements.showDonate.checked,
+                    animation: elements.showAnimation.checked
                 },
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
@@ -1510,6 +1777,9 @@
                         <div class="suggestion">${suggestion.Txt}</div>
                     `).join('');
 
+                    // 根据建议内容调整宽度
+                    adjustSuggestionWidth(data.AS.Results[0].Suggests);
+
                     // 添加建议点击事件
                     document.querySelectorAll('.suggestion').forEach(item => {
                         item.addEventListener('click', function() {
@@ -1533,6 +1803,21 @@
             document.body.appendChild(script);
         }
 
+        // 根据建议内容调整宽度
+        function adjustSuggestionWidth(suggestions) {
+            if (!suggestions || suggestions.length === 0) return;
+            
+            // 找到最长的建议
+            const maxLength = Math.max(...suggestions.map(s => s.Txt.length));
+            // 设置最小宽度为搜索框宽度
+            const minWidth = elements.searchInput.offsetWidth;
+            // 根据字符数计算宽度
+            const charWidth = 10; // 每个字符大约10px
+            const calculatedWidth = Math.max(minWidth, maxLength * charWidth + 40); // 40px为padding
+            
+            elements.suggestions.style.width = `${calculatedWidth}px`;
+        }
+
         // 显示建议框
         function showSuggestionsUI() {
             elements.suggestions.style.display = 'block';
@@ -1554,20 +1839,39 @@
 
         // 调整平台卡片位置
         function adjustPlatformPosition() {
+            if (!config.settings.showSections.animation) return;
+            
             if (window.innerWidth > 767) { // 只在横屏下调整
-                elements.platformGrid.style.transform = 'translateY(20px)';
-                elements.container.style.transform = 'translateY(-50px)';
+                const cards = document.querySelectorAll('.platform-card');
+                cards.forEach((card, index) => {
+                    // 奇数向左移动，偶数向右移动
+                    if (index % 2 === 0) {
+                        card.classList.add('moving-left');
+                    } else {
+                        card.classList.add('moving-right');
+                    }
+                });
             }
         }
 
         // 重置平台卡片位置
         function resetPlatformPosition() {
-            elements.platformGrid.style.transform = '';
-            elements.container.style.transform = '';
+            const cards = document.querySelectorAll('.platform-card');
+            cards.forEach(card => {
+                card.classList.remove('moving-left', 'moving-right');
+            });
         }
 
         // 执行搜索
         function performSearch(query) {
+            if (!query) return;
+            
+            // 检查是否是URL
+            if (isValidUrl(query)) {
+                navigateToUrl(query);
+                return;
+            }
+            
             if (!selectedPlatform) {
                 alert('请先选择搜索平台');
                 return;
@@ -1576,27 +1880,69 @@
             const platform = config.platforms.find(p => p.id === selectedPlatform);
             if (platform) {
                 // 添加搜索动画
-                if (config.settings.currentVersion !== 'no-animation') {
-                    elements.container.classList.add('will-change');
-                    elements.container.style.transform = 'scale(0.95)';
-                    elements.container.style.opacity = '0.8';
-                }
-                
-                setTimeout(() => {
+                if (config.settings.showSections.animation && config.settings.currentVersion !== 'no-animation') {
+                    createPaperPlane(query);
+                } else {
+                    // 没有动画时直接打开
                     window.open(platform.search + encodeURIComponent(query), '_blank');
-                    
-                    // 恢复动画
-                    if (config.settings.currentVersion !== 'no-animation') {
-                        setTimeout(() => {
-                            elements.container.style.transform = '';
-                            elements.container.style.opacity = '';
-                            setTimeout(() => {
-                                elements.container.classList.remove('will-change');
-                            }, 300);
-                        }, 100);
-                    }
-                }, 200);
+                }
             }
+        }
+
+        // 检查是否是有效的URL
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // 导航到URL
+        function navigateToUrl(url) {
+            // 确保URL有协议
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            // 添加导航动画
+            if (config.settings.showSections.animation && config.settings.currentVersion !== 'no-animation') {
+                createPaperPlane(url);
+            } else {
+                // 没有动画时直接打开
+                window.open(url, '_blank');
+            }
+        }
+
+        // 创建纸飞机动画
+        function createPaperPlane(content) {
+            const plane = document.createElement('div');
+            plane.className = 'paper-plane';
+            plane.style.left = `${elements.searchInput.offsetLeft + elements.searchInput.offsetWidth / 2 - 20}px`;
+            plane.style.top = `${elements.searchInput.offsetTop + elements.searchInput.offsetHeight / 2 - 20}px`;
+            document.body.appendChild(plane);
+            
+            // 获取目标位置（右上角）
+            const targetX = window.innerWidth - 50;
+            const targetY = 50;
+            
+            // 动画
+            setTimeout(() => {
+                plane.style.transform = `translate(${targetX - parseFloat(plane.style.left)}px, ${targetY - parseFloat(plane.style.top)}px) rotate(45deg)`;
+                plane.style.opacity = '0';
+                
+                // 动画结束后打开链接并移除飞机
+                setTimeout(() => {
+                    const platform = config.platforms.find(p => p.id === selectedPlatform);
+                    if (platform && !isValidUrl(content)) {
+                        window.open(platform.search + encodeURIComponent(content), '_blank');
+                    } else if (isValidUrl(content)) {
+                        window.open(content, '_blank');
+                    }
+                    plane.remove();
+                }, 500);
+            }, 10);
         }
 
         // 处理DOS命令
@@ -1691,6 +2037,28 @@
             setTimeout(() => {
                 elements.settingsOverlay.style.display = 'none';
                 elements.settingsPanel.style.display = 'none';
+            }, 300);
+        }
+        
+        // 打开捐赠面板
+        function openDonatePanel() {
+            elements.settingsOverlay.style.display = 'block';
+            elements.donatePanel.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.settingsOverlay.classList.add('show');
+                elements.donatePanel.classList.add('show');
+            }, 10);
+        }
+        
+        // 关闭捐赠面板
+        function closeDonatePanel() {
+            elements.settingsOverlay.classList.remove('show');
+            elements.donatePanel.classList.remove('show');
+            
+            setTimeout(() => {
+                elements.settingsOverlay.style.display = 'none';
+                elements.donatePanel.style.display = 'none';
             }, 300);
         }
 
@@ -2217,6 +2585,20 @@
                     checkbox.checked = !checkbox.checked;
                     this.classList.toggle('active');
                 });
+            });
+            
+            // 捐赠按钮事件
+            elements.donateBtn.addEventListener('click', openDonatePanel);
+            elements.donateClose.addEventListener('click', closeDonatePanel);
+            elements.settingsOverlay.addEventListener('click', closeDonatePanel);
+            
+            // 捐赠方式点击
+            elements.wechatPay.addEventListener('click', function() {
+                alert('感谢您的支持！请使用微信扫描二维码完成捐赠。');
+            });
+            
+            elements.alipay.addEventListener('click', function() {
+                alert('感谢您的支持！请使用支付宝扫描二维码完成捐赠。');
             });
         }
 
