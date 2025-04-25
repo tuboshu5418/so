@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>星汉搜索 - 诗意探索</title>
-    <!-- 预加载关键资源 -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" as="style">
-    <link rel="preload" href="https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg" as="image">
+    <!-- 加载Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --墨色: #2c3e50;
@@ -214,20 +215,12 @@
 
         /* 平台图标颜色 */
         .fa-google { color: #4285F4; }
-        .fa-bing { color: #00809D; }
+        .fa-microsoft { color: #00809D; }
         .fa-github { color: #181717; }
         .fa-youtube { color: #FF0000; }
         .fa-bilibili { color: #00A1D6; }
         .fa-zhihu { color: #0084FF; }
-        .fa-baidu { 
-            display: inline-block;
-            width: 1em;
-            height: 1em;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="%232932E1" d="M512 1024C229.23 1024 0 794.77 0 512S229.23 0 512 0s512 229.23 512 512-229.23 512-512 512zm0-960C264.96 64 64 264.96 64 512s200.96 448 448 448 448-200.96 448-448S759.04 64 512 64zm-64 672h128v-384H448v384zm320-192c0 70.4-57.6 128-128 128h-64v64h128v64H448v-256h192c70.4 0 128 57.6 128 128z"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
+        .fa-baidu { color: #2932E1; }
         .fa-tiktok { color: #000000; }
         .fa-weibo { color: #DF2029; }
         .fa-stack-overflow { color: #F48024; }
@@ -594,405 +587,50 @@
             }
         }
 
-        /* DOS模式样式 */
-        .dos-mode {
-            display: none;
+        /* 搜索动画效果 */
+        .search-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 15px;
-            box-sizing: border-box;
-            z-index: 10000;
-            overflow: auto;
-        }
-
-        .dos-output-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            max-height: calc(100vh - 60px);
-        }
-
-        .dos-output {
-            white-space: pre-wrap;
-            word-break: break-all;
-            line-height: 1.4;
-        }
-
-        .dos-prompt {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            right: 15px;
-            background: #000;
-            padding: 5px 0;
-            display: flex;
-            align-items: center;
-        }
-
-        .dos-cursor {
-            animation: blink 1s infinite;
-            margin-right: 5px;
-        }
-
-        .dos-input {
-            background: transparent;
-            border: none;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            flex-grow: 1;
-            outline: none;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        /* 彩蛋相关样式 */
-        .lantern {
-            position: fixed;
-            width: 60px;
-            height: 80px;
-            background: radial-gradient(circle at center, #e74c3c 0%, #c0392b 100%);
-            border-radius: 50% 50% 10px 10px;
-            box-shadow: 0 0 20px #e74c3c;
-            z-index: 10000;
-            display: none;
-            animation: lantern-swing 3s infinite ease-in-out;
-            transform-origin: top center;
-        }
-
-        .lantern::before {
-            content: '福';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: gold;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .lantern::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 10px;
-            background: gold;
-            border-radius: 50%;
-        }
-
-        @keyframes lantern-swing {
-            0%, 100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-
-        .dragon {
-            position: fixed;
-            width: 100px;
-            height: 100px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23e74c3c" d="M50,10 C60,20 70,15 80,25 C90,35 85,45 95,55 C105,65 95,75 85,85 C75,95 65,90 55,80 C45,70 35,75 25,65 C15,55 20,45 10,35 C0,25 10,15 20,5 C30,-5 40,0 50,10 Z"/></svg>');
-            background-size: contain;
-            z-index: 10000;
-            display: none;
-            animation: dragon-move 10s linear infinite;
-        }
-
-        @keyframes dragon-move {
-            0% { transform: translateX(-100px) translateY(50vh); }
-            100% { transform: translateX(100vw) translateY(0); }
-        }
-
-        .firework {
-            position: fixed;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            box-shadow: 0 0 10px 5px rgba(255, 200, 0, 0.7);
-            z-index: 10000;
-            display: none;
-            animation: firework-explode 1s ease-out forwards;
-        }
-
-        @keyframes firework-explode {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(20); opacity: 0; }
-        }
-
-        .great-wall {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30px;
-            background: linear-gradient(to right, #8B4513, #A0522D, #8B4513);
-            z-index: 10000;
-            display: none;
-        }
-
-        .great-wall::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: repeating-linear-gradient(90deg, #8B4513, #8B4513 10px, #A0522D 10px, #A0522D 20px);
-        }
-
-        .chinese-zodiac {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background: rgba(0, 0, 0, 0.8);
-            border-radius: 50%;
-            z-index: 10000;
-            display: none;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .zodiac-animal {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: gold;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            animation: zodiac-rotate 20s linear infinite;
-        }
-
-        @keyframes zodiac-rotate {
-            0% { transform: rotate(0deg) translate(150px) rotate(0deg); }
-            100% { transform: rotate(360deg) translate(150px) rotate(-360deg); }
-        }
-
-        /* 源代码查看器 */
-        .source-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            box-sizing: border-box;
-            z-index: 10000;
-            overflow: auto;
-            display: none;
-        }
-
-        .source-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .source-close {
-            color: #0f0;
-            cursor: pointer;
-            font-size: 1.5rem;
-        }
-
-        /* 性能优化 */
-        .will-change {
-            will-change: transform, opacity;
-        }
-
-        /* DOS彩蛋样式 */
-        .dos-matrix {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            z-index: 10000;
-            display: none;
-            overflow: hidden;
-        }
-
-        .dos-matrix-column {
-            display: inline-block;
-            color: #0f0;
-            writing-mode: vertical-rl;
-            text-orientation: mixed;
-            height: 100%;
-            position: relative;
-        }
-
-        .dos-matrix-char {
-            opacity: 0;
-            animation: dos-matrix-fall linear infinite;
-        }
-
-        @keyframes dos-matrix-fall {
-            0% { transform: translateY(-100px); opacity: 0; }
-            5% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(100vh); opacity: 0; }
-        }
-        
-        /* 板块显示控制 */
-        .section-toggle {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .toggle-item {
-            display: flex;
-            align-items: center;
-            background: rgba(0, 0, 0, 0.05);
-            padding: 0.5rem 1rem;
-            border-radius: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .toggle-item:hover {
-            background: rgba(137, 199, 182, 0.15);
-        }
-        
-        .toggle-item.active {
-            background: rgba(137, 199, 182, 0.2);
-        }
-        
-        .toggle-item input {
-            margin-right: 0.5rem;
-        }
-        
-        /* 纸飞机动画 */
-        .paper-plane {
-            position: fixed;
-            width: 40px;
-            height: 40px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2389c7b6"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
+            background: rgba(255, 255, 255, 0.9);
             z-index: 1000;
-            pointer-events: none;
-            transform-origin: center;
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-        }
-        
-        /* 捐赠按钮 */
-        .donate-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 99, 71, 0.8);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 2rem;
-            border: none;
-            cursor: pointer;
-            font-family: var(--禅意-font);
-            z-index: 10;
-            transition: all var(--animation-speed) ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        
-        body.animated .donate-btn:hover {
-            background: rgba(255, 99, 71, 1);
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* 捐赠面板 */
-        .donate-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: min(90vw, 400px);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            display: none;
-            color: var(--墨色);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            transition: opacity 0.5s ease;
         }
         
-        .donate-panel.show {
-            transform: translate(-50%, -50%) scale(1);
+        .search-animation.active {
             opacity: 1;
         }
         
-        .donate-panel h3 {
+        .search-animation-content {
             text-align: center;
-            margin-top: 0;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
         }
         
-        .donate-methods {
-            display: flex;
-            justify-content: space-around;
-            margin: 1.5rem 0;
+        .search-animation.active .search-animation-content {
+            transform: translateY(0);
+            opacity: 1;
         }
         
-        .donate-method {
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
+        .search-animation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
         }
         
-        .donate-method:hover {
-            transform: scale(1.05);
-        }
-        
-        .donate-method img {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-            margin-bottom: 0.5rem;
-        }
-        
-        .donate-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
+        .search-animation-text {
+            font-size: 1.2rem;
             color: var(--墨色);
         }
-        
-        /* 平台卡片移动动画 */
-        .platform-card.moving-left {
-            transform: translateX(-50%) scale(0.9);
-            opacity: 0.5;
-        }
-        
-        .platform-card.moving-right {
-            transform: translateX(50%) scale(0.9);
-            opacity: 0.5;
-        }
-        
+
         /* 流畅动画 */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -1028,15 +666,24 @@
     <div class="container">
         <div class="poetry" id="poetry"></div>
         <div class="search-container">
-            <button class="search-btn" id="searchBtn">🕊️</button>
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
             <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-            <button class="login-btn" id="loginBtn">🔑</button>
+            <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
             <div id="suggestions"></div>
         </div>
         <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
-    <button class="donate-btn" id="donateBtn">支持开发者</button>
+
+    <!-- 搜索动画 -->
+    <div class="search-animation" id="searchAnimation">
+        <div class="search-animation-content">
+            <div class="search-animation-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="search-animation-text">正在搜索中...</div>
+        </div>
+    </div>
 
     <!-- 设置面板 -->
     <div class="overlay" id="settingsOverlay"></div>
@@ -1054,10 +701,6 @@
                     <input type="checkbox" id="showImage" checked>
                     <label for="showImage">背景图片</label>
                 </div>
-                <div class="toggle-item" data-section="favorites">
-                    <input type="checkbox" id="showFavorites" checked>
-                    <label for="showFavorites">收藏夹</label>
-                </div>
                 <div class="toggle-item" data-section="platforms">
                     <input type="checkbox" id="showPlatforms" checked>
                     <label for="showPlatforms">平台</label>
@@ -1069,10 +712,6 @@
                 <div class="toggle-item" data-section="easterEgg">
                     <input type="checkbox" id="showEasterEgg" checked>
                     <label for="showEasterEgg">彩蛋</label>
-                </div>
-                <div class="toggle-item" data-section="donate">
-                    <input type="checkbox" id="showDonate" checked>
-                    <label for="showDonate">捐赠按钮</label>
                 </div>
                 <div class="toggle-item" data-section="animation">
                     <input type="checkbox" id="showAnimation" checked>
@@ -1099,80 +738,11 @@
             <span id="animationSpeedValue">中速</span>
         </div>
         
-        <!-- 版本选择器 -->
-        <div class="setting-item version-selector">
-            <label>界面版本</label>
-            <div class="version-option" data-version="full" id="versionFull">
-                <span class="version-badge">v1.0</span>
-                <span>完整版</span>
-                <div class="version-tooltip">包含所有动画效果和彩蛋功能，提供最佳视觉体验</div>
-            </div>
-            <div class="version-option" data-version="no-animation" id="versionNoAnimation">
-                <span class="version-badge">v1.1</span>
-                <span>简洁版</span>
-                <div class="version-tooltip">关闭所有动画效果，提升性能，适合低配置设备</div>
-            </div>
-            <div class="version-option" data-version="no-easter-egg" id="versionNoEasterEgg">
-                <span class="version-badge">v1.2</span>
-                <span>办公版</span>
-                <div class="version-tooltip">保留基本动画，关闭所有彩蛋，适合工作环境</div>
-            </div>
-            <div class="version-option" data-version="dos" id="versionDOS">
-                <span class="version-badge">v2.0</span>
-                <span>经典DOS模式</span>
-                <div class="version-tooltip">复古命令行界面，支持完整功能，适合技术爱好者</div>
-            </div>
-        </div>
-        
         <div class="settings-actions">
             <button class="settings-btn secondary" id="cancelSettings">取消</button>
             <button class="settings-btn" id="saveSettings">保存设置</button>
         </div>
     </div>
-
-    <!-- 捐赠面板 -->
-    <div class="donate-panel" id="donatePanel">
-        <span class="donate-close" id="donateClose">×</span>
-        <h3>感谢您的支持</h3>
-        <p style="text-align: center; margin-bottom: 1.5rem;">您的支持是我持续开发的动力</p>
-        <div class="donate-methods">
-            <div class="donate-method" id="wechatPay">
-                <img src="https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/wechat-pay.png" alt="微信支付">
-                <div>微信支付</div>
-            </div>
-            <div class="donate-method" id="alipay">
-                <img src="https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/alipay.png" alt="支付宝">
-                <div>支付宝</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DOS模式界面 -->
-    <div class="dos-mode" id="dosMode">
-        <div class="dos-output-container" id="dosOutputContainer">
-            <div class="dos-output">星汉搜索 DOS 模式 v2.0</div>
-            <div class="dos-output">输入 "help" 获取命令列表</div>
-            <div class="dos-output">Copyright © 2023 zmf. 保留所有权利。</div>
-            <div class="dos-output" id="dosOutput"></div>
-        </div>
-        <div class="dos-prompt">
-            <span>></span>
-            <span class="dos-cursor">_</span>
-            <input type="text" class="dos-input" id="dosInput" autocomplete="off">
-        </div>
-    </div>
-
-    <!-- 源代码查看器 -->
-    <div class="source-viewer" id="sourceViewer">
-        <div class="source-header">
-            <h3>星汉搜索 - 源代码</h3>
-            <span class="source-close" id="sourceClose">×</span>
-        </div>
-        <pre id="sourceCode"></pre>
-    </div>
-
-    <!-- DOS矩阵数字雨 -->
-    <div class="dos-matrix" id="dosMatrix"></div>
 
     <script>
         // 配置数据
@@ -1181,70 +751,70 @@
                 {
                     id: 'bing',
                     name: '必应搜索',
-                    icon: 'fa-brands fa-microsoft',
+                    icon: 'fa-microsoft',
                     search: 'https://www.bing.com/search?q=',
                     login: 'https://login.live.com/'
                 },
                 {
                     id: 'google',
                     name: '谷歌搜索',
-                    icon: 'fa-brands fa-google',
+                    icon: 'fa-google',
                     search: 'https://www.google.com/search?q=',
                     login: 'https://accounts.google.com/'
                 },
                 {
                     id: 'github',
                     name: '代码星辰',
-                    icon: 'fa-brands fa-github',
+                    icon: 'fa-github',
                     search: 'https://github.com/search?q=',
                     login: 'https://github.com/login'
                 },
                 {
                     id: 'youtube',
                     name: '视频星河',
-                    icon: 'fa-brands fa-youtube',
+                    icon: 'fa-youtube',
                     search: 'https://www.youtube.com/results?search_query=',
                     login: 'https://accounts.google.com/'
                 },
                 {
                     id: 'bilibili',
                     name: '哔哩星海',
-                    icon: 'fa-brands fa-bilibili',
+                    icon: 'fa-bilibili',
                     search: 'https://search.bilibili.com/all?keyword=',
                     login: 'https://passport.bilibili.com/login'
                 },
                 {
                     id: 'zhihu',
                     name: '知乎星云',
-                    icon: 'fa-brands fa-zhihu',
+                    icon: 'fa-zhihu',
                     search: 'https://www.zhihu.com/search?q=',
                     login: 'https://www.zhihu.com/signin'
                 },
                 {
                     id: 'baidu',
                     name: '百度瀚海',
-                    icon: 'fa-brands fa-baidu',
+                    icon: 'fa-baidu',
                     search: 'https://www.baidu.com/s?wd=',
                     login: 'https://passport.baidu.com/v2/?login'
                 },
                 {
                     id: 'douyin',
                     name: '抖音幻域',
-                    icon: 'fa-brands fa-tiktok',
+                    icon: 'fa-tiktok',
                     search: 'https://www.douyin.com/search/',
                     login: 'https://www.douyin.com/login'
                 },
                 {
                     id: 'weibo',
                     name: '微博星澜',
-                    icon: 'fa-brands fa-weibo',
+                    icon: 'fa-weibo',
                     search: 'https://s.weibo.com/weibo/',
                     login: 'https://weibo.com/login.php'
                 },
                 {
                     id:'stackoverflow',
                     name: '技术星河',
-                    icon: 'fa-brands fa-stack-overflow',
+                    icon: 'fa-stack-overflow',
                     search: 'https://stackoverflow.com/search?q=',
                     login: 'https://stackoverflow.com/users/login'
                 }
@@ -1254,15 +824,12 @@
                 bgBlur: 12,
                 cardOpacity: 12,
                 animationSpeed: 3,
-                currentVersion: 'full',
                 showSections: {
                     poetry: true,
                     image: true,
-                    favorites: true,
                     platforms: true,
                     login: true,
                     easterEgg: true,
-                    donate: true,
                     animation: true
                 }
             },
@@ -1274,9 +841,7 @@
                     dateRange: [
                         { month: 1, day: 21 }, { month: 1, day: 22 }, { month: 1, day: 23 }, 
                         { month: 1, day: 24 }, { month: 1, day: 25 }, { month: 1, day: 26 }, 
-                        { month: 1, day: 27 }, { month: 2, day: 9 }, { month: 2, day: 10 },
-                        { month: 2, day: 11 }, { month: 2, day: 12 }, { month: 2, day: 13 },
-                        { month: 2, day: 14 }, { month: 2, day: 15 }
+                        { month: 1, day: 27 }
                     ],
                     activator: 'activateSpringFestival'
                 },
@@ -1297,14 +862,14 @@
                 'dragon-boat-festival': {
                     name: '端午节',
                     dateRange: [
-                        { month: 6, day: 22 }, { month: 6, day: 10 }
+                        { month: 6, day: 22 }
                     ],
                     activator: 'activateDragonBoatFestival'
                 },
                 'mid-autumn-festival': {
                     name: '中秋节',
                     dateRange: [
-                        { month: 9, day: 29 }, { month: 9, day: 17 }
+                        { month: 9, day: 29 }
                     ],
                     activator: 'activateMidAutumnFestival'
                 },
@@ -1329,67 +894,6 @@
                 '十二生肖': 'activateZodiac',
                 '福': 'activateFuCharacter',
                 '中国结': 'activateChineseKnot'
-            },
-            
-            // DOS命令
-            dosCommands: {
-                help: {
-                    description: '显示帮助信息',
-                    execute: function(args, output) {
-                        output.innerHTML += '\n可用命令:';
-                        output.innerHTML += '\nhelp - 显示帮助';
-                        output.innerHTML += '\nsearch [内容] - 执行搜索';
-                        output.innerHTML += '\nclear - 清屏';
-                        output.innerHTML += '\nversion - 显示版本信息';
-                        output.innerHTML += '\nsettings - 打开设置';
-                        output.innerHTML += '\nexit - 退出DOS模式';
-                    }
-                },
-                search: {
-                    description: '执行搜索',
-                    execute: function(args, output) {
-                        if (args.length === 0) {
-                            output.innerHTML += '\n请输入搜索内容';
-                            return;
-                        }
-                        const query = args.join(' ');
-                        output.innerHTML += `\n正在搜索: ${query}`;
-                        setTimeout(() => {
-                            window.open(`https://www.bing.com/search?q=${encodeURIComponent(query)}`, '_blank');
-                        }, 500);
-                    }
-                },
-                clear: {
-                    description: '清屏',
-                    execute: function(args, output) {
-                        output.innerHTML = '';
-                    }
-                },
-                version: {
-                    description: '显示版本信息',
-                    execute: function(args, output) {
-                        output.innerHTML += '\n星汉搜索 DOS 模式 v2.0';
-                        output.innerHTML += '\nCopyright © 2023 zmf. 保留所有权利。';
-                    }
-                },
-                settings: {
-                    description: '打开设置',
-                    execute: function(args, output) {
-                        output.innerHTML += '\n正在打开设置...';
-                        setTimeout(() => {
-                            openSettings();
-                        }, 500);
-                    }
-                },
-                exit: {
-                    description: '退出DOS模式',
-                    execute: function(args, output) {
-                        output.innerHTML += '\n正在退出DOS模式...';
-                        setTimeout(() => {
-                            switchVersion('full');
-                        }, 500);
-                    }
-                }
             }
         };
 
@@ -1407,11 +911,9 @@
             settingsPanel: document.getElementById('settingsPanel'),
             showPoetry: document.getElementById('showPoetry'),
             showImage: document.getElementById('showImage'),
-            showFavorites: document.getElementById('showFavorites'),
             showPlatforms: document.getElementById('showPlatforms'),
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
-            showDonate: document.getElementById('showDonate'),
             showAnimation: document.getElementById('showAnimation'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
@@ -1419,23 +921,7 @@
             cardOpacityValue: document.getElementById('cardOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
-            versionFull: document.getElementById('versionFull'),
-            versionNoAnimation: document.getElementById('versionNoAnimation'),
-            versionNoEasterEgg: document.getElementById('versionNoEasterEgg'),
-            versionDOS: document.getElementById('versionDOS'),
-            dosMode: document.getElementById('dosMode'),
-            dosInput: document.getElementById('dosInput'),
-            dosOutput: document.getElementById('dosOutput'),
-            dosOutputContainer: document.getElementById('dosOutputContainer'),
-            sourceViewer: document.getElementById('sourceViewer'),
-            sourceCode: document.getElementById('sourceCode'),
-            sourceClose: document.getElementById('sourceClose'),
-            dosMatrix: document.getElementById('dosMatrix'),
-            donateBtn: document.getElementById('donateBtn'),
-            donatePanel: document.getElementById('donatePanel'),
-            donateClose: document.getElementById('donateClose'),
-            wechatPay: document.getElementById('wechatPay'),
-            alipay: document.getElementById('alipay')
+            searchAnimation: document.getElementById('searchAnimation')
         };
 
         // 状态变量
@@ -1448,19 +934,11 @@
         let isSuggestionsOpen = false;
         let konamiCode = [];
         const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let versionHoverTimer = null;
-        let lastVersionClickTime = 0;
 
         // 初始化函数
         async function init() {
-            // 预加载资源
-            preloadResources();
-            
             // 加载设置
             loadSettings();
-            
-            // 注册Service Worker
-            registerServiceWorker();
             
             // 等待字体加载
             await document.fonts.ready;
@@ -1493,9 +971,7 @@
             applySectionSettings();
             
             // 聚焦搜索框
-            if (config.settings.currentVersion !== 'dos') {
-                elements.searchInput.focus();
-            }
+            elements.searchInput.focus();
             
             // 添加事件监听
             addEventListeners();
@@ -1505,19 +981,6 @@
 
             // 检查节日
             checkTodayHoliday();
-        }
-
-        // 注册Service Worker
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker 注册成功:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker 注册失败:', error);
-                    });
-            }
         }
 
         // 应用板块显示设置
@@ -1535,26 +998,6 @@
             // 登录按钮
             elements.loginBtn.style.display = config.settings.showSections.login ? 
                 (elements.loginBtn.style.display === 'block' ? 'block' : 'none') : 'none';
-            
-            // 捐赠按钮
-            elements.donateBtn.style.display = config.settings.showSections.donate ? 'block' : 'none';
-        }
-
-        // 预加载资源
-        function preloadResources() {
-            const images = [
-                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg',
-                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg',
-                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg',
-                'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg',
-                'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/wechat-pay.png',
-                'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/alipay.png'
-            ];
-            
-            images.forEach(src => {
-                const img = new Image();
-                img.src = src;
-            });
         }
 
         // 加载设置
@@ -1568,11 +1011,9 @@
                     // 更新UI控件
                     elements.showPoetry.checked = config.settings.showSections.poetry;
                     elements.showImage.checked = config.settings.showSections.image;
-                    elements.showFavorites.checked = config.settings.showSections.favorites;
                     elements.showPlatforms.checked = config.settings.showSections.platforms;
                     elements.showLogin.checked = config.settings.showSections.login;
                     elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
-                    elements.showDonate.checked = config.settings.showSections.donate;
                     elements.showAnimation.checked = config.settings.showSections.animation;
                     
                     elements.bgBlur.value = config.settings.bgBlur;
@@ -1586,24 +1027,10 @@
                     document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
                     document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
                     updateAnimationSpeed();
-                    
-                    // 高亮当前版本选项
-                    highlightCurrentVersion();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
             }
-        }
-
-        // 高亮当前版本选项
-        function highlightCurrentVersion() {
-            const versionOptions = [elements.versionFull, elements.versionNoAnimation, elements.versionNoEasterEgg, elements.versionDOS];
-            versionOptions.forEach(option => {
-                option.classList.remove('active');
-                if (option.dataset.version === config.settings.currentVersion) {
-                    option.classList.add('active');
-                }
-            });
         }
 
         // 更新动画速度文本
@@ -1632,17 +1059,14 @@
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
-                    favorites: elements.showFavorites.checked,
                     platforms: elements.showPlatforms.checked,
                     login: elements.showLogin.checked,
                     easterEgg: elements.showEasterEgg.checked,
-                    donate: elements.showDonate.checked,
                     animation: elements.showAnimation.checked
                 },
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
-                animationSpeed: parseInt(elements.animationSpeed.value),
-                currentVersion: config.settings.currentVersion
+                animationSpeed: parseInt(elements.animationSpeed.value)
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
@@ -1656,41 +1080,6 @@
             applySectionSettings();
             
             closeSettings();
-        }
-
-        // 切换版本
-        function switchVersion(version) {
-            config.settings.currentVersion = version;
-            
-            // 隐藏所有特殊模式
-            elements.dosMode.style.display = 'none';
-            document.body.classList.remove('no-animation', 'no-easter-egg');
-            
-            // 根据版本应用设置
-            switch (version) {
-                case 'full':
-                    document.body.classList.add('animated');
-                    document.querySelector('.container').style.display = '';
-                    break;
-                case 'no-animation':
-                    document.body.classList.remove('animated');
-                    document.querySelector('.container').style.display = '';
-                    break;
-                case 'no-easter-egg':
-                    document.body.classList.add('animated');
-                    document.querySelector('.container').style.display = '';
-                    break;
-                case 'dos':
-                    document.querySelector('.container').style.display = 'none';
-                    elements.dosMode.style.display = 'block';
-                    elements.dosInput.focus();
-                    const output = elements.dosOutput;
-                    output.innerHTML += '\n输入 "help" 获取命令列表';
-                    break;
-            }
-            
-            // 高亮当前版本选项
-            highlightCurrentVersion();
         }
 
         // 获取壁纸
@@ -1790,9 +1179,6 @@
                     });
 
                     showSuggestionsUI();
-                    
-                    // 调整平台卡片位置
-                    adjustPlatformPosition();
                 } else {
                     hideSuggestions();
                 }
@@ -1833,33 +1219,7 @@
             setTimeout(() => {
                 elements.suggestions.style.display = 'none';
                 isSuggestionsOpen = false;
-                resetPlatformPosition();
             }, 200);
-        }
-
-        // 调整平台卡片位置
-        function adjustPlatformPosition() {
-            if (!config.settings.showSections.animation) return;
-            
-            if (window.innerWidth > 767) { // 只在横屏下调整
-                const cards = document.querySelectorAll('.platform-card');
-                cards.forEach((card, index) => {
-                    // 奇数向左移动，偶数向右移动
-                    if (index % 2 === 0) {
-                        card.classList.add('moving-left');
-                    } else {
-                        card.classList.add('moving-right');
-                    }
-                });
-            }
-        }
-
-        // 重置平台卡片位置
-        function resetPlatformPosition() {
-            const cards = document.querySelectorAll('.platform-card');
-            cards.forEach(card => {
-                card.classList.remove('moving-left', 'moving-right');
-            });
         }
 
         // 执行搜索
@@ -1879,19 +1239,33 @@
 
             const platform = config.platforms.find(p => p.id === selectedPlatform);
             if (platform) {
-                // 添加搜索动画
-                if (config.settings.showSections.animation && config.settings.currentVersion !== 'no-animation') {
-                    createPaperPlane(query);
-                } else {
-                    // 没有动画时直接打开
-                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                // 显示搜索动画
+                if (config.settings.showSections.animation) {
+                    showSearchAnimation();
                 }
+                
+                // 延迟打开链接，让动画有足够时间显示
+                setTimeout(() => {
+                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                    
+                    // 隐藏动画
+                    if (config.settings.showSections.animation) {
+                        setTimeout(() => {
+                            hideSearchAnimation();
+                        }, 500);
+                    }
+                }, 300);
             }
         }
 
         // 检查是否是有效的URL
         function isValidUrl(string) {
             try {
+                // 检查是否包含协议
+                if (!string.match(/^https?:\/\//i)) {
+                    // 如果没有协议，尝试添加http://
+                    string = 'http://' + string;
+                }
                 new URL(string);
                 return true;
             } catch (_) {
@@ -1903,69 +1277,35 @@
         function navigateToUrl(url) {
             // 确保URL有协议
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
+                url = 'http://' + url;
             }
             
-            // 添加导航动画
-            if (config.settings.showSections.animation && config.settings.currentVersion !== 'no-animation') {
-                createPaperPlane(url);
-            } else {
-                // 没有动画时直接打开
-                window.open(url, '_blank');
+            // 显示搜索动画
+            if (config.settings.showSections.animation) {
+                showSearchAnimation();
             }
-        }
-
-        // 创建纸飞机动画
-        function createPaperPlane(content) {
-            const plane = document.createElement('div');
-            plane.className = 'paper-plane';
-            plane.style.left = `${elements.searchInput.offsetLeft + elements.searchInput.offsetWidth / 2 - 20}px`;
-            plane.style.top = `${elements.searchInput.offsetTop + elements.searchInput.offsetHeight / 2 - 20}px`;
-            document.body.appendChild(plane);
             
-            // 获取目标位置（右上角）
-            const targetX = window.innerWidth - 50;
-            const targetY = 50;
-            
-            // 动画
+            // 延迟打开链接，让动画有足够时间显示
             setTimeout(() => {
-                plane.style.transform = `translate(${targetX - parseFloat(plane.style.left)}px, ${targetY - parseFloat(plane.style.top)}px) rotate(45deg)`;
-                plane.style.opacity = '0';
+                window.open(url, '_blank');
                 
-                // 动画结束后打开链接并移除飞机
-                setTimeout(() => {
-                    const platform = config.platforms.find(p => p.id === selectedPlatform);
-                    if (platform && !isValidUrl(content)) {
-                        window.open(platform.search + encodeURIComponent(content), '_blank');
-                    } else if (isValidUrl(content)) {
-                        window.open(content, '_blank');
-                    }
-                    plane.remove();
-                }, 500);
-            }, 10);
+                // 隐藏动画
+                if (config.settings.showSections.animation) {
+                    setTimeout(() => {
+                        hideSearchAnimation();
+                    }, 500);
+                }
+            }, 300);
         }
 
-        // 处理DOS命令
-        function handleDosCommand(command) {
-            const output = document.getElementById('dosOutput');
-            const args = command.split(' ');
-            const cmd = args.shift().toLowerCase();
-            
-            if (config.dosCommands[cmd]) {
-                config.dosCommands[cmd].execute(args, output);
-            } else {
-                output.innerHTML += '\n未知命令: ' + cmd;
-                output.innerHTML += '\n输入"help"获取帮助';
-            }
-            
-            // 添加新的输出容器
-            const newOutput = document.createElement('div');
-            newOutput.id = 'dosOutput';
-            newOutput.className = 'dos-output';
-            output.parentNode.appendChild(newOutput);
-            
-            // 滚动到底部
-            elements.dosOutputContainer.scrollTop = elements.dosOutputContainer.scrollHeight;
+        // 显示搜索动画
+        function showSearchAnimation() {
+            elements.searchAnimation.classList.add('active');
+        }
+
+        // 隐藏搜索动画
+        function hideSearchAnimation() {
+            elements.searchAnimation.classList.remove('active');
         }
 
         // 检查屏幕尺寸
@@ -1994,7 +1334,7 @@
                 <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
                      data-id="${platform.id}"
                      data-login="${platform.login || ''}">
-                    <div class="platform-icon"><i class="${platform.icon}"></i></div>
+                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
                     <div>${platform.name}</div>
                 </div>
             `).join('');
@@ -2039,28 +1379,6 @@
                 elements.settingsPanel.style.display = 'none';
             }, 300);
         }
-        
-        // 打开捐赠面板
-        function openDonatePanel() {
-            elements.settingsOverlay.style.display = 'block';
-            elements.donatePanel.style.display = 'block';
-            
-            setTimeout(() => {
-                elements.settingsOverlay.classList.add('show');
-                elements.donatePanel.classList.add('show');
-            }, 10);
-        }
-        
-        // 关闭捐赠面板
-        function closeDonatePanel() {
-            elements.settingsOverlay.classList.remove('show');
-            elements.donatePanel.classList.remove('show');
-            
-            setTimeout(() => {
-                elements.settingsOverlay.style.display = 'none';
-                elements.donatePanel.style.display = 'none';
-            }, 300);
-        }
 
         // 初始化彩蛋
         function initEasterEggs() {
@@ -2068,8 +1386,6 @@
             
             // 中国传统文化关键词监听
             elements.searchInput.addEventListener('input', function() {
-                if (config.settings.currentVersion === 'no-easter-egg') return;
-                
                 const query = this.value.trim().toLowerCase();
                 
                 // 检查是否匹配任何中国传统文化关键词
@@ -2088,8 +1404,6 @@
 
             // 科乐美秘技监听
             document.addEventListener('keydown', function(e) {
-                if (config.settings.currentVersion === 'no-easter-egg') return;
-                
                 konamiCode.push(e.key);
                 if (konamiCode.length > KONAMI_CODE.length) {
                     konamiCode.shift();
@@ -2108,20 +1422,10 @@
             
             const today = new Date();
             const holiday = checkHoliday(today);
-            if (holiday && config.settings.currentVersion !== 'no-easter-egg') {
+            if (holiday) {
                 // 触发节日彩蛋
                 if (typeof this[holiday.activator] === 'function') {
                     this[holiday.activator]();
-                }
-                
-                // 在DOS模式下也显示节日信息
-                if (config.settings.currentVersion === 'dos') {
-                    const output = elements.dosOutput;
-                    output.innerHTML += `\n今天是: ${holiday.name}`;
-                    output.innerHTML += `\n${getHolidayGreeting(holiday.id)}`;
-                    
-                    // 触发DOS模式节日彩蛋
-                    activateDOSEgg(holiday.id);
                 }
             }
         }
@@ -2141,23 +1445,25 @@
             return null;
         }
 
-        // 获取节日祝福语
-        function getHolidayGreeting(holidayId) {
-            const greetings = {
-                'spring-festival': '春节快乐！万事如意，心想事成！',
-                'lantern-festival': '元宵节快乐！团团圆圆，幸福美满！',
-                'qingming-festival': '清明节安康！缅怀先人，珍惜当下！',
-                'dragon-boat-festival': '端午节快乐！粽香四溢，龙舟竞渡！',
-                'mid-autumn-festival': '中秋节快乐！月圆人圆，阖家幸福！',
-                'national-day': '国庆节快乐！繁荣昌盛，国泰民安！'
-            };
-            return greetings[holidayId] || '节日快乐！';
-        }
-
         // 显示源代码
         function showSourceCode() {
-            elements.sourceCode.textContent = document.documentElement.outerHTML;
-            elements.sourceViewer.style.display = 'block';
+            const sourceViewer = document.createElement('div');
+            sourceViewer.className = 'source-viewer';
+            sourceViewer.innerHTML = `
+                <div class="source-header">
+                    <h3>星汉搜索 - 源代码</h3>
+                    <span class="source-close">×</span>
+                </div>
+                <pre>${document.documentElement.outerHTML}</pre>
+            `;
+            
+            document.body.appendChild(sourceViewer);
+            sourceViewer.style.display = 'block';
+            
+            // 添加关闭事件
+            sourceViewer.querySelector('.source-close').addEventListener('click', () => {
+                sourceViewer.style.display = 'none';
+            });
         }
 
         // 署名点击处理
@@ -2173,6 +1479,12 @@
             if (clickCount >= CLICK_THRESHOLD) {
                 openSettings();
                 clickCount = 0;
+                
+                // 添加点击动画
+                elements.signature.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    elements.signature.style.transform = '';
+                }, 300);
             }
         }
 
@@ -2273,8 +1585,6 @@
 
         // 激活灯笼彩蛋
         function activateLanterns() {
-            if (config.settings.currentVersion === 'no-easter-egg') return;
-            
             // 创建多个灯笼
             const positions = [
                 { top: '10%', left: '10%' },
@@ -2302,8 +1612,6 @@
 
         // 激活龙彩蛋
         function activateDragon() {
-            if (config.settings.currentVersion === 'no-easter-egg') return;
-            
             const dragon = document.createElement('div');
             dragon.className = 'dragon';
             dragon.style.display = 'block';
@@ -2317,8 +1625,6 @@
 
         // 创建烟花
         function createFirework() {
-            if (config.settings.currentVersion === 'no-easter-egg') return;
-            
             const firework = document.createElement('div');
             firework.className = 'firework';
             firework.style.left = `${Math.random() * 80 + 10}%`;
@@ -2330,134 +1636,6 @@
             setTimeout(() => {
                 firework.remove();
             }, 1000);
-        }
-
-        // DOS模式下的节日彩蛋
-        function activateDOSEgg(holidayId) {
-            switch (holidayId) {
-                case 'spring-festival':
-                    // 春节 - 显示DOS版灯笼和龙
-                    createDOSLantern(10, 10);
-                    createDOSLantern(80, 15);
-                    createDOSDragon();
-                    break;
-                    
-                case 'lantern-festival':
-                    // 元宵节 - 显示多个DOS版灯笼
-                    createDOSLantern(10, 10);
-                    createDOSLantern(80, 15);
-                    createDOSLantern(20, 70);
-                    createDOSLantern(70, 80);
-                    break;
-                    
-                case 'dragon-boat-festival':
-                    // 端午节 - 显示DOS版龙
-                    createDOSDragon();
-                    break;
-                    
-                case 'national-day':
-                    // 国庆节 - 显示DOS版烟花
-                    for (let i = 0; i < 5; i++) {
-                        setTimeout(() => {
-                            createDOSFirework();
-                        }, i * 500);
-                    }
-                    break;
-            }
-        }
-
-        // 创建DOS版灯笼
-        function createDOSLantern(left, top) {
-            const lantern = document.createElement('div');
-            lantern.className = 'dos-lantern';
-            lantern.style.left = `${left}%`;
-            lantern.style.top = `${top}%`;
-            lantern.textContent = '()';
-            elements.dosMode.appendChild(lantern);
-            lantern.style.display = 'block';
-            
-            // 5秒后消失
-            setTimeout(() => {
-                lantern.remove();
-            }, 5000);
-        }
-
-        // 创建DOS版龙
-        function createDOSDragon() {
-            const dragon = document.createElement('div');
-            dragon.className = 'dos-dragon';
-            dragon.style.left = '-100px';
-            dragon.style.top = '50%';
-            dragon.textContent = '==D~';
-            elements.dosMode.appendChild(dragon);
-            dragon.style.display = 'block';
-            
-            // 10秒后消失
-            setTimeout(() => {
-                dragon.remove();
-            }, 10000);
-        }
-
-        // 创建DOS版烟花
-        function createDOSFirework() {
-            const left = Math.random() * 80 + 10;
-            const top = Math.random() * 80 + 10;
-            
-            const firework = document.createElement('div');
-            firework.className = 'dos-firework';
-            firework.style.left = `${left}%`;
-            firework.style.top = `${top}%`;
-            firework.textContent = '*';
-            elements.dosMode.appendChild(firework);
-            firework.style.display = 'block';
-            
-            // 动画结束后移除
-            setTimeout(() => {
-                firework.remove();
-            }, 1000);
-        }
-
-        // 激活DOS矩阵数字雨
-        function activateDOSMatrix() {
-            elements.dosMatrix.style.display = 'block';
-            
-            // 创建数字雨
-            const columns = Math.floor(window.innerWidth / 20);
-            for (let i = 0; i < columns; i++) {
-                const column = document.createElement('div');
-                column.className = 'dos-matrix-column';
-                column.style.left = `${i * 20}px`;
-                column.style.animationDuration = `${Math.random() * 2 + 1}s`;
-                
-                // 每列创建20个字符
-                for (let j = 0; j < 20; j++) {
-                    const char = document.createElement('div');
-                    char.className = 'dos-matrix-char';
-                    char.textContent = Math.random() > 0.5 ? '1' : '0';
-                    char.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                    char.style.animationDelay = `${Math.random() * 2}s`;
-                    column.appendChild(char);
-                }
-                
-                elements.dosMatrix.appendChild(column);
-            }
-            
-            // 监听退出命令
-            const listener = function(e) {
-                if (e.key === 'Enter') {
-                    const command = elements.dosInput.value.trim().toLowerCase();
-                    if (command === 'exit') {
-                        elements.dosMatrix.innerHTML = '';
-                        elements.dosMatrix.style.display = 'none';
-                        document.removeEventListener('keydown', listener);
-                        
-                        const output = document.getElementById('dosOutput');
-                        output.innerHTML += '\n已退出矩阵模式';
-                    }
-                }
-            };
-            
-            document.addEventListener('keydown', listener);
         }
 
         // 添加事件监听
@@ -2520,27 +1698,6 @@
                 }
             });
 
-            // DOS模式输入
-            elements.dosInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const command = this.value.trim();
-                    this.value = '';
-                    
-                    // 添加命令到输出
-                    const output = document.getElementById('dosOutput');
-                    const prompt = document.createElement('div');
-                    prompt.className = 'dos-output';
-                    prompt.textContent = '> ' + command;
-                    output.parentNode.insertBefore(prompt, output);
-                    
-                    // 处理命令
-                    handleDosCommand(command);
-                    
-                    // 滚动到底部
-                    elements.dosOutputContainer.scrollTop = elements.dosOutputContainer.scrollHeight;
-                }
-            });
-
             // 背景模糊度调整
             elements.bgBlur.addEventListener('input', function() {
                 elements.bgBlurValue.textContent = `${this.value}px`;
@@ -2554,51 +1711,6 @@
             // 动画速度调整
             elements.animationSpeed.addEventListener('input', function() {
                 updateAnimationSpeedText();
-            });
-
-            // 版本选项事件
-            [elements.versionFull, elements.versionNoAnimation, elements.versionNoEasterEgg, elements.versionDOS].forEach(option => {
-                // 双击选择版本
-                option.addEventListener('dblclick', function() {
-                    switchVersion(this.dataset.version);
-                });
-                
-                // 单击准备选择
-                option.addEventListener('click', function() {
-                    const now = Date.now();
-                    if (now - lastVersionClickTime < 300) { // 双击检测
-                        switchVersion(this.dataset.version);
-                    }
-                    lastVersionClickTime = now;
-                });
-            });
-
-            // 源代码查看器关闭按钮
-            elements.sourceClose.addEventListener('click', function() {
-                elements.sourceViewer.style.display = 'none';
-            });
-            
-            // 板块显示切换
-            document.querySelectorAll('.toggle-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const checkbox = this.querySelector('input');
-                    checkbox.checked = !checkbox.checked;
-                    this.classList.toggle('active');
-                });
-            });
-            
-            // 捐赠按钮事件
-            elements.donateBtn.addEventListener('click', openDonatePanel);
-            elements.donateClose.addEventListener('click', closeDonatePanel);
-            elements.settingsOverlay.addEventListener('click', closeDonatePanel);
-            
-            // 捐赠方式点击
-            elements.wechatPay.addEventListener('click', function() {
-                alert('感谢您的支持！请使用微信扫描二维码完成捐赠。');
-            });
-            
-            elements.alipay.addEventListener('click', function() {
-                alert('感谢您的支持！请使用支付宝扫描二维码完成捐赠。');
             });
         }
 
