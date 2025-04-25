@@ -1,73 +1,1722 @@
-// 定义缓存名称和版本
-const CACHE_NAME = 'star-search-v1';
-const urlsToCache = [
-  '/',
-  'index.html',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap',
-  'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg',
-  'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/wechat-pay.png',
-  'https://cdn.jsdelivr.net/gh/zmf-imooc/images@main/alipay.png'
-];
+<!DOCTYPE html>
+<html lang="zh-CN">
 
-// 安装Service Worker
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
-
-// 拦截请求并使用缓存
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // 缓存命中 - 返回响应
-        if (response) {
-          return response;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>星汉搜索 - 诗意探索</title>
+    <!-- 加载Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --墨色: #2c3e50;
+            --月白: #f0f2f5;
+            --青空: linear-gradient(135deg, #89c7b6 0%, #c6e4d9 100%);
+            --云纹: rgba(255, 255, 255, 0.15);
+            --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
+            --primary-color: #89c7b6;
+            --bg-blur: 12px;
+            --card-opacity: 0.12;
+            --animation-speed: 0.3s;
         }
-        
-        // 重要：克隆请求
-        const fetchRequest = event.request.clone();
 
-        return fetch(fetchRequest).then(
-          response => {
-            // 检查是否收到有效响应
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--禅意-font);
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            touch-action: manipulation;
+            background-color: #f5f7fa;
+            background-repeat: no-repeat;
+        }
+
+        body.fade-in {
+            opacity: 1;
+        }
+
+        body.animated::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            background:
+                radial-gradient(circle at 10% 20%,
+                    rgba(255, 255, 255, 0.1) 15%,
+                    transparent 30%),
+                linear-gradient(15deg,
+                    transparent 60%,
+                    rgba(255, 255, 255, 0.08) 80%);
+            animation: 云游 60s infinite linear;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: min(800px, 90vw);
+            padding: 2rem;
+            backdrop-filter: blur(var(--bg-blur));
+            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, var(--card-opacity));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-sizing: border-box;
+            text-align: center;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 4rem;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all var(--animation-speed) ease;
+            color: var(--墨色);
+            box-sizing: border-box;
+            font-family: var(--禅意-font);
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--墨色);
+            padding: 0.5rem;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .login-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--墨色);
+            padding: 0.5rem;
+            display: none;
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .login-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* 平台网格布局 - 横屏2×5 */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 竖屏5×2 */
+        @media screen and (max-width: 767px) {
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+            }
+        }
+
+        .platform-card {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all var(--animation-speed) ease;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.animated .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: opacity var(--animation-speed) ease;
+        }
+
+        body.animated .platform-card:hover::before {
+            opacity: 1;
+        }
+
+        .platform-card.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.animated .platform-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .platform-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--墨色);
+            transition: transform var(--animation-speed) ease;
+        }
+
+        body.animated .platform-card:hover .platform-icon {
+            transform: scale(1.1);
+        }
+
+        /* 平台图标颜色 */
+        .fa-google { color: #4285F4; }
+        .fa-microsoft { color: #00809D; }
+        .fa-github { color: #181717; }
+        .fa-youtube { color: #FF0000; }
+        .fa-bilibili { color: #00A1D6; }
+        .fa-zhihu { color: #0084FF; }
+        .fa-baidu { color: #2932E1; }
+        .fa-tiktok { color: #000000; }
+        .fa-weibo { color: #DF2029; }
+        .fa-stack-overflow { color: #F48024; }
+
+        @keyframes 云游 {
+            0% {
+                transform: translate(0, 0);
             }
 
-            // 重要：克隆响应
-            const responseToCache = response.clone();
+            33% {
+                transform: translate(-30%, -15%);
+            }
 
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
+            66% {
+                transform: translate(-20%, 10%);
+            }
 
-            return response;
-          }
-        );
-      })
-    );
-});
+            100% {
+                transform: translate(0, 0);
+            }
+        }
 
-// 激活时清理旧缓存
-self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
+        .poetry {
+            font-style: italic;
+            color: var(--墨色);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            transition: all var(--animation-speed) ease;
+        }
+
+        .verse {
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .author {
+            font-size: 0.9rem;
+            color: rgba(44, 62, 80, 0.8);
+            display: block;
+        }
+
+        #suggestions {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) scaleY(0.9);
+            width: auto;
+            min-width: 100%;
+            max-width: min(800px, 90vw);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            display: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            max-height: 50vh;
+            overflow-y: auto;
+            transform-origin: top center;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
+        }
+
+        body.animated #suggestions.show {
+            transform: translateX(-50%) scaleY(1);
+            opacity: 1;
+        }
+
+        .suggestion {
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            transition: all var(--animation-speed) ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .suggestion:first-child {
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .suggestion:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        body.animated .suggestion:hover {
+            background: rgba(137, 199, 182, 0.15);
+            transform: translateX(5px);
+        }
+
+        .signature {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: var(--墨色);
+            opacity: 0.8;
+            cursor: pointer;
+            user-select: none;
+            padding: 5px;
+            z-index: 10;
+            transition: all var(--animation-speed) ease;
+        }
+
+        body.animated .signature:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 设置面板 */
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(90vw, 500px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            color: var(--墨色);
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body.animated .settings-panel.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .settings-panel h2 {
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .setting-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-family: var(--禅意-font);
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .settings-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            background: rgba(137, 199, 182, 0.8);
+            color: white;
+            cursor: pointer;
+            transition: all var(--animation-speed) ease;
+            font-family: var(--禅意-font);
+        }
+
+        body.animated .settings-btn:hover {
+            background: rgba(137, 199, 182, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-btn.secondary {
+            background: rgba(200, 200, 200, 0.8);
+        }
+
+        body.animated .settings-btn.secondary:hover {
+            background: rgba(200, 200, 200, 1);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        body.animated .overlay.show {
+            opacity: 1;
+        }
+
+        /* 版本选择器样式 */
+        .version-selector {
+            margin-top: 1.5rem;
+        }
+
+        .version-option {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: all var(--animation-speed) ease;
+            position: relative;
+        }
+
+        body.animated .version-option:hover {
+            background: rgba(137, 199, 182, 0.15);
+        }
+
+        .version-option.active {
+            background: rgba(137, 199, 182, 0.2);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            margin-right: 1rem;
+        }
+
+        .version-tooltip {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+            width: 200px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--animation-speed) ease;
+        }
+
+        .version-option:hover .version-tooltip {
+            opacity: 1;
+        }
+
+        /* 手机设备样式 */
+        @media screen and (max-width: 767px) {
+            .container {
+                padding: 1.5rem;
+                width: 95vw;
+                margin: 1rem auto;
+            }
+
+            .search-box {
+                padding: 0.8rem 3.5rem;
+                font-size: 1rem;
+            }
+
+            .search-btn, .login-btn {
+                font-size: 1.2rem;
+            }
+
+            .platform-card {
+                min-height: 70px;
+            }
+
+            .platform-icon {
+                font-size: 1.8rem;
+            }
+
+            .poetry {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            .verse {
+                font-size: 1.2rem;
+            }
+
+            .author {
+                font-size: 0.8rem;
+            }
+
+            .signature {
+                font-size: 0.7rem;
+                right: 5px;
+                bottom: 5px;
+            }
+            
+            .version-tooltip {
+                position: fixed;
+                left: 50%;
+                top: auto;
+                bottom: 10%;
+                transform: translateX(-50%);
+                width: 80%;
+                margin-left: 0;
+            }
+            
+            #suggestions {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* 搜索动画效果 */
+        .search-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .search-animation.active {
+            opacity: 1;
+        }
+        
+        .search-animation-content {
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .search-animation.active .search-animation-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-animation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .search-animation-text {
+            font-size: 1.2rem;
+            color: var(--墨色);
+        }
+
+        /* 流畅动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 流畅过渡 */
+        .fluent-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+
+<body class="animated">
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    <div class="container">
+        <div class="poetry" id="poetry"></div>
+        <div class="search-container">
+            <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+            <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
+            <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
+            <div id="suggestions"></div>
+        </div>
+        <div class="platform-grid" id="platformGrid"></div>
+    </div>
+    <div class="signature" id="signature">署名: zmf</div>
+
+    <!-- 搜索动画 -->
+    <div class="search-animation" id="searchAnimation">
+        <div class="search-animation-content">
+            <div class="search-animation-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="search-animation-text">正在搜索中...</div>
+        </div>
+    </div>
+
+    <!-- 设置面板 -->
+    <div class="overlay" id="settingsOverlay"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <h2>设置</h2>
+        
+        <div class="setting-item">
+            <label>显示控制</label>
+            <div class="section-toggle">
+                <div class="toggle-item" data-section="poetry">
+                    <input type="checkbox" id="showPoetry" checked>
+                    <label for="showPoetry">诗句</label>
+                </div>
+                <div class="toggle-item" data-section="image">
+                    <input type="checkbox" id="showImage" checked>
+                    <label for="showImage">背景图片</label>
+                </div>
+                <div class="toggle-item" data-section="platforms">
+                    <input type="checkbox" id="showPlatforms" checked>
+                    <label for="showPlatforms">平台</label>
+                </div>
+                <div class="toggle-item" data-section="login">
+                    <input type="checkbox" id="showLogin" checked>
+                    <label for="showLogin">登录</label>
+                </div>
+                <div class="toggle-item" data-section="easterEgg">
+                    <input type="checkbox" id="showEasterEgg" checked>
+                    <label for="showEasterEgg">彩蛋</label>
+                </div>
+                <div class="toggle-item" data-section="animation">
+                    <input type="checkbox" id="showAnimation" checked>
+                    <label for="showAnimation">搜索动画</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="setting-item">
+            <label for="bgBlur">背景模糊度</label>
+            <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+            <span id="bgBlurValue">12px</span>
+        </div>
+        
+        <div class="setting-item">
+            <label for="cardOpacity">卡片透明度</label>
+            <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
+            <span id="cardOpacityValue">12%</span>
+        </div>
+        
+        <div class="setting-item">
+            <label for="animationSpeed">动画速度</label>
+            <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+            <span id="animationSpeedValue">中速</span>
+        </div>
+        
+        <div class="settings-actions">
+            <button class="settings-btn secondary" id="cancelSettings">取消</button>
+            <button class="settings-btn" id="saveSettings">保存设置</button>
+        </div>
+    </div>
+
+    <script>
+        // 配置数据
+        const config = {
+            platforms: [
+                {
+                    id: 'bing',
+                    name: '必应搜索',
+                    icon: 'fa-microsoft',
+                    search: 'https://www.bing.com/search?q=',
+                    login: 'https://login.live.com/'
+                },
+                {
+                    id: 'google',
+                    name: '谷歌搜索',
+                    icon: 'fa-google',
+                    search: 'https://www.google.com/search?q=',
+                    login: 'https://accounts.google.com/'
+                },
+                {
+                    id: 'github',
+                    name: '代码星辰',
+                    icon: 'fa-github',
+                    search: 'https://github.com/search?q=',
+                    login: 'https://github.com/login'
+                },
+                {
+                    id: 'youtube',
+                    name: '视频星河',
+                    icon: 'fa-youtube',
+                    search: 'https://www.youtube.com/results?search_query=',
+                    login: 'https://accounts.google.com/'
+                },
+                {
+                    id: 'bilibili',
+                    name: '哔哩星海',
+                    icon: 'fa-bilibili',
+                    search: 'https://search.bilibili.com/all?keyword=',
+                    login: 'https://passport.bilibili.com/login'
+                },
+                {
+                    id: 'zhihu',
+                    name: '知乎星云',
+                    icon: 'fa-zhihu',
+                    search: 'https://www.zhihu.com/search?q=',
+                    login: 'https://www.zhihu.com/signin'
+                },
+                {
+                    id: 'baidu',
+                    name: '百度瀚海',
+                    icon: 'fa-baidu',
+                    search: 'https://www.baidu.com/s?wd=',
+                    login: 'https://passport.baidu.com/v2/?login'
+                },
+                {
+                    id: 'douyin',
+                    name: '抖音幻域',
+                    icon: 'fa-tiktok',
+                    search: 'https://www.douyin.com/search/',
+                    login: 'https://www.douyin.com/login'
+                },
+                {
+                    id: 'weibo',
+                    name: '微博星澜',
+                    icon: 'fa-weibo',
+                    search: 'https://s.weibo.com/weibo/',
+                    login: 'https://weibo.com/login.php'
+                },
+                {
+                    id:'stackoverflow',
+                    name: '技术星河',
+                    icon: 'fa-stack-overflow',
+                    search: 'https://stackoverflow.com/search?q=',
+                    login: 'https://stackoverflow.com/users/login'
+                }
+            ],
+            settings: {
+                showDailyImage: true,
+                bgBlur: 12,
+                cardOpacity: 12,
+                animationSpeed: 3,
+                showSections: {
+                    poetry: true,
+                    image: true,
+                    platforms: true,
+                    login: true,
+                    easterEgg: true,
+                    animation: true
+                }
+            },
+            
+            // 中国法定节假日(农历日期转换为公历近似日期)
+            holidays: {
+                'spring-festival': {
+                    name: '春节',
+                    dateRange: [
+                        { month: 1, day: 21 }, { month: 1, day: 22 }, { month: 1, day: 23 }, 
+                        { month: 1, day: 24 }, { month: 1, day: 25 }, { month: 1, day: 26 }, 
+                        { month: 1, day: 27 }
+                    ],
+                    activator: 'activateSpringFestival'
+                },
+                'lantern-festival': {
+                    name: '元宵节',
+                    dateRange: [
+                        { month: 2, day: 4 }, { month: 2, day: 24 }
+                    ],
+                    activator: 'activateLanternFestival'
+                },
+                'qingming-festival': {
+                    name: '清明节',
+                    dateRange: [
+                        { month: 4, day: 4 }, { month: 4, day: 5 }
+                    ],
+                    activator: 'activateQingmingFestival'
+                },
+                'dragon-boat-festival': {
+                    name: '端午节',
+                    dateRange: [
+                        { month: 6, day: 22 }
+                    ],
+                    activator: 'activateDragonBoatFestival'
+                },
+                'mid-autumn-festival': {
+                    name: '中秋节',
+                    dateRange: [
+                        { month: 9, day: 29 }
+                    ],
+                    activator: 'activateMidAutumnFestival'
+                },
+                'national-day': {
+                    name: '国庆节',
+                    dateRange: [
+                        { month: 10, day: 1 }, { month: 10, day: 2 }, { month: 10, day: 3 },
+                        { month: 10, day: 4 }, { month: 10, day: 5 }, { month: 10, day: 6 },
+                        { month: 10, day: 7 }
+                    ],
+                    activator: 'activateNationalDay'
+                }
+            },
+            
+            // 中国传统文化相关关键词
+            chineseKeywords: {
+                '春节': 'activateSpringFestival',
+                '中秋节': 'activateMidAutumnFestival',
+                '端午节': 'activateDragonBoatFestival',
+                '龙': 'activateDragon',
+                '长城': 'activateGreatWall',
+                '十二生肖': 'activateZodiac',
+                '福': 'activateFuCharacter',
+                '中国结': 'activateChineseKnot'
+            }
+        };
+
+        // DOM元素
+        const elements = {
+            loading: document.getElementById('loading'),
+            poetry: document.getElementById('poetry'),
+            searchInput: document.getElementById('searchInput'),
+            suggestions: document.getElementById('suggestions'),
+            platformGrid: document.getElementById('platformGrid'),
+            searchBtn: document.getElementById('searchBtn'),
+            loginBtn: document.getElementById('loginBtn'),
+            signature: document.getElementById('signature'),
+            settingsOverlay: document.getElementById('settingsOverlay'),
+            settingsPanel: document.getElementById('settingsPanel'),
+            showPoetry: document.getElementById('showPoetry'),
+            showImage: document.getElementById('showImage'),
+            showPlatforms: document.getElementById('showPlatforms'),
+            showLogin: document.getElementById('showLogin'),
+            showEasterEgg: document.getElementById('showEasterEgg'),
+            showAnimation: document.getElementById('showAnimation'),
+            bgBlur: document.getElementById('bgBlur'),
+            bgBlurValue: document.getElementById('bgBlurValue'),
+            cardOpacity: document.getElementById('cardOpacity'),
+            cardOpacityValue: document.getElementById('cardOpacityValue'),
+            animationSpeed: document.getElementById('animationSpeed'),
+            animationSpeedValue: document.getElementById('animationSpeedValue'),
+            searchAnimation: document.getElementById('searchAnimation')
+        };
+
+        // 状态变量
+        let hitokotoCache = null;
+        let clickCount = 0;
+        let lastClickTime = 0;
+        const CLICK_THRESHOLD = 7;
+        const CLICK_TIMEOUT = 1000;
+        let selectedPlatform = 'bing';
+        let isSuggestionsOpen = false;
+        let konamiCode = [];
+        const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        // 初始化函数
+        async function init() {
+            // 加载设置
+            loadSettings();
+            
+            // 等待字体加载
+            await document.fonts.ready;
+            
+            // 检查屏幕尺寸
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+            window.addEventListener('orientationchange', handleOrientationChange);
+            
+            // 加载壁纸
+            const imageUrl = await getWallpaper();
+            const img = new Image();
+            img.src = imageUrl;
+            img.onload = function() {
+                document.body.style.backgroundImage = config.settings.showSections.image ? `url(${imageUrl})` : 'none';
+                elements.loading.style.display = 'none';
+                document.body.classList.add('fade-in');
+            };
+            img.onerror = function() {
+                elements.loading.style.display = 'none';
+                console.error('图片加载失败');
+                document.body.classList.add('fade-in');
+            };
+            
+            // 渲染内容
+            showRandomHitokoto();
+            renderPlatforms();
+            
+            // 应用板块显示设置
+            applySectionSettings();
+            
+            // 聚焦搜索框
+            elements.searchInput.focus();
+            
+            // 添加事件监听
+            addEventListeners();
+
+            // 初始化彩蛋
+            initEasterEggs();
+
+            // 检查节日
+            checkTodayHoliday();
+        }
+
+        // 应用板块显示设置
+        function applySectionSettings() {
+            // 诗句
+            elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
+            
+            // 背景图片
+            document.body.style.backgroundImage = config.settings.showSections.image ? 
+                document.body.style.backgroundImage : 'none';
+            
+            // 平台
+            elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
+            
+            // 登录按钮
+            elements.loginBtn.style.display = config.settings.showSections.login ? 
+                (elements.loginBtn.style.display === 'block' ? 'block' : 'none') : 'none';
+        }
+
+        // 加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('searchPortalSettings');
+            if (savedSettings) {
+                try {
+                    const parsed = JSON.parse(savedSettings);
+                    config.settings = {...config.settings, ...parsed};
+                    
+                    // 更新UI控件
+                    elements.showPoetry.checked = config.settings.showSections.poetry;
+                    elements.showImage.checked = config.settings.showSections.image;
+                    elements.showPlatforms.checked = config.settings.showSections.platforms;
+                    elements.showLogin.checked = config.settings.showSections.login;
+                    elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+                    elements.showAnimation.checked = config.settings.showSections.animation;
+                    
+                    elements.bgBlur.value = config.settings.bgBlur;
+                    elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
+                    elements.cardOpacity.value = config.settings.cardOpacity;
+                    elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
+                    elements.animationSpeed.value = config.settings.animationSpeed;
+                    updateAnimationSpeedText();
+                    
+                    // 应用设置
+                    document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+                    document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+                    updateAnimationSpeed();
+                } catch (e) {
+                    console.error('加载设置失败:', e);
+                }
+            }
+        }
+
+        // 更新动画速度文本
+        function updateAnimationSpeedText() {
+            const speeds = ['关闭', '极慢', '慢速', '中速', '快速', '极快'];
+            elements.animationSpeedValue.textContent = speeds[config.settings.animationSpeed];
+        }
+
+        // 更新动画速度
+        function updateAnimationSpeed() {
+            let speed = 0.3;
+            switch (parseInt(config.settings.animationSpeed)) {
+                case 0: speed = 0; break;
+                case 1: speed = 0.8; break;
+                case 2: speed = 0.5; break;
+                case 3: speed = 0.3; break;
+                case 4: speed = 0.15; break;
+                case 5: speed = 0.1; break;
+            }
+            document.documentElement.style.setProperty('--animation-speed', `${speed}s`);
+        }
+
+        // 保存设置
+        function saveSettings() {
+            config.settings = {
+                showSections: {
+                    poetry: elements.showPoetry.checked,
+                    image: elements.showImage.checked,
+                    platforms: elements.showPlatforms.checked,
+                    login: elements.showLogin.checked,
+                    easterEgg: elements.showEasterEgg.checked,
+                    animation: elements.showAnimation.checked
+                },
+                bgBlur: parseInt(elements.bgBlur.value),
+                cardOpacity: parseInt(elements.cardOpacity.value),
+                animationSpeed: parseInt(elements.animationSpeed.value)
+            };
+            
+            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
+            
+            // 应用新设置
+            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+            updateAnimationSpeed();
+            
+            // 应用板块显示设置
+            applySectionSettings();
+            
+            closeSettings();
+        }
+
+        // 获取壁纸
+        async function getWallpaper() {
+            const width = window.screen.width;
+            const height = window.screen.height;
+            
+            // 精确到1像素的分辨率检测
+            if (width >= 3840 && height >= 2160) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
+            } else if (width >= 1920 && height >= 1080) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg';
+            } else if (width >= 1280 && height >= 720) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1280x720.jpg';
+            } else if (width >= 1024 && height >= 768) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg';
+            } else {
+                // 默认返回适合移动设备的壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg';
+            }
+        }
+
+        // 显示随机一言
+        async function showRandomHitokoto() {
+            if (!config.settings.showSections.poetry) {
+                elements.poetry.style.display = 'none';
+                return;
+            }
+
+            if (hitokotoCache) {
+                updatePoetryDisplay(hitokotoCache);
+                return;
+            }
+
+            try {
+                // 使用缓存API提高性能
+                const cache = await caches.open('hitokoto-cache');
+                const cachedResponse = await cache.match('https://v1.hitokoto.cn/?c=i');
+                
+                if (cachedResponse) {
+                    const data = await cachedResponse.json();
+                    hitokotoCache = data;
+                    updatePoetryDisplay(data);
+                }
+                
+                // 无论是否有缓存都获取最新数据
+                const response = await fetch('https://v1.hitokoto.cn/?c=i');
+                const data = await response.json();
+                hitokotoCache = data;
+                updatePoetryDisplay(data);
+                
+                // 更新缓存
+                cache.put('https://v1.hitokoto.cn/?c=i', new Response(JSON.stringify(data)));
+            } catch (error) {
+                console.error('获取一言语句时出错:', error);
+                updatePoetryDisplay({
+                    hitokoto: '书山有路勤为径，学海无涯苦作舟',
+                    from: '《增广贤文》'
+                });
+            }
+        }
+
+        // 更新诗词显示
+        function updatePoetryDisplay(data) {
+            const formatted = `<span class="verse">${data.hitokoto}</span><span class="author">—— ${data.from}</span>`;
+            elements.poetry.innerHTML = formatted;
+            elements.poetry.style.display = 'block';
+        }
+
+        // 显示搜索建议
+        function showSuggestions(input) {
+            if (!input || input.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            const callbackName = `bingSuggestionCallback_${Date.now()}`;
+            const script = document.createElement('script');
+            script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
+
+            window[callbackName] = function(data) {
+                if (data?.AS?.Results?.[0]?.Suggests) {
+                    elements.suggestions.innerHTML = data.AS.Results[0].Suggests.map(suggestion => `
+                        <div class="suggestion">${suggestion.Txt}</div>
+                    `).join('');
+
+                    // 根据建议内容调整宽度
+                    adjustSuggestionWidth(data.AS.Results[0].Suggests);
+
+                    // 添加建议点击事件
+                    document.querySelectorAll('.suggestion').forEach(item => {
+                        item.addEventListener('click', function() {
+                            elements.searchInput.value = this.textContent;
+                            hideSuggestions();
+                            performSearch(this.textContent);
+                        });
+                    });
+
+                    showSuggestionsUI();
+                } else {
+                    hideSuggestions();
+                }
+                document.body.removeChild(script);
+                delete window[callbackName];
+            };
+
+            document.body.appendChild(script);
+        }
+
+        // 根据建议内容调整宽度
+        function adjustSuggestionWidth(suggestions) {
+            if (!suggestions || suggestions.length === 0) return;
+            
+            // 找到最长的建议
+            const maxLength = Math.max(...suggestions.map(s => s.Txt.length));
+            // 设置最小宽度为搜索框宽度
+            const minWidth = elements.searchInput.offsetWidth;
+            // 根据字符数计算宽度
+            const charWidth = 10; // 每个字符大约10px
+            const calculatedWidth = Math.max(minWidth, maxLength * charWidth + 40); // 40px为padding
+            
+            elements.suggestions.style.width = `${calculatedWidth}px`;
+        }
+
+        // 显示建议框
+        function showSuggestionsUI() {
+            elements.suggestions.style.display = 'block';
+            setTimeout(() => {
+                elements.suggestions.classList.add('show');
+                isSuggestionsOpen = true;
+            }, 10);
+        }
+
+        // 隐藏建议框
+        function hideSuggestions() {
+            elements.suggestions.classList.remove('show');
+            setTimeout(() => {
+                elements.suggestions.style.display = 'none';
+                isSuggestionsOpen = false;
+            }, 200);
+        }
+
+        // 执行搜索
+        function performSearch(query) {
+            if (!query) return;
+            
+            // 检查是否是URL
+            if (isValidUrl(query)) {
+                navigateToUrl(query);
+                return;
+            }
+            
+            if (!selectedPlatform) {
+                alert('请先选择搜索平台');
+                return;
+            }
+
+            const platform = config.platforms.find(p => p.id === selectedPlatform);
+            if (platform) {
+                // 显示搜索动画
+                if (config.settings.showSections.animation) {
+                    showSearchAnimation();
+                }
+                
+                // 延迟打开链接，让动画有足够时间显示
+                setTimeout(() => {
+                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                    
+                    // 隐藏动画
+                    if (config.settings.showSections.animation) {
+                        setTimeout(() => {
+                            hideSearchAnimation();
+                        }, 500);
+                    }
+                }, 300);
+            }
+        }
+
+        // 检查是否是有效的URL
+        function isValidUrl(string) {
+            try {
+                // 检查是否包含协议
+                if (!string.match(/^https?:\/\//i)) {
+                    // 如果没有协议，尝试添加http://
+                    string = 'http://' + string;
+                }
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        // 导航到URL
+        function navigateToUrl(url) {
+            // 确保URL有协议
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'http://' + url;
+            }
+            
+            // 显示搜索动画
+            if (config.settings.showSections.animation) {
+                showSearchAnimation();
+            }
+            
+            // 延迟打开链接，让动画有足够时间显示
+            setTimeout(() => {
+                window.open(url, '_blank');
+                
+                // 隐藏动画
+                if (config.settings.showSections.animation) {
+                    setTimeout(() => {
+                        hideSearchAnimation();
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        // 显示搜索动画
+        function showSearchAnimation() {
+            elements.searchAnimation.classList.add('active');
+        }
+
+        // 隐藏搜索动画
+        function hideSearchAnimation() {
+            elements.searchAnimation.classList.remove('active');
+        }
+
+        // 检查屏幕尺寸
+        function checkScreenSize() {
+            // 可以根据需要添加响应式调整
+        }
+
+        // 处理方向变化
+        function handleOrientationChange() {
+            const grid = elements.platformGrid;
+            if (!grid) return;
+            
+            grid.style.display = 'none';
+            grid.offsetHeight;
+            grid.style.display = 'grid';
+        }
+
+        // 渲染平台网格
+        function renderPlatforms() {
+            if (!config.settings.showSections.platforms) {
+                elements.platformGrid.style.display = 'none';
+                return;
+            }
+
+            elements.platformGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-card').forEach(c =>
+                        c.classList.remove('active'));
+                    card.classList.add('active');
+
+                    selectedPlatform = card.dataset.id;
+                    const showLogin = card.dataset.login && config.settings.showSections.login;
+                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                });
+            });
+
+            // 默认显示登录按钮（如果必应需要）
+            const bingPlatform = config.platforms.find(p => p.id === 'bing');
+            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
+                elements.loginBtn.style.display = 'block';
+            }
+        }
+
+        // 打开设置
+        function openSettings() {
+            elements.settingsOverlay.style.display = 'block';
+            elements.settingsPanel.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.settingsOverlay.classList.add('show');
+                elements.settingsPanel.classList.add('show');
+            }, 10);
+        }
+
+        // 关闭设置
+        function closeSettings() {
+            elements.settingsOverlay.classList.remove('show');
+            elements.settingsPanel.classList.remove('show');
+            
+            setTimeout(() => {
+                elements.settingsOverlay.style.display = 'none';
+                elements.settingsPanel.style.display = 'none';
+            }, 300);
+        }
+
+        // 初始化彩蛋
+        function initEasterEggs() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 中国传统文化关键词监听
+            elements.searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                
+                // 检查是否匹配任何中国传统文化关键词
+                for (const [keyword, activator] of Object.entries(config.chineseKeywords)) {
+                    if (query.includes(keyword.toLowerCase())) {
+                        if (typeof this[activator] === 'function') {
+                            this[activator]();
+                        }
+                        break;
+                    }
+                }
+            });
+
+            // 署名点击 - 连点7次打开设置
+            elements.signature.addEventListener('click', handleSignatureClick);
+
+            // 科乐美秘技监听
+            document.addEventListener('keydown', function(e) {
+                konamiCode.push(e.key);
+                if (konamiCode.length > KONAMI_CODE.length) {
+                    konamiCode.shift();
+                }
+                
+                if (konamiCode.join(',') === KONAMI_CODE.join(',')) {
+                    showSourceCode();
+                    konamiCode = [];
+                }
+            });
+        }
+
+        // 检查今天是否是节日
+        function checkTodayHoliday() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            const today = new Date();
+            const holiday = checkHoliday(today);
+            if (holiday) {
+                // 触发节日彩蛋
+                if (typeof this[holiday.activator] === 'function') {
+                    this[holiday.activator]();
+                }
+            }
+        }
+
+        // 检查日期是否是节日
+        function checkHoliday(date) {
+            const month = date.getMonth() + 1; // 0-11 → 1-12
+            const day = date.getDate();
+            
+            for (const [id, holiday] of Object.entries(config.holidays)) {
+                for (const d of holiday.dateRange) {
+                    if (d.month === month && d.day === day) {
+                        return { id, ...holiday };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 显示源代码
+        function showSourceCode() {
+            const sourceViewer = document.createElement('div');
+            sourceViewer.className = 'source-viewer';
+            sourceViewer.innerHTML = `
+                <div class="source-header">
+                    <h3>星汉搜索 - 源代码</h3>
+                    <span class="source-close">×</span>
+                </div>
+                <pre>${document.documentElement.outerHTML}</pre>
+            `;
+            
+            document.body.appendChild(sourceViewer);
+            sourceViewer.style.display = 'block';
+            
+            // 添加关闭事件
+            sourceViewer.querySelector('.source-close').addEventListener('click', () => {
+                sourceViewer.style.display = 'none';
+            });
+        }
+
+        // 署名点击处理
+        function handleSignatureClick() {
+            const now = Date.now();
+            if (now - lastClickTime > CLICK_TIMEOUT) {
+                clickCount = 0;
+            }
+            
+            clickCount++;
+            lastClickTime = now;
+            
+            if (clickCount >= CLICK_THRESHOLD) {
+                openSettings();
+                clickCount = 0;
+                
+                // 添加点击动画
+                elements.signature.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    elements.signature.style.transform = '';
+                }, 300);
+            }
+        }
+
+        // 节日彩蛋激活函数
+        function activateSpringFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 春节彩蛋 - 显示灯笼和烟花
+            activateLanterns();
+            
+            // 每隔3秒放一个烟花
+            const fireworkInterval = setInterval(() => {
+                createFirework();
+            }, 3000);
+            
+            // 10秒后停止
+            setTimeout(() => {
+                clearInterval(fireworkInterval);
+            }, 10000);
+        }
+        
+        function activateLanternFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 元宵节彩蛋 - 显示灯笼
+            activateLanterns();
+            alert('元宵节快乐！吃汤圆，赏花灯！');
+        }
+        
+        function activateQingmingFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 清明节彩蛋 - 显示柳枝
+            alert('清明节安康！缅怀先人，踏青赏春！');
+        }
+        
+        function activateDragonBoatFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 端午节彩蛋 - 显示龙舟
+            activateDragon();
+            alert('端午节快乐！粽香四溢，龙舟竞渡！');
+        }
+        
+        function activateMidAutumnFestival() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 中秋节彩蛋 - 显示月亮和月饼
+            alert('中秋节快乐！月圆人圆，阖家幸福！');
+            
+            // 创建月亮元素
+            const moon = document.createElement('div');
+            moon.style.position = 'fixed';
+            moon.style.top = '20%';
+            moon.style.right = '20%';
+            moon.style.width = '100px';
+            moon.style.height = '100px';
+            moon.style.background = 'radial-gradient(circle, #fff 30%, #ffeb3b 100%)';
+            moon.style.borderRadius = '50%';
+            moon.style.boxShadow = '0 0 30px #ffeb3b';
+            moon.style.zIndex = '10000';
+            document.body.appendChild(moon);
+            
+            // 5秒后消失
+            setTimeout(() => {
+                moon.remove();
+            }, 5000);
+        }
+        
+        function activateNationalDay() {
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 国庆节彩蛋 - 显示国旗和烟花
+            alert('国庆节快乐！繁荣昌盛，国泰民安！');
+            
+            // 创建国旗元素
+            const flag = document.createElement('div');
+            flag.style.position = 'fixed';
+            flag.style.top = '10%';
+            flag.style.left = '10%';
+            flag.style.width = '120px';
+            flag.style.height = '80px';
+            flag.style.background = 'linear-gradient(to bottom, #de2910, #de2910 50%, #ffde00 50%, #ffde00)';
+            flag.style.zIndex = '10000';
+            document.body.appendChild(flag);
+            
+            // 每隔2秒放一个烟花
+            const fireworkInterval = setInterval(() => {
+                createFirework();
+            }, 2000);
+            
+            // 10秒后停止
+            setTimeout(() => {
+                clearInterval(fireworkInterval);
+                flag.remove();
+            }, 10000);
+        }
+
+        // 激活灯笼彩蛋
+        function activateLanterns() {
+            // 创建多个灯笼
+            const positions = [
+                { top: '10%', left: '10%' },
+                { top: '15%', left: '80%' },
+                { top: '70%', left: '20%' },
+                { top: '80%', left: '75%' }
+            ];
+            
+            positions.forEach(pos => {
+                const lantern = document.createElement('div');
+                lantern.className = 'lantern';
+                lantern.style.top = pos.top;
+                lantern.style.left = pos.left;
+                lantern.style.display = 'block';
+                document.body.appendChild(lantern);
+            });
+            
+            // 10秒后消失
+            setTimeout(() => {
+                document.querySelectorAll('.lantern').forEach(lantern => {
+                    lantern.remove();
+                });
+            }, 10000);
+        }
+
+        // 激活龙彩蛋
+        function activateDragon() {
+            const dragon = document.createElement('div');
+            dragon.className = 'dragon';
+            dragon.style.display = 'block';
+            document.body.appendChild(dragon);
+            
+            // 龙飞过屏幕后消失
+            setTimeout(() => {
+                dragon.remove();
+            }, 10000);
+        }
+
+        // 创建烟花
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = `${Math.random() * 80 + 10}%`;
+            firework.style.top = `${Math.random() * 80 + 10}%`;
+            firework.style.display = 'block';
+            document.body.appendChild(firework);
+            
+            // 动画结束后移除
+            setTimeout(() => {
+                firework.remove();
+            }, 1000);
+        }
+
+        // 添加事件监听
+        function addEventListeners() {
+            // 搜索按钮
+            elements.searchBtn.addEventListener('click', () => {
+                const query = elements.searchInput.value.trim();
+                if (!query) return alert('请输入搜索内容');
+                performSearch(query);
+            });
+
+            // 登录按钮
+            elements.loginBtn.addEventListener('click', () => {
+                if (!selectedPlatform) return;
+                const platform = config.platforms.find(p => p.id === selectedPlatform);
+                if (platform && platform.login) {
+                    window.open(platform.login, '_blank');
+                }
+            });
+
+            // 搜索输入
+            elements.searchInput.addEventListener('input', function() {
+                showSuggestions(this.value);
+            });
+
+            // 回车键搜索
+            elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = elements.searchInput.value.trim();
+                    if (!query) return alert('请输入搜索内容');
+                    performSearch(query);
+                }
+            });
+
+            // 输入框聚焦/失焦
+            elements.searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length > 0) {
+                    showSuggestions(this.value);
+                }
+            });
+
+            // 设置面板事件
+            elements.cancelSettings.addEventListener('click', closeSettings);
+            elements.saveSettings.addEventListener('click', saveSettings);
+            elements.settingsOverlay.addEventListener('click', closeSettings);
+
+            // 点击页面其他区域隐藏建议
+            document.addEventListener('click', function(e) {
+                if (!elements.searchInput.contains(e.target) && 
+                    !elements.suggestions.contains(e.target) &&
+                    !elements.searchBtn.contains(e.target)) {
+                    hideSuggestions();
+                }
+            });
+
+            // 键盘ESC键隐藏建议
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isSuggestionsOpen) {
+                    hideSuggestions();
+                }
+            });
+
+            // 背景模糊度调整
+            elements.bgBlur.addEventListener('input', function() {
+                elements.bgBlurValue.textContent = `${this.value}px`;
+            });
+
+            // 卡片透明度调整
+            elements.cardOpacity.addEventListener('input', function() {
+                elements.cardOpacityValue.textContent = `${this.value}%`;
+            });
+
+            // 动画速度调整
+            elements.animationSpeed.addEventListener('input', function() {
+                updateAnimationSpeedText();
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>
