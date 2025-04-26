@@ -18,12 +18,11 @@
             --云纹: rgba(255, 255, 255, 0.15);
             --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
             --primary-color: #89c7b6;
-            --accent-color: #4CAF50;
-            --win11-accent: #0078D7;
             --bg-blur: 12px;
             --card-opacity: 0.12;
             --animation-speed: 0.3s;
-            --win11-animation-curve: cubic-bezier(0.1, 0.9, 0.2, 1);
+            --win11-accent: #0078d4;
+            --win11-card-bg: rgba(255, 255, 255, 0.8);
         }
 
         body {
@@ -76,7 +75,7 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-sizing: border-box;
             text-align: center;
-            transition: transform var(--animation-speed) var(--win11-animation-curve);
+            transition: transform var(--animation-speed) ease;
         }
 
         .search-container {
@@ -94,7 +93,7 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
             color: var(--墨色);
             box-sizing: border-box;
             font-family: var(--禅意-font);
@@ -117,7 +116,7 @@
             font-size: 1.5rem;
             color: var(--墨色);
             padding: 0.5rem;
-            transition: transform var(--animation-speed) var(--win11-animation-curve);
+            transition: transform var(--animation-speed) ease;
         }
 
         body.animated .search-btn:hover {
@@ -136,7 +135,7 @@
             color: var(--墨色);
             padding: 0.5rem;
             display: none;
-            transition: transform var(--animation-speed) var(--win11-animation-curve);
+            transition: transform var(--animation-speed) ease;
         }
 
         body.animated .login-btn:hover {
@@ -150,7 +149,7 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
-            transition: transform var(--animation-speed) var(--win11-animation-curve), opacity var(--animation-speed) var(--win11-animation-curve);
+            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
             position: relative;
             z-index: 1;
         }
@@ -168,7 +167,7 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: 1rem;
             cursor: pointer;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
             text-align: center;
             backdrop-filter: blur(5px);
             display: flex;
@@ -188,7 +187,7 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
             opacity: 0;
-            transition: opacity var(--animation-speed) var(--win11-animation-curve);
+            transition: opacity var(--animation-speed) ease;
         }
 
         body.animated .platform-card:hover::before {
@@ -209,7 +208,7 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
             color: var(--墨色);
-            transition: transform var(--animation-speed) var(--win11-animation-curve);
+            transition: transform var(--animation-speed) ease;
         }
 
         body.animated .platform-card:hover .platform-icon {
@@ -254,7 +253,7 @@
             font-size: 1.2rem;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             line-height: 1.6;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
         }
 
         .verse {
@@ -288,7 +287,7 @@
             overflow-y: auto;
             transform-origin: top center;
             opacity: 0;
-            transition: all 0.25s var(--win11-animation-curve);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(5px);
         }
 
@@ -300,7 +299,7 @@
         .suggestion {
             padding: 0.8rem 1.2rem;
             cursor: pointer;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             text-align: left;
             white-space: nowrap;
@@ -333,7 +332,7 @@
             user-select: none;
             padding: 5px;
             z-index: 10;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
         }
 
         body.animated .signature:hover {
@@ -352,7 +351,7 @@
             justify-content: center;
             align-items: center;
             z-index: 999;
-            transition: opacity 0.5s var(--win11-animation-curve);
+            transition: opacity 0.5s ease;
         }
 
         .spinner {
@@ -392,7 +391,7 @@
             max-height: 80vh;
             overflow-y: auto;
             opacity: 0;
-            transition: all 0.3s var(--win11-animation-curve);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         body.animated .settings-panel.show {
@@ -438,7 +437,7 @@
             background: rgba(137, 199, 182, 0.8);
             color: white;
             cursor: pointer;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
+            transition: all var(--animation-speed) ease;
             font-family: var(--禅意-font);
         }
 
@@ -466,68 +465,62 @@
             z-index: 999;
             display: none;
             opacity: 0;
-            transition: opacity 0.3s var(--win11-animation-curve);
+            transition: opacity 0.3s ease;
         }
 
         body.animated .overlay.show {
             opacity: 1;
         }
 
-        /* 版本选择器样式 */
-        .version-selector {
-            margin-top: 1.5rem;
-        }
-
-        .version-option {
+        /* Win11风格搜索动画 */
+        .search-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
             display: flex;
+            justify-content: center;
             align-items: center;
-            padding: 0.8rem;
-            margin-bottom: 0.5rem;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 0.8rem;
-            cursor: pointer;
-            transition: all var(--animation-speed) var(--win11-animation-curve);
-            position: relative;
-        }
-
-        body.animated .version-option:hover {
-            background: rgba(137, 199, 182, 0.15);
-        }
-
-        .version-option.active {
-            background: rgba(137, 199, 182, 0.2);
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .version-badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-            margin-right: 1rem;
-        }
-
-        .version-tooltip {
-            position: absolute;
-            left: 100%;
-            top: 50%;
-            transform: translateY(-50%);
-            margin-left: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 0.8rem;
-            border-radius: 0.5rem;
-            width: 200px;
-            z-index: 100;
             opacity: 0;
             pointer-events: none;
-            transition: opacity var(--animation-speed) var(--win11-animation-curve);
+            transition: opacity 0.5s ease;
+        }
+        
+        .search-animation.active {
+            opacity: 1;
+        }
+        
+        .search-animation-content {
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .search-animation.active .search-animation-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-animation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--win11-accent);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .search-animation-text {
+            font-size: 1.2rem;
+            color: var(--墨色);
         }
 
-        .version-option:hover .version-tooltip {
-            opacity: 1;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* 手机设备样式 */
@@ -574,161 +567,28 @@
                 bottom: 5px;
             }
             
-            .version-tooltip {
-                position: fixed;
-                left: 50%;
-                top: auto;
-                bottom: 10%;
-                transform: translateX(-50%);
-                width: 80%;
-                margin-left: 0;
-            }
-            
             #suggestions {
                 width: 100%;
                 max-width: 100%;
             }
         }
 
-        /* 搜索动画效果 - Win11风格 */
-        .search-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s var(--win11-animation-curve);
-        }
-        
-        .search-animation.active {
-            opacity: 1;
-        }
-        
-        .search-animation-content {
-            text-align: center;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.5s var(--win11-animation-curve);
-        }
-        
-        .search-animation.active .search-animation-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .search-animation-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--win11-accent);
-            animation: pulse 2s infinite var(--win11-animation-curve);
-        }
-        
-        .search-animation-text {
-            font-size: 1.2rem;
-            color: var(--墨色);
-        }
-
-        /* Win11风格动画 */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        /* 流畅过渡 */
-        .fluent-transition {
-            transition: all 0.4s var(--win11-animation-curve);
-        }
-
-        /* 开关控件 - Win11风格 */
-        .toggle-switch {
+        /* 百度图标修复 */
+        .fa-baidu {
+            color: #2932E1 !important;
             position: relative;
-            display: inline-block;
-            width: 50px;
+        }
+
+        .fa-baidu::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
             height: 24px;
-            margin-left: 10px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--win11-accent);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(26px);
-        }
-
-        /* 设置项布局 */
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .setting-label {
-            flex: 1;
-        }
-
-        .setting-control-container {
-            display: flex;
-            align-items: center;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%232932E1" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path fill="%232932E1" d="M12 6c-3.313 0-6 2.687-6 6s2.687 6 6 6 6-2.687 6-6-2.687-6-6-6zm0 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z"/></svg>');
+            background-size: contain;
         }
     </style>
 </head>
@@ -767,89 +627,53 @@
         <div class="setting-item">
             <label>显示控制</label>
             <div class="section-toggle">
-                <div class="setting-row">
-                    <span class="setting-label">诗句</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showPoetry" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="poetry">
+                    <input type="checkbox" id="showPoetry" checked>
+                    <label for="showPoetry">诗句</label>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label">背景图片</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showImage" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="image">
+                    <input type="checkbox" id="showImage" checked>
+                    <label for="showImage">背景图片</label>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label">平台</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showPlatforms" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="dailyImage">
+                    <input type="checkbox" id="showDailyImage" checked>
+                    <label for="showDailyImage">每日一图</label>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label">登录</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showLogin" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="platforms">
+                    <input type="checkbox" id="showPlatforms" checked>
+                    <label for="showPlatforms">平台</label>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label">彩蛋</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showEasterEgg" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="login">
+                    <input type="checkbox" id="showLogin" checked>
+                    <label for="showLogin">登录</label>
                 </div>
-                <div class="setting-row">
-                    <span class="setting-label">搜索动画</span>
-                    <div class="setting-control-container">
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="showAnimation" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
+                <div class="toggle-item" data-section="easterEgg">
+                    <input type="checkbox" id="showEasterEgg" checked>
+                    <label for="showEasterEgg">彩蛋</label>
+                </div>
+                <div class="toggle-item" data-section="animation">
+                    <input type="checkbox" id="showAnimation" checked>
+                    <label for="showAnimation">搜索动画</label>
                 </div>
             </div>
         </div>
         
         <div class="setting-item">
-            <div class="setting-row">
-                <span class="setting-label">背景模糊度: <span id="bgBlurValue">12px</span></span>
-                <input type="range" id="bgBlur" min="0" max="20" value="12" step="1" class="win11-slider">
-            </div>
+            <label for="bgBlur">背景模糊度</label>
+            <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+            <span id="bgBlurValue">12px</span>
         </div>
         
         <div class="setting-item">
-            <div class="setting-row">
-                <span class="setting-label">卡片透明度: <span id="cardOpacityValue">12%</span></span>
-                <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1" class="win11-slider">
-            </div>
+            <label for="cardOpacity">卡片透明度</label>
+            <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
+            <span id="cardOpacityValue">12%</span>
         </div>
         
         <div class="setting-item">
-            <div class="setting-row">
-                <span class="setting-label">动画速度</span>
-                <select id="animationSpeed" class="setting-control">
-                    <option value="0">关闭</option>
-                    <option value="1">极慢</option>
-                    <option value="2">慢速</option>
-                    <option value="3" selected>中速</option>
-                    <option value="4">快速</option>
-                    <option value="5">极快</option>
-                </select>
-            </div>
+            <label for="animationSpeed">动画速度</label>
+            <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+            <span id="animationSpeedValue">中速</span>
         </div>
         
         <div class="settings-actions">
@@ -941,6 +765,7 @@
                 showSections: {
                     poetry: true,
                     image: true,
+                    dailyImage: true,
                     platforms: true,
                     login: true,
                     easterEgg: true,
@@ -1025,6 +850,7 @@
             settingsPanel: document.getElementById('settingsPanel'),
             showPoetry: document.getElementById('showPoetry'),
             showImage: document.getElementById('showImage'),
+            showDailyImage: document.getElementById('showDailyImage'),
             showPlatforms: document.getElementById('showPlatforms'),
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
@@ -1035,9 +861,7 @@
             cardOpacityValue: document.getElementById('cardOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
-            searchAnimation: document.getElementById('searchAnimation'),
-            cancelSettings: document.getElementById('cancelSettings'),
-            saveSettings: document.getElementById('saveSettings')
+            searchAnimation: document.getElementById('searchAnimation')
         };
 
         // 状态变量
@@ -1069,7 +893,7 @@
             const img = new Image();
             img.src = imageUrl;
             img.onload = function() {
-                document.body.style.backgroundImage = config.settings.showSections.image ? `url(${imageUrl})` : 'none';
+                document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? `url(${imageUrl})` : 'none';
                 elements.loading.style.display = 'none';
                 document.body.classList.add('fade-in');
             };
@@ -1105,7 +929,7 @@
             elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
             
             // 背景图片
-            document.body.style.backgroundImage = config.settings.showSections.image ? 
+            document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? 
                 document.body.style.backgroundImage : 'none';
             
             // 平台
@@ -1125,18 +949,19 @@
                     config.settings = {...config.settings, ...parsed};
                     
                     // 更新UI控件
-                    elements.showPoetry.checked = config.settings.showSections.poetry;
-                    elements.showImage.checked = config.settings.showSections.image;
-                    elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    elements.showLogin.checked = config.settings.showSections.login;
-                    elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
-                    elements.showAnimation.checked = config.settings.showSections.animation;
+                    if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
+                    if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
+                    if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
+                    if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
+                    if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
+                    if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+                    if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
                     
-                    elements.bgBlur.value = config.settings.bgBlur;
-                    elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
-                    elements.cardOpacity.value = config.settings.cardOpacity;
-                    elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
-                    elements.animationSpeed.value = config.settings.animationSpeed;
+                    if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
+                    if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
+                    if (elements.cardOpacity) elements.cardOpacity.value = config.settings.cardOpacity;
+                    if (elements.cardOpacityValue) elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
+                    if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
                     updateAnimationSpeedText();
                     
                     // 应用设置
@@ -1151,8 +976,10 @@
 
         // 更新动画速度文本
         function updateAnimationSpeedText() {
+            if (!elements.animationSpeedValue) return;
             const speeds = ['关闭', '极慢', '慢速', '中速', '快速', '极快'];
-            elements.animationSpeedValue.textContent = speeds[config.settings.animationSpeed];
+            const speedIndex = parseInt(config.settings.animationSpeed) || 3;
+            elements.animationSpeedValue.textContent = speeds[speedIndex];
         }
 
         // 更新动画速度
@@ -1172,17 +999,19 @@
         // 保存设置
         function saveSettings() {
             config.settings = {
+                showDailyImage: elements.showDailyImage.checked,
+                bgBlur: parseInt(elements.bgBlur.value),
+                cardOpacity: parseInt(elements.cardOpacity.value),
+                animationSpeed: parseInt(elements.animationSpeed.value),
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
+                    dailyImage: elements.showDailyImage.checked,
                     platforms: elements.showPlatforms.checked,
                     login: elements.showLogin.checked,
                     easterEgg: elements.showEasterEgg.checked,
                     animation: elements.showAnimation.checked
-                },
-                bgBlur: parseInt(elements.bgBlur.value),
-                cardOpacity: parseInt(elements.cardOpacity.value),
-                animationSpeed: parseInt(elements.animationSpeed.value)
+                }
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
@@ -1200,6 +1029,10 @@
 
         // 获取壁纸
         async function getWallpaper() {
+            if (!config.settings.showSections.dailyImage) {
+                return '';
+            }
+            
             const width = window.screen.width;
             const height = window.screen.height;
             
@@ -1342,12 +1175,8 @@
         function performSearch(query) {
             if (!query) return;
             
-            query = query.trim();
-            
-            // 更严格的URL检查
-            const isUrl = isValidUrl(query);
-            
-            if (isUrl) {
+            // 检查是否是URL
+            if (isValidUrl(query)) {
                 navigateToUrl(query);
                 return;
             }
@@ -1380,20 +1209,15 @@
 
         // 检查是否是有效的URL
         function isValidUrl(string) {
-            if (!string || !string.trim()) return false;
-            
-            // 排除纯空格或常见搜索词
-            if (string.trim().length < 5 || 
-                string.indexOf(' ') >= 0 || 
-                string.indexOf('.') === -1) {
-                return false;
-            }
-            
             try {
-                // 尝试创建URL对象验证
-                new URL(string.startsWith('http') ? string : `http://${string}`);
+                // 检查是否包含协议
+                if (!string.match(/^https?:\/\//i)) {
+                    // 如果没有协议，尝试添加http://
+                    string = 'http://' + string;
+                }
+                new URL(string);
                 return true;
-            } catch (e) {
+            } catch (_) {
                 return false;
             }
         }
@@ -1826,23 +1650,17 @@
             // 背景模糊度调整
             elements.bgBlur.addEventListener('input', function() {
                 elements.bgBlurValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--bg-blur', `${this.value}px`);
             });
 
             // 卡片透明度调整
             elements.cardOpacity.addEventListener('input', function() {
                 elements.cardOpacityValue.textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--card-opacity', `${this.value/100}`);
             });
 
             // 动画速度调整
-            elements.animationSpeed.addEventListener('change', function() {
+            elements.animationSpeed.addEventListener('input', function() {
                 updateAnimationSpeedText();
-                updateAnimationSpeed();
             });
-
-            // 署名点击事件
-            elements.signature.addEventListener('click', handleSignatureClick);
         }
 
         // 初始化
