@@ -23,6 +23,8 @@
             --animation-speed: 0.3s;
             --win11-accent: #0078d4;
             --win11-card-bg: rgba(255, 255, 255, 0.8);
+            --cmd-bg: #0c0c0c;
+            --cmd-text: #cccccc;
         }
 
         body {
@@ -76,6 +78,38 @@
             box-sizing: border-box;
             text-align: center;
             transition: transform var(--animation-speed) ease;
+        }
+
+        /* CMD模式样式 */
+        .cmd-mode {
+            background-color: var(--cmd-bg);
+            color: var(--cmd-text);
+            font-family: 'Courier New', monospace;
+            border: 1px solid #333;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 1rem;
+        }
+
+        .cmd-mode .poetry {
+            color: var(--cmd-text);
+            text-shadow: none;
+        }
+
+        .cmd-mode .search-box {
+            background-color: var(--cmd-bg);
+            color: var(--cmd-text);
+            border: 1px solid #333;
+            border-radius: 0;
+        }
+
+        .cmd-mode .platform-grid {
+            display: none;
+        }
+
+        .cmd-prompt {
+            color: lime;
+            margin-right: 0.5rem;
         }
 
         .search-container {
@@ -289,6 +323,18 @@
             opacity: 0;
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             backdrop-filter: blur(5px);
+        }
+
+        /* 手机设备建议框样式 */
+        @media screen and (max-width: 767px) {
+            #suggestions {
+                top: auto;
+                bottom: 0;
+                transform: translateX(-50%) scaleY(0.9);
+                max-height: 30vh;
+                width: 90%;
+                max-width: 90%;
+            }
         }
 
         body.animated #suggestions.show {
@@ -566,11 +612,6 @@
                 right: 5px;
                 bottom: 5px;
             }
-            
-            #suggestions {
-                width: 100%;
-                max-width: 100%;
-            }
         }
 
         /* 百度图标修复 */
@@ -590,6 +631,69 @@
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%232932E1" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path fill="%232932E1" d="M12 6c-3.313 0-6 2.687-6 6s2.687 6 6 6 6-2.687 6-6-2.687-6-6-6zm0 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z"/></svg>');
             background-size: contain;
         }
+
+        /* 平台选择动画 */
+        .platform-selection {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .platform-selection.show {
+            display: block;
+            opacity: 1;
+            animation: platformSlideIn 0.3s forwards;
+        }
+
+        @keyframes platformSlideIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .platform-selection-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .platform-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .platform-selection-item {
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .platform-selection-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-selection-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
     </style>
 </head>
 
@@ -597,7 +701,7 @@
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="poetry" id="poetry"></div>
         <div class="search-container">
             <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
@@ -617,6 +721,12 @@
             </div>
             <div class="search-animation-text">正在搜索中...</div>
         </div>
+    </div>
+
+    <!-- 平台选择面板 -->
+    <div class="platform-selection" id="platformSelection">
+        <div class="platform-selection-title">选择搜索平台</div>
+        <div class="platform-selection-grid" id="platformSelectionGrid"></div>
     </div>
 
     <!-- 设置面板 -->
@@ -641,7 +751,7 @@
                 </div>
                 <div class="toggle-item" data-section="platforms">
                     <input type="checkbox" id="showPlatforms" checked>
-                    <label for="showPlatforms">平台</label>
+                    <label for="showPlatforms">平台显示</label>
                 </div>
                 <div class="toggle-item" data-section="login">
                     <input type="checkbox" id="showLogin" checked>
@@ -655,7 +765,27 @@
                     <input type="checkbox" id="showAnimation" checked>
                     <label for="showAnimation">搜索动画</label>
                 </div>
+                <div class="toggle-item" data-section="cmdMode">
+                    <input type="checkbox" id="cmdMode">
+                    <label for="cmdMode">CMD模式</label>
+                </div>
             </div>
+        </div>
+        
+        <div class="setting-item">
+            <label for="defaultPlatform">默认搜索平台</label>
+            <select id="defaultPlatform" class="setting-control">
+                <option value="bing">必应搜索</option>
+                <option value="google">谷歌搜索</option>
+                <option value="baidu">百度搜索</option>
+                <option value="github">GitHub</option>
+                <option value="youtube">YouTube</option>
+                <option value="bilibili">哔哩哔哩</option>
+                <option value="zhihu">知乎</option>
+                <option value="douyin">抖音</option>
+                <option value="weibo">微博</option>
+                <option value="stackoverflow">StackOverflow</option>
+            </select>
         </div>
         
         <div class="setting-item">
@@ -762,6 +892,8 @@
                 bgBlur: 12,
                 cardOpacity: 12,
                 animationSpeed: 3,
+                defaultPlatform: 'bing',
+                cmdMode: false,
                 showSections: {
                     poetry: true,
                     image: true,
@@ -843,6 +975,8 @@
             searchInput: document.getElementById('searchInput'),
             suggestions: document.getElementById('suggestions'),
             platformGrid: document.getElementById('platformGrid'),
+            platformSelection: document.getElementById('platformSelection'),
+            platformSelectionGrid: document.getElementById('platformSelectionGrid'),
             searchBtn: document.getElementById('searchBtn'),
             loginBtn: document.getElementById('loginBtn'),
             signature: document.getElementById('signature'),
@@ -855,13 +989,16 @@
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
             showAnimation: document.getElementById('showAnimation'),
+            cmdMode: document.getElementById('cmdMode'),
+            defaultPlatform: document.getElementById('defaultPlatform'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
             cardOpacity: document.getElementById('cardOpacity'),
             cardOpacityValue: document.getElementById('cardOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
-            searchAnimation: document.getElementById('searchAnimation')
+            searchAnimation: document.getElementById('searchAnimation'),
+            mainContainer: document.getElementById('mainContainer')
         };
 
         // 状态变量
@@ -906,6 +1043,7 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
+            renderPlatformSelection();
             
             // 应用板块显示设置
             applySectionSettings();
@@ -921,6 +1059,21 @@
 
             // 检查节日
             checkTodayHoliday();
+
+            // 应用CMD模式
+            applyCmdMode();
+        }
+
+        // 应用CMD模式
+        function applyCmdMode() {
+            if (config.settings.cmdMode) {
+                elements.mainContainer.classList.add('cmd-mode');
+                elements.searchInput.placeholder = "> 输入搜索内容...";
+                elements.poetry.innerHTML = `<span class="cmd-prompt">></span><span class="verse">欢迎使用CMD模式</span>`;
+            } else {
+                elements.mainContainer.classList.remove('cmd-mode');
+                elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
+            }
         }
 
         // 应用板块显示设置
@@ -956,6 +1109,11 @@
                     if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
                     if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
                     if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
+                    if (elements.cmdMode) elements.cmdMode.checked = config.settings.cmdMode;
+                    if (elements.defaultPlatform) {
+                        elements.defaultPlatform.value = config.settings.defaultPlatform || 'bing';
+                        selectedPlatform = config.settings.defaultPlatform || 'bing';
+                    }
                     
                     if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
                     if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
@@ -1003,6 +1161,8 @@
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
+                defaultPlatform: elements.defaultPlatform.value,
+                cmdMode: elements.cmdMode.checked,
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
@@ -1023,6 +1183,9 @@
             
             // 应用板块显示设置
             applySectionSettings();
+            
+            // 应用CMD模式
+            applyCmdMode();
             
             closeSettings();
         }
@@ -1053,7 +1216,7 @@
 
         // 显示随机一言
         async function showRandomHitokoto() {
-            if (!config.settings.showSections.poetry) {
+            if (!config.settings.showSections.poetry || config.settings.cmdMode) {
                 elements.poetry.style.display = 'none';
                 return;
             }
@@ -1098,9 +1261,27 @@
             elements.poetry.style.display = 'block';
         }
 
+        // 渲染平台选择面板
+        function renderPlatformSelection() {
+            elements.platformSelectionGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-selection-item" data-id="${platform.id}">
+                    <div class="platform-selection-icon"><i class="fab ${platform.icon}"></i></div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-selection-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectedPlatform = this.dataset.id;
+                    elements.platformSelection.classList.remove('show');
+                    performSearch(elements.searchInput.value.trim());
+                });
+            });
+        }
+
         // 显示搜索建议
         function showSuggestions(input) {
-            if (!input || input.length === 0) {
+            if (!input || input.length === 0 || config.settings.cmdMode) {
                 hideSuggestions();
                 return;
             }
@@ -1181,30 +1362,17 @@
                 return;
             }
             
-            if (!selectedPlatform) {
-                alert('请先选择搜索平台');
+            // 在CMD模式下直接使用默认平台
+            if (config.settings.cmdMode || !config.settings.showSections.platforms) {
+                const platform = config.platforms.find(p => p.id === config.settings.defaultPlatform);
+                if (platform) {
+                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                }
                 return;
             }
 
-            const platform = config.platforms.find(p => p.id === selectedPlatform);
-            if (platform) {
-                // 显示搜索动画
-                if (config.settings.showSections.animation) {
-                    showSearchAnimation();
-                }
-                
-                // 延迟打开链接，让动画有足够时间显示
-                setTimeout(() => {
-                    window.open(platform.search + encodeURIComponent(query), '_blank');
-                    
-                    // 隐藏动画
-                    if (config.settings.showSections.animation) {
-                        setTimeout(() => {
-                            hideSearchAnimation();
-                        }, 500);
-                    }
-                }, 300);
-            }
+            // 显示平台选择面板
+            elements.platformSelection.classList.add('show');
         }
 
         // 检查是否是有效的URL
@@ -1621,7 +1789,7 @@
 
             // 输入框聚焦/失焦
             elements.searchInput.addEventListener('focus', function() {
-                if (this.value.trim().length > 0) {
+                if (this.value.trim().length > 0 && !config.settings.cmdMode) {
                     showSuggestions(this.value);
                 }
             });
@@ -1631,19 +1799,24 @@
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
 
-            // 点击页面其他区域隐藏建议
+            // 点击页面其他区域隐藏建议和平台选择
             document.addEventListener('click', function(e) {
                 if (!elements.searchInput.contains(e.target) && 
                     !elements.suggestions.contains(e.target) &&
-                    !elements.searchBtn.contains(e.target)) {
+                    !elements.searchBtn.contains(e.target) &&
+                    !elements.platformSelection.contains(e.target)) {
                     hideSuggestions();
+                    elements.platformSelection.classList.remove('show');
                 }
             });
 
-            // 键盘ESC键隐藏建议
+            // 键盘ESC键隐藏建议和平台选择
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && isSuggestionsOpen) {
-                    hideSuggestions();
+                if (e.key === 'Escape') {
+                    if (isSuggestionsOpen) {
+                        hideSuggestions();
+                    }
+                    elements.platformSelection.classList.remove('show');
                 }
             });
 
