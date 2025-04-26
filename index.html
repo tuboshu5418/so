@@ -25,6 +25,7 @@
             --win11-card-bg: rgba(255, 255, 255, 0.8);
             --cmd-bg: #0c0c0c;
             --cmd-text: #cccccc;
+            --platform-scale: 1;
         }
 
         body {
@@ -107,6 +108,10 @@
             display: none;
         }
 
+        .cmd-mode .favorites-grid {
+            display: none;
+        }
+
         .cmd-prompt {
             color: lime;
             margin-right: 0.5rem;
@@ -123,7 +128,7 @@
         .search-box {
             width: 100%;
             padding: 1rem 4rem;
-            font-size: 1.1rem;
+            font-size: calc(1.1rem * var(--platform-scale));
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
@@ -147,7 +152,7 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: calc(1.5rem * var(--platform-scale));
             color: var(--墨色);
             padding: 0.5rem;
             transition: transform var(--animation-speed) ease;
@@ -165,7 +170,7 @@
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: calc(1.5rem * var(--platform-scale));
             color: var(--墨色);
             padding: 0.5rem;
             display: none;
@@ -186,6 +191,22 @@
             transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
             position: relative;
             z-index: 1;
+            transform: scale(var(--platform-scale));
+            transform-origin: center;
+        }
+
+        /* 收藏夹网格 */
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(1, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
+            position: relative;
+            z-index: 1;
+            transform: scale(var(--platform-scale));
+            transform-origin: center;
         }
 
         /* 竖屏5×2 */
@@ -194,12 +215,30 @@
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(5, 1fr);
             }
+            
+            .favorites-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+            }
         }
 
-        .platform-card {
-            padding: 0.8rem;
+        /* 横屏端建议弹出时调整布局 */
+        @media screen and (min-width: 768px) {
+            .platform-grid.suggestions-visible {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 0.8rem;
+            }
+            
+            .favorites-grid.suggestions-visible {
+                display: none;
+            }
+        }
+
+        .platform-card, .favorite-card {
+            padding: calc(0.8rem * var(--platform-scale));
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 1rem;
+            border-radius: calc(1rem * var(--platform-scale));
             cursor: pointer;
             transition: all var(--animation-speed) ease;
             text-align: center;
@@ -207,12 +246,13 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 80px;
+            min-height: calc(80px * var(--platform-scale));
             position: relative;
             overflow: hidden;
         }
 
-        body.animated .platform-card::before {
+        body.animated .platform-card::before,
+        body.animated .favorite-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -224,28 +264,31 @@
             transition: opacity var(--animation-speed) ease;
         }
 
-        body.animated .platform-card:hover::before {
+        body.animated .platform-card:hover::before,
+        body.animated .favorite-card:hover::before {
             opacity: 1;
         }
 
-        .platform-card.active {
+        .platform-card.active, .favorite-card.active {
             background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        body.animated .platform-card:hover {
+        body.animated .platform-card:hover,
+        body.animated .favorite-card:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px);
         }
 
-        .platform-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
+        .platform-icon, .favorite-icon {
+            font-size: calc(2rem * var(--platform-scale));
+            margin-bottom: calc(0.5rem * var(--platform-scale));
             color: var(--墨色);
             transition: transform var(--animation-speed) ease;
         }
 
-        body.animated .platform-card:hover .platform-icon {
+        body.animated .platform-card:hover .platform-icon,
+        body.animated .favorite-card:hover .favorite-icon {
             transform: scale(1.1);
         }
 
@@ -260,6 +303,8 @@
         .fa-tiktok { color: #000000; }
         .fa-weibo { color: #DF2029; }
         .fa-stack-overflow { color: #F48024; }
+        .fa-star { color: #FFD700; }
+        .fa-plus { color: var(--primary-color); }
 
         @keyframes 云游 {
             0% {
@@ -284,21 +329,21 @@
             color: var(--墨色);
             margin-bottom: 1rem;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: calc(1.2rem * var(--platform-scale));
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             line-height: 1.6;
             transition: all var(--animation-speed) ease;
         }
 
         .verse {
-            font-size: 1.3rem;
+            font-size: calc(1.3rem * var(--platform-scale));
             letter-spacing: 2px;
             display: block;
             margin-bottom: 0.5rem;
         }
 
         .author {
-            font-size: 0.9rem;
+            font-size: calc(0.9rem * var(--platform-scale));
             color: rgba(44, 62, 80, 0.8);
             display: block;
         }
@@ -328,12 +373,26 @@
         /* 手机设备建议框样式 */
         @media screen and (max-width: 767px) {
             #suggestions {
+                position: fixed;
                 top: auto;
                 bottom: 0;
-                transform: translateX(-50%) scaleY(0.9);
-                max-height: 30vh;
-                width: 90%;
-                max-width: 90%;
+                left: 0;
+                right: 0;
+                transform: translateY(100%);
+                max-height: 50vh;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 1rem 1rem 0 0;
+            }
+            
+            #suggestions.show {
+                transform: translateY(0);
+            }
+            
+            /* 手机端建议弹出时下移平台 */
+            .platform-grid.suggestions-visible, 
+            .favorites-grid.suggestions-visible {
+                margin-bottom: 50vh;
             }
         }
 
@@ -371,7 +430,7 @@
             position: absolute;
             bottom: 10px;
             right: 10px;
-            font-size: 0.8rem;
+            font-size: calc(0.8rem * var(--platform-scale));
             color: var(--墨色);
             opacity: 0.8;
             cursor: pointer;
@@ -586,11 +645,11 @@
                 font-size: 1.2rem;
             }
 
-            .platform-card {
+            .platform-card, .favorite-card {
                 min-height: 70px;
             }
 
-            .platform-icon {
+            .platform-icon, .favorite-icon {
                 font-size: 1.8rem;
             }
 
@@ -694,6 +753,247 @@
             font-size: 1.5rem;
             margin-bottom: 0.3rem;
         }
+
+        /* 收藏夹管理面板 */
+        .favorites-manager {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(90vw, 600px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            color: var(--墨色);
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .favorites-manager.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .favorites-manager h2 {
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .favorites-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .favorite-item {
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .favorite-item .remove-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .favorite-item:hover .remove-btn {
+            opacity: 1;
+        }
+
+        .favorite-item-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .favorite-item-name {
+            font-size: 0.9rem;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .add-favorite-form {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .add-favorite-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-family: var(--禅意-font);
+        }
+
+        .add-favorite-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-family: var(--禅意-font);
+        }
+
+        .favorites-manager-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        /* 手表和手环设备适配 */
+        @media screen and (max-width: 400px) and (max-height: 400px) {
+            .container {
+                width: 95vw;
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+            
+            .search-box {
+                padding: 0.6rem 2.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .search-btn, .login-btn {
+                font-size: 1rem;
+            }
+            
+            .platform-grid, .favorites-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .platform-card, .favorite-card {
+                min-height: 60px;
+                padding: 0.5rem;
+            }
+            
+            .platform-icon, .favorite-icon {
+                font-size: 1.5rem;
+            }
+            
+            .poetry {
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .verse {
+                font-size: 1.1rem;
+            }
+            
+            .author {
+                font-size: 0.7rem;
+            }
+            
+            .signature {
+                font-size: 0.6rem;
+                right: 5px;
+                bottom: 5px;
+            }
+            
+            /* 圆形屏幕适配 */
+            @media screen and (max-aspect-ratio: 1/1) {
+                .container {
+                    border-radius: 50%;
+                    width: 90vmin;
+                    height: 90vmin;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 1.5rem;
+                }
+                
+                .platform-grid, .favorites-grid {
+                    display: none; /* 在圆形屏幕上隐藏平台网格 */
+                }
+                
+                .poetry {
+                    margin-bottom: 0.5rem;
+                }
+                
+                .search-container {
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+
+        /* 极低分辨率设备 */
+        @media screen and (max-width: 240px) {
+            :root {
+                --platform-scale: 0.8;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .search-box {
+                padding: 0.4rem 2rem;
+            }
+            
+            .search-btn, .login-btn {
+                font-size: 0.8rem;
+                padding: 0.3rem;
+            }
+            
+            .platform-grid, .favorites-grid {
+                gap: 0.3rem;
+            }
+            
+            .platform-card, .favorite-card {
+                min-height: 50px;
+                padding: 0.3rem;
+            }
+            
+            .platform-icon, .favorite-icon {
+                font-size: 1.2rem;
+                margin-bottom: 0.2rem;
+            }
+            
+            .poetry {
+                margin-bottom: 0.5rem;
+            }
+            
+            .verse {
+                font-size: 0.9rem;
+            }
+            
+            .author {
+                font-size: 0.6rem;
+            }
+            
+            .signature {
+                font-size: 0.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -709,6 +1009,7 @@
             <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
             <div id="suggestions"></div>
         </div>
+        <div class="favorites-grid" id="favoritesGrid"></div>
         <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
@@ -727,6 +1028,21 @@
     <div class="platform-selection" id="platformSelection">
         <div class="platform-selection-title">选择搜索平台</div>
         <div class="platform-selection-grid" id="platformSelectionGrid"></div>
+    </div>
+
+    <!-- 收藏夹管理面板 -->
+    <div class="overlay" id="favoritesOverlay"></div>
+    <div class="favorites-manager" id="favoritesManager">
+        <h2>收藏夹管理</h2>
+        <div class="favorites-list" id="favoritesList"></div>
+        <div class="add-favorite-form">
+            <input type="text" class="add-favorite-input" id="favoriteNameInput" placeholder="收藏名称">
+            <input type="text" class="add-favorite-input" id="favoriteUrlInput" placeholder="网址 (包含http://或https://)">
+            <button class="add-favorite-btn" id="addFavoriteBtn">添加</button>
+        </div>
+        <div class="favorites-manager-actions">
+            <button class="settings-btn" id="closeFavoritesManager">完成</button>
+        </div>
     </div>
 
     <!-- 设置面板 -->
@@ -752,6 +1068,10 @@
                 <div class="toggle-item" data-section="platforms">
                     <input type="checkbox" id="showPlatforms" checked>
                     <label for="showPlatforms">平台显示</label>
+                </div>
+                <div class="toggle-item" data-section="favorites">
+                    <input type="checkbox" id="showFavorites" checked>
+                    <label for="showFavorites">收藏夹</label>
                 </div>
                 <div class="toggle-item" data-section="login">
                     <input type="checkbox" id="showLogin" checked>
@@ -804,6 +1124,12 @@
             <label for="animationSpeed">动画速度</label>
             <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
             <span id="animationSpeedValue">中速</span>
+        </div>
+        
+        <div class="setting-item">
+            <label for="platformScale">平台缩放比例</label>
+            <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
+            <span id="platformScaleValue">100%</span>
         </div>
         
         <div class="settings-actions">
@@ -892,6 +1218,7 @@
                 bgBlur: 12,
                 cardOpacity: 12,
                 animationSpeed: 3,
+                platformScale: 100,
                 defaultPlatform: 'bing',
                 cmdMode: false,
                 showSections: {
@@ -899,11 +1226,13 @@
                     image: true,
                     dailyImage: true,
                     platforms: true,
+                    favorites: true,
                     login: true,
                     easterEgg: true,
                     animation: true
                 }
             },
+            favorites: [],
             
             // 中国法定节假日(农历日期转换为公历近似日期)
             holidays: {
@@ -975,6 +1304,7 @@
             searchInput: document.getElementById('searchInput'),
             suggestions: document.getElementById('suggestions'),
             platformGrid: document.getElementById('platformGrid'),
+            favoritesGrid: document.getElementById('favoritesGrid'),
             platformSelection: document.getElementById('platformSelection'),
             platformSelectionGrid: document.getElementById('platformSelectionGrid'),
             searchBtn: document.getElementById('searchBtn'),
@@ -986,6 +1316,7 @@
             showImage: document.getElementById('showImage'),
             showDailyImage: document.getElementById('showDailyImage'),
             showPlatforms: document.getElementById('showPlatforms'),
+            showFavorites: document.getElementById('showFavorites'),
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
             showAnimation: document.getElementById('showAnimation'),
@@ -997,8 +1328,17 @@
             cardOpacityValue: document.getElementById('cardOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
+            platformScale: document.getElementById('platformScale'),
+            platformScaleValue: document.getElementById('platformScaleValue'),
             searchAnimation: document.getElementById('searchAnimation'),
-            mainContainer: document.getElementById('mainContainer')
+            mainContainer: document.getElementById('mainContainer'),
+            favoritesOverlay: document.getElementById('favoritesOverlay'),
+            favoritesManager: document.getElementById('favoritesManager'),
+            favoritesList: document.getElementById('favoritesList'),
+            favoriteNameInput: document.getElementById('favoriteNameInput'),
+            favoriteUrlInput: document.getElementById('favoriteUrlInput'),
+            addFavoriteBtn: document.getElementById('addFavoriteBtn'),
+            closeFavoritesManager: document.getElementById('closeFavoritesManager')
         };
 
         // 状态变量
@@ -1014,8 +1354,9 @@
 
         // 初始化函数
         async function init() {
-            // 加载设置
+            // 加载设置和收藏夹
             loadSettings();
+            loadFavorites();
             
             // 等待字体加载
             await document.fonts.ready;
@@ -1043,6 +1384,7 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
+            renderFavorites();
             renderPlatformSelection();
             
             // 应用板块显示设置
@@ -1062,6 +1404,163 @@
 
             // 应用CMD模式
             applyCmdMode();
+            
+            // 应用平台缩放
+            applyPlatformScale();
+        }
+
+        // 应用平台缩放
+        function applyPlatformScale() {
+            const scale = config.settings.platformScale / 100;
+            document.documentElement.style.setProperty('--platform-scale', scale);
+        }
+
+        // 加载收藏夹
+        function loadFavorites() {
+            const savedFavorites = localStorage.getItem('searchPortalFavorites');
+            if (savedFavorites) {
+                try {
+                    config.favorites = JSON.parse(savedFavorites);
+                } catch (e) {
+                    console.error('加载收藏夹失败:', e);
+                    config.favorites = [];
+                }
+            } else {
+                // 默认收藏夹
+                config.favorites = [
+                    { name: 'GitHub趋势', url: 'https://github.com/trending', icon: 'fa-github' },
+                    { name: 'B站热门', url: 'https://www.bilibili.com/v/popular', icon: 'fa-bilibili' },
+                    { name: '知乎热榜', url: 'https://www.zhihu.com/hot', icon: 'fa-zhihu' }
+                ];
+            }
+        }
+
+        // 保存收藏夹
+        function saveFavorites() {
+            localStorage.setItem('searchPortalFavorites', JSON.stringify(config.favorites));
+        }
+
+        // 渲染收藏夹
+        function renderFavorites() {
+            if (!config.settings.showSections.favorites || config.settings.cmdMode) {
+                elements.favoritesGrid.style.display = 'none';
+                return;
+            }
+
+            // 添加"管理收藏夹"按钮
+            const favoritesWithManage = [...config.favorites, { 
+                name: '管理收藏', 
+                url: '#manage', 
+                icon: 'fa-cog',
+                isManage: true 
+            }];
+
+            elements.favoritesGrid.innerHTML = favoritesWithManage.map((favorite, index) => `
+                <div class="favorite-card" data-index="${index}" data-url="${favorite.url}">
+                    <div class="favorite-icon"><i class="fas ${favorite.icon}"></i></div>
+                    <div>${favorite.name}</div>
+                </div>
+            `).join('');
+
+            // 添加收藏夹点击事件
+            document.querySelectorAll('.favorite-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const index = this.dataset.index;
+                    const url = this.dataset.url;
+                    
+                    if (url === '#manage') {
+                        openFavoritesManager();
+                        return;
+                    }
+                    
+                    if (url) {
+                        window.open(url, '_blank');
+                    }
+                });
+            });
+        }
+
+        // 打开收藏夹管理器
+        function openFavoritesManager() {
+            renderFavoritesList();
+            elements.favoritesOverlay.style.display = 'block';
+            elements.favoritesManager.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.favoritesOverlay.classList.add('show');
+                elements.favoritesManager.classList.add('show');
+            }, 10);
+        }
+
+        // 关闭收藏夹管理器
+        function closeFavoritesManager() {
+            elements.favoritesOverlay.classList.remove('show');
+            elements.favoritesManager.classList.remove('show');
+            
+            setTimeout(() => {
+                elements.favoritesOverlay.style.display = 'none';
+                elements.favoritesManager.style.display = 'none';
+            }, 300);
+        }
+
+        // 渲染收藏夹列表
+        function renderFavoritesList() {
+            elements.favoritesList.innerHTML = config.favorites.map((favorite, index) => `
+                <div class="favorite-item" data-index="${index}">
+                    <button class="remove-btn">&times;</button>
+                    <div class="favorite-item-icon"><i class="fas ${favorite.icon || 'fa-star'}"></i></div>
+                    <div class="favorite-item-name">${favorite.name}</div>
+                    <div class="favorite-item-url">${favorite.url}</div>
+                </div>
+            `).join('');
+
+            // 添加删除按钮事件
+            document.querySelectorAll('.favorite-item .remove-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const index = this.parentElement.dataset.index;
+                    config.favorites.splice(index, 1);
+                    saveFavorites();
+                    renderFavoritesList();
+                    renderFavorites();
+                });
+            });
+        }
+
+        // 添加收藏
+        function addFavorite() {
+            const name = elements.favoriteNameInput.value.trim();
+            const url = elements.favoriteUrlInput.value.trim();
+            
+            if (!name || !url) {
+                alert('请填写收藏名称和网址');
+                return;
+            }
+            
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                alert('网址必须以http://或https://开头');
+                return;
+            }
+            
+            // 自动选择图标
+            let icon = 'fa-star';
+            if (url.includes('github.com')) icon = 'fa-github';
+            else if (url.includes('youtube.com') || url.includes('youtu.be')) icon = 'fa-youtube';
+            else if (url.includes('bilibili.com')) icon = 'fa-bilibili';
+            else if (url.includes('zhihu.com')) icon = 'fa-zhihu';
+            else if (url.includes('baidu.com')) icon = 'fa-baidu';
+            else if (url.includes('weibo.com')) icon = 'fa-weibo';
+            else if (url.includes('douyin.com')) icon = 'fa-tiktok';
+            else if (url.includes('stackoverflow.com')) icon = 'fa-stack-overflow';
+            
+            config.favorites.push({ name, url, icon });
+            saveFavorites();
+            renderFavoritesList();
+            renderFavorites();
+            
+            // 清空输入框
+            elements.favoriteNameInput.value = '';
+            elements.favoriteUrlInput.value = '';
         }
 
         // 应用CMD模式
@@ -1070,6 +1569,11 @@
                 elements.mainContainer.classList.add('cmd-mode');
                 elements.searchInput.placeholder = "> 输入搜索内容...";
                 elements.poetry.innerHTML = `<span class="cmd-prompt">></span><span class="verse">欢迎使用CMD模式</span>`;
+                
+                // CMD模式下显示收藏夹命令
+                if (config.settings.showSections.favorites && config.favorites.length > 0) {
+                    elements.poetry.innerHTML += `<br><span class="cmd-prompt">></span><span class="verse">收藏夹命令: ${config.favorites.map(f => `"${f.name}"`).join(', ')}</span>`;
+                }
             } else {
                 elements.mainContainer.classList.remove('cmd-mode');
                 elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
@@ -1087,6 +1591,9 @@
             
             // 平台
             elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
+            
+            // 收藏夹
+            elements.favoritesGrid.style.display = config.settings.showSections.favorites ? 'grid' : 'none';
             
             // 登录按钮
             elements.loginBtn.style.display = config.settings.showSections.login ? 
@@ -1106,6 +1613,7 @@
                     if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
                     if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
                     if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
+                    if (elements.showFavorites) elements.showFavorites.checked = config.settings.showSections.favorites;
                     if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
                     if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
                     if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
@@ -1120,6 +1628,8 @@
                     if (elements.cardOpacity) elements.cardOpacity.value = config.settings.cardOpacity;
                     if (elements.cardOpacityValue) elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
                     if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
+                    if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
+                    if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
                     updateAnimationSpeedText();
                     
                     // 应用设置
@@ -1161,6 +1671,7 @@
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
+                platformScale: parseInt(elements.platformScale.value),
                 defaultPlatform: elements.defaultPlatform.value,
                 cmdMode: elements.cmdMode.checked,
                 showSections: {
@@ -1168,6 +1679,7 @@
                     image: elements.showImage.checked,
                     dailyImage: elements.showDailyImage.checked,
                     platforms: elements.showPlatforms.checked,
+                    favorites: elements.showFavorites.checked,
                     login: elements.showLogin.checked,
                     easterEgg: elements.showEasterEgg.checked,
                     animation: elements.showAnimation.checked
@@ -1180,6 +1692,7 @@
             document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
             document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
             updateAnimationSpeed();
+            applyPlatformScale();
             
             // 应用板块显示设置
             applySectionSettings();
@@ -1188,6 +1701,10 @@
             applyCmdMode();
             
             closeSettings();
+            
+            // 重新渲染收藏夹和平台
+            renderFavorites();
+            renderPlatforms();
         }
 
         // 获取壁纸
@@ -1196,10 +1713,10 @@
                 return '';
             }
             
-            const width = window.screen.width;
-            const height = window.screen.height;
+            const width = window.screen.width * window.devicePixelRatio;
+            const height = window.screen.height * window.devicePixelRatio;
             
-            // 精确到1像素的分辨率检测
+            // 根据分辨率选择不同尺寸的壁纸
             if (width >= 3840 && height >= 2160) {
                 return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
             } else if (width >= 1920 && height >= 1080) {
@@ -1309,6 +1826,9 @@
                     });
 
                     showSuggestionsUI();
+                    
+                    // 调整平台布局
+                    adjustPlatformLayout(true);
                 } else {
                     hideSuggestions();
                 }
@@ -1317,6 +1837,17 @@
             };
 
             document.body.appendChild(script);
+        }
+
+        // 调整平台布局
+        function adjustPlatformLayout(suggestionsVisible) {
+            if (suggestionsVisible) {
+                elements.platformGrid.classList.add('suggestions-visible');
+                elements.favoritesGrid.classList.add('suggestions-visible');
+            } else {
+                elements.platformGrid.classList.remove('suggestions-visible');
+                elements.favoritesGrid.classList.remove('suggestions-visible');
+            }
         }
 
         // 根据建议内容调整宽度
@@ -1349,6 +1880,7 @@
             setTimeout(() => {
                 elements.suggestions.style.display = 'none';
                 isSuggestionsOpen = false;
+                adjustPlatformLayout(false);
             }, 200);
         }
 
@@ -1356,10 +1888,19 @@
         function performSearch(query) {
             if (!query) return;
             
-            // 检查是否是URL
-            if (isValidUrl(query)) {
+            // 检查是否是URL - 改进的URL检测逻辑
+            if (isPotentialUrl(query) && isValidUrl(query)) {
                 navigateToUrl(query);
                 return;
+            }
+            
+            // 检查是否是收藏夹命令 (CMD模式)
+            if (config.settings.cmdMode) {
+                const favorite = config.favorites.find(f => query.toLowerCase() === f.name.toLowerCase());
+                if (favorite) {
+                    window.open(favorite.url, '_blank');
+                    return;
+                }
             }
             
             // 在CMD模式下直接使用默认平台
@@ -1375,12 +1916,20 @@
             elements.platformSelection.classList.add('show');
         }
 
+        // 改进的URL检测逻辑
+        function isPotentialUrl(string) {
+            // 包含常见顶级域名或协议
+            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io'];
+            return tlds.some(tld => string.includes(tld)) || 
+                   string.includes('://') || 
+                   string.includes('.') && string.includes('/');
+        }
+
         // 检查是否是有效的URL
         function isValidUrl(string) {
             try {
-                // 检查是否包含协议
+                // 如果没有协议，尝试添加http://
                 if (!string.match(/^https?:\/\//i)) {
-                    // 如果没有协议，尝试添加http://
                     string = 'http://' + string;
                 }
                 new URL(string);
@@ -1427,7 +1976,14 @@
 
         // 检查屏幕尺寸
         function checkScreenSize() {
-            // 可以根据需要添加响应式调整
+            // 根据屏幕尺寸调整缩放比例
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            // 小屏幕设备进一步缩小
+            if (width <= 400 || height <= 400) {
+                document.documentElement.style.setProperty('--platform-scale', '0.9');
+            }
         }
 
         // 处理方向变化
@@ -1435,14 +1991,24 @@
             const grid = elements.platformGrid;
             if (!grid) return;
             
+            // 强制重绘
             grid.style.display = 'none';
-            grid.offsetHeight;
-            grid.style.display = 'grid';
+            setTimeout(() => {
+                grid.style.display = 'grid';
+            }, 100);
+            
+            // 调整容器大小
+            const container = elements.mainContainer;
+            container.style.width = 'auto';
+            container.style.height = 'auto';
+            setTimeout(() => {
+                container.style.width = 'min(800px, 90vw)';
+            }, 100);
         }
 
         // 渲染平台网格
         function renderPlatforms() {
-            if (!config.settings.showSections.platforms) {
+            if (!config.settings.showSections.platforms || config.settings.cmdMode) {
                 elements.platformGrid.style.display = 'none';
                 return;
             }
@@ -1794,17 +2360,32 @@
                 }
             });
 
+            elements.searchInput.addEventListener('blur', function() {
+                // 延迟隐藏以确保点击建议时有时间处理
+                setTimeout(() => {
+                    if (!document.activeElement.classList.contains('suggestion')) {
+                        hideSuggestions();
+                    }
+                }, 200);
+            });
+
             // 设置面板事件
             elements.cancelSettings.addEventListener('click', closeSettings);
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
+
+            // 收藏夹管理事件
+            elements.addFavoriteBtn.addEventListener('click', addFavorite);
+            elements.closeFavoritesManager.addEventListener('click', closeFavoritesManager);
+            elements.favoritesOverlay.addEventListener('click', closeFavoritesManager);
 
             // 点击页面其他区域隐藏建议和平台选择
             document.addEventListener('click', function(e) {
                 if (!elements.searchInput.contains(e.target) && 
                     !elements.suggestions.contains(e.target) &&
                     !elements.searchBtn.contains(e.target) &&
-                    !elements.platformSelection.contains(e.target)) {
+                    !elements.platformSelection.contains(e.target) &&
+                    !elements.favoritesManager.contains(e.target)) {
                     hideSuggestions();
                     elements.platformSelection.classList.remove('show');
                 }
@@ -1817,6 +2398,7 @@
                         hideSuggestions();
                     }
                     elements.platformSelection.classList.remove('show');
+                    closeFavoritesManager();
                 }
             });
 
@@ -1833,6 +2415,24 @@
             // 动画速度调整
             elements.animationSpeed.addEventListener('input', function() {
                 updateAnimationSpeedText();
+            });
+
+            // 平台缩放调整
+            elements.platformScale.addEventListener('input', function() {
+                elements.platformScaleValue.textContent = `${this.value}%`;
+            });
+
+            // 触摸事件支持
+            elements.searchInput.addEventListener('touchend', function(e) {
+                this.focus();
+                e.preventDefault();
+            });
+
+            document.querySelectorAll('.platform-card, .favorite-card').forEach(card => {
+                card.addEventListener('touchend', function(e) {
+                    this.click();
+                    e.preventDefault();
+                });
             });
         }
 
