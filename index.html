@@ -26,6 +26,12 @@
             --cmd-bg: #0c0c0c;
             --cmd-text: #cccccc;
             --platform-scale: 1;
+            --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: var(--transition-all);
         }
 
         body {
@@ -40,10 +46,10 @@
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 0.8s ease;
             touch-action: manipulation;
             background-color: #f5f7fa;
             background-repeat: no-repeat;
+            transition: opacity 0.8s ease, background-image 1.2s ease;
         }
 
         body.fade-in {
@@ -76,9 +82,15 @@
             background: rgba(255, 255, 255, var(--card-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-sizing: border-box;
             text-align: center;
-            transition: transform var(--animation-speed) ease;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .container {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         /* CMD模式样式 */
@@ -104,10 +116,7 @@
             border-radius: 0;
         }
 
-        .cmd-mode .platform-grid {
-            display: none;
-        }
-
+        .cmd-mode .platform-grid,
         .cmd-mode .favorites-grid {
             display: none;
         }
@@ -132,16 +141,16 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 3rem;
             background: rgba(255, 255, 255, 0.9);
-            transition: all var(--animation-speed) ease;
             color: var(--墨色);
-            box-sizing: border-box;
             font-family: var(--禅意-font);
+            transition: var(--transition-all);
         }
 
         .search-box:focus {
             outline: none;
             box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
             border-color: var(--primary-color);
+            transform: scale(1.02);
         }
 
         .search-btn {
@@ -155,7 +164,6 @@
             font-size: calc(1.5rem * var(--platform-scale));
             color: var(--墨色);
             padding: 0.5rem;
-            transition: transform var(--animation-speed) ease;
         }
 
         body.animated .search-btn:hover {
@@ -174,7 +182,6 @@
             color: var(--墨色);
             padding: 0.5rem;
             display: none;
-            transition: transform var(--animation-speed) ease;
         }
 
         body.animated .login-btn:hover {
@@ -188,11 +195,16 @@
             grid-template-rows: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
-            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
             position: relative;
             z-index: 1;
             transform: scale(var(--platform-scale));
             transform-origin: center;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .platform-grid {
+            opacity: 1;
         }
 
         /* 收藏夹网格 */
@@ -202,11 +214,16 @@
             grid-template-rows: repeat(1, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
-            transition: transform var(--animation-speed) ease, opacity var(--animation-speed) ease;
             position: relative;
             z-index: 1;
             transform: scale(var(--platform-scale));
             transform-origin: center;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .favorites-grid {
+            opacity: 1;
         }
 
         /* 竖屏5×2 */
@@ -240,7 +257,6 @@
             background: rgba(255, 255, 255, 0.15);
             border-radius: calc(1rem * var(--platform-scale));
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
             text-align: center;
             backdrop-filter: blur(5px);
             display: flex;
@@ -249,6 +265,30 @@
             min-height: calc(80px * var(--platform-scale));
             position: relative;
             overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .platform-card,
+        body.loaded .favorite-card {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        body.loaded .platform-card:nth-child(1) { transition-delay: 0.1s; }
+        body.loaded .platform-card:nth-child(2) { transition-delay: 0.15s; }
+        body.loaded .platform-card:nth-child(3) { transition-delay: 0.2s; }
+        body.loaded .platform-card:nth-child(4) { transition-delay: 0.25s; }
+        body.loaded .platform-card:nth-child(5) { transition-delay: 0.3s; }
+        body.loaded .platform-card:nth-child(6) { transition-delay: 0.35s; }
+        body.loaded .platform-card:nth-child(7) { transition-delay: 0.4s; }
+        body.loaded .platform-card:nth-child(8) { transition-delay: 0.45s; }
+        body.loaded .platform-card:nth-child(9) { transition-delay: 0.5s; }
+        body.loaded .platform-card:nth-child(10) { transition-delay: 0.55s; }
+
+        body.loaded .favorite-card {
+            transition-delay: 0.6s;
         }
 
         body.animated .platform-card::before,
@@ -261,7 +301,7 @@
             height: 100%;
             background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
             opacity: 0;
-            transition: opacity var(--animation-speed) ease;
+            transition: var(--transition-all);
         }
 
         body.animated .platform-card:hover::before,
@@ -277,14 +317,14 @@
         body.animated .platform-card:hover,
         body.animated .favorite-card:hover {
             background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
         }
 
         .platform-icon, .favorite-icon {
             font-size: calc(2rem * var(--platform-scale));
             margin-bottom: calc(0.5rem * var(--platform-scale));
             color: var(--墨色);
-            transition: transform var(--animation-speed) ease;
+            transition: var(--transition-all);
         }
 
         body.animated .platform-card:hover .platform-icon,
@@ -292,33 +332,16 @@
             transform: scale(1.1);
         }
 
-        /* 平台图标颜色 */
-        .fa-google { color: #4285F4; }
-        .fa-microsoft { color: #00809D; }
-        .fa-github { color: #181717; }
-        .fa-youtube { color: #FF0000; }
-        .fa-bilibili { color: #00A1D6; }
-        .fa-zhihu { color: #0084FF; }
-        .fa-baidu { color: #2932E1; }
-        .fa-tiktok { color: #000000; }
-        .fa-weibo { color: #DF2029; }
-        .fa-stack-overflow { color: #F48024; }
-        .fa-star { color: #FFD700; }
-        .fa-plus { color: var(--primary-color); }
-
         @keyframes 云游 {
             0% {
                 transform: translate(0, 0);
             }
-
             33% {
                 transform: translate(-30%, -15%);
             }
-
             66% {
                 transform: translate(-20%, 10%);
             }
-
             100% {
                 transform: translate(0, 0);
             }
@@ -332,7 +355,14 @@
             font-size: calc(1.2rem * var(--platform-scale));
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             line-height: 1.6;
-            transition: all var(--animation-speed) ease;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .poetry {
+            transform: translateY(0);
+            opacity: 1;
         }
 
         .verse {
@@ -352,7 +382,7 @@
             position: absolute;
             top: calc(100% + 10px);
             left: 50%;
-            transform: translateX(-50%) scaleY(0.9);
+            transform: translateX(-50%) translateY(10px);
             width: auto;
             min-width: 100%;
             max-width: min(800px, 90vw);
@@ -366,7 +396,7 @@
             overflow-y: auto;
             transform-origin: top center;
             opacity: 0;
-            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: var(--transition-all);
             backdrop-filter: blur(5px);
         }
 
@@ -396,18 +426,18 @@
             }
         }
 
-        body.animated #suggestions.show {
-            transform: translateX(-50%) scaleY(1);
+        #suggestions.show {
+            transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
 
         .suggestion {
             padding: 0.8rem 1.2rem;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             text-align: left;
             white-space: nowrap;
+            transition: var(--transition-all);
         }
 
         .suggestion:first-child {
@@ -437,12 +467,19 @@
             user-select: none;
             padding: 5px;
             z-index: 10;
-            transition: all var(--animation-speed) ease;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .signature {
+            transform: translateY(0);
+            opacity: 0.8;
         }
 
         body.animated .signature:hover {
             opacity: 1;
-            transform: scale(1.05);
+            transform: translateY(0) scale(1.05);
         }
 
         .loading {
@@ -472,7 +509,6 @@
             0% {
                 transform: rotate(0deg);
             }
-
             100% {
                 transform: rotate(360deg);
             }
@@ -496,10 +532,10 @@
             max-height: 80vh;
             overflow-y: auto;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: var(--transition-all);
         }
 
-        body.animated .settings-panel.show {
+        .settings-panel.show {
             transform: translate(-50%, -50%) scale(1);
             opacity: 1;
         }
@@ -542,8 +578,8 @@
             background: rgba(137, 199, 182, 0.8);
             color: white;
             cursor: pointer;
-            transition: all var(--animation-speed) ease;
             font-family: var(--禅意-font);
+            transition: var(--transition-all);
         }
 
         body.animated .settings-btn:hover {
@@ -570,10 +606,10 @@
             z-index: 999;
             display: none;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: var(--transition-all);
         }
 
-        body.animated .overlay.show {
+        .overlay.show {
             opacity: 1;
         }
 
@@ -591,7 +627,7 @@
             align-items: center;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: var(--transition-all);
         }
         
         .search-animation.active {
@@ -602,7 +638,7 @@
             text-align: center;
             transform: translateY(20px);
             opacity: 0;
-            transition: all 0.5s ease;
+            transition: var(--transition-all);
         }
         
         .search-animation.active .search-animation-content {
@@ -628,75 +664,12 @@
             100% { transform: scale(1); }
         }
 
-        /* 手机设备样式 */
-        @media screen and (max-width: 767px) {
-            .container {
-                padding: 1.5rem;
-                width: 95vw;
-                margin: 1rem auto;
-            }
-
-            .search-box {
-                padding: 0.8rem 3.5rem;
-                font-size: 1rem;
-            }
-
-            .search-btn, .login-btn {
-                font-size: 1.2rem;
-            }
-
-            .platform-card, .favorite-card {
-                min-height: 70px;
-            }
-
-            .platform-icon, .favorite-icon {
-                font-size: 1.8rem;
-            }
-
-            .poetry {
-                font-size: 1.1rem;
-                margin-bottom: 1rem;
-            }
-
-            .verse {
-                font-size: 1.2rem;
-            }
-
-            .author {
-                font-size: 0.8rem;
-            }
-
-            .signature {
-                font-size: 0.7rem;
-                right: 5px;
-                bottom: 5px;
-            }
-        }
-
-        /* 百度图标修复 */
-        .fa-baidu {
-            color: #2932E1 !important;
-            position: relative;
-        }
-
-        .fa-baidu::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 24px;
-            height: 24px;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%232932E1" d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path fill="%232932E1" d="M12 6c-3.313 0-6 2.687-6 6s2.687 6 6 6 6-2.687 6-6-2.687-6-6-6zm0 10c-2.206 0-4-1.794-4-4s1.794-4 4-4 4 1.794 4 4-1.794 4-4 4z"/></svg>');
-            background-size: contain;
-        }
-
         /* 平台选择动画 */
         .platform-selection {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(0.9);
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             border-radius: 1rem;
@@ -705,24 +678,12 @@
             z-index: 1001;
             display: none;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: var(--transition-all);
         }
 
         .platform-selection.show {
-            display: block;
+            transform: translate(-50%, -50%) scale(1);
             opacity: 1;
-            animation: platformSlideIn 0.3s forwards;
-        }
-
-        @keyframes platformSlideIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0.9);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
         }
 
         .platform-selection-title {
@@ -742,7 +703,7 @@
             text-align: center;
             cursor: pointer;
             border-radius: 0.5rem;
-            transition: all 0.2s ease;
+            transition: var(--transition-all);
         }
 
         .platform-selection-item:hover {
@@ -772,7 +733,7 @@
             max-height: 80vh;
             overflow-y: auto;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: var(--transition-all);
         }
 
         .favorites-manager.show {
@@ -802,6 +763,12 @@
             flex-direction: column;
             align-items: center;
             position: relative;
+            transition: var(--transition-all);
+        }
+
+        .favorite-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .favorite-item .remove-btn {
@@ -819,7 +786,7 @@
             justify-content: center;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: var(--transition-all);
         }
 
         .favorite-item:hover .remove-btn {
@@ -859,6 +826,12 @@
             color: white;
             cursor: pointer;
             font-family: var(--禅意-font);
+            transition: var(--transition-all);
+        }
+
+        .add-favorite-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .favorites-manager-actions {
@@ -869,6 +842,10 @@
 
         /* 手表和手环设备适配 */
         @media screen and (max-width: 400px) and (max-height: 400px) {
+            :root {
+                --platform-scale: 0.9;
+            }
+            
             .container {
                 width: 95vw;
                 padding: 1rem;
@@ -932,7 +909,7 @@
                 }
                 
                 .platform-grid, .favorites-grid {
-                    display: none; /* 在圆形屏幕上隐藏平台网格 */
+                    display: none;
                 }
                 
                 .poetry {
@@ -1234,7 +1211,6 @@
             },
             favorites: [],
             
-            // 中国法定节假日(农历日期转换为公历近似日期)
             holidays: {
                 'spring-festival': {
                     name: '春节',
@@ -1284,7 +1260,6 @@
                 }
             },
             
-            // 中国传统文化相关关键词
             chineseKeywords: {
                 '春节': 'activateSpringFestival',
                 '中秋节': 'activateMidAutumnFestival',
@@ -1374,11 +1349,17 @@
                 document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? `url(${imageUrl})` : 'none';
                 elements.loading.style.display = 'none';
                 document.body.classList.add('fade-in');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 100);
             };
             img.onerror = function() {
                 elements.loading.style.display = 'none';
                 console.error('图片加载失败');
                 document.body.classList.add('fade-in');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 100);
             };
             
             // 渲染内容
@@ -1568,11 +1549,25 @@
             if (config.settings.cmdMode) {
                 elements.mainContainer.classList.add('cmd-mode');
                 elements.searchInput.placeholder = "> 输入搜索内容...";
-                elements.poetry.innerHTML = `<span class="cmd-prompt">></span><span class="verse">欢迎使用CMD模式</span>`;
+                elements.poetry.innerHTML = `
+                    <span class="cmd-prompt">></span>
+                    <span class="verse">欢迎使用CMD模式</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">命令列表:</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">• 直接输入内容搜索</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">• 输入"设置"打开设置</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">• 输入收藏名称打开收藏</span>
+                `;
                 
                 // CMD模式下显示收藏夹命令
                 if (config.settings.showSections.favorites && config.favorites.length > 0) {
-                    elements.poetry.innerHTML += `<br><span class="cmd-prompt">></span><span class="verse">收藏夹命令: ${config.favorites.map(f => `"${f.name}"`).join(', ')}</span>`;
+                    elements.poetry.innerHTML += `
+                        <br><span class="cmd-prompt">></span>
+                        <span class="verse">收藏命令: ${config.favorites.map(f => `"${f.name}"`).join(', ')}</span>
+                    `;
                 }
             } else {
                 elements.mainContainer.classList.remove('cmd-mode');
@@ -1888,22 +1883,30 @@
         function performSearch(query) {
             if (!query) return;
             
-            // 检查是否是URL - 改进的URL检测逻辑
-            if (isPotentialUrl(query) && isValidUrl(query)) {
-                navigateToUrl(query);
+            // 检查是否是设置命令
+            if (query.toLowerCase() === '设置') {
+                openSettings();
                 return;
             }
             
-            // 检查是否是收藏夹命令 (CMD模式)
+            // 检查是否是收藏夹命令
             if (config.settings.cmdMode) {
-                const favorite = config.favorites.find(f => query.toLowerCase() === f.name.toLowerCase());
+                const favorite = config.favorites.find(f => 
+                    query.toLowerCase() === f.name.toLowerCase()
+                );
                 if (favorite) {
                     window.open(favorite.url, '_blank');
                     return;
                 }
             }
             
-            // 在CMD模式下直接使用默认平台
+            // 严格检查URL
+            if (isPotentialUrl(query) && isValidUrl(query)) {
+                navigateToUrl(query);
+                return;
+            }
+            
+            // 在CMD模式下使用默认平台
             if (config.settings.cmdMode || !config.settings.showSections.platforms) {
                 const platform = config.platforms.find(p => p.id === config.settings.defaultPlatform);
                 if (platform) {
@@ -1911,27 +1914,34 @@
                 }
                 return;
             }
-
+            
             // 显示平台选择面板
             elements.platformSelection.classList.add('show');
         }
 
         // 改进的URL检测逻辑
         function isPotentialUrl(string) {
-            // 包含常见顶级域名或协议
-            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io'];
-            return tlds.some(tld => string.includes(tld)) || 
-                   string.includes('://') || 
-                   string.includes('.') && string.includes('/');
+            // 排除纯中文和空格的情况
+            if (/[\u4e00-\u9fa5]/.test(string) || /\s/.test(string)) return false;
+            
+            // 包含协议头或常见顶级域名
+            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev'];
+            const hasValidTLD = tlds.some(tld => string.includes(tld));
+            const hasProtocol = /^https?:\/\//i.test(string);
+            
+            return hasProtocol || (hasValidTLD && string.includes('.'));
         }
 
         // 检查是否是有效的URL
         function isValidUrl(string) {
             try {
-                // 如果没有协议，尝试添加http://
-                if (!string.match(/^https?:\/\//i)) {
+                // 更严格的协议检查
+                if (!/^https?:\/\//i.test(string)) {
+                    // 如果没有协议头但包含顶级域名
+                    if (!/[a-z0-9-]+\.[a-z]{2,}/i.test(string)) return false;
                     string = 'http://' + string;
                 }
+                
                 new URL(string);
                 return true;
             } catch (_) {
@@ -2405,21 +2415,25 @@
             // 背景模糊度调整
             elements.bgBlur.addEventListener('input', function() {
                 elements.bgBlurValue.textContent = `${this.value}px`;
+                document.documentElement.style.setProperty('--bg-blur', `${this.value}px`);
             });
 
             // 卡片透明度调整
             elements.cardOpacity.addEventListener('input', function() {
                 elements.cardOpacityValue.textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--card-opacity', `${this.value/100}`);
             });
 
             // 动画速度调整
             elements.animationSpeed.addEventListener('input', function() {
                 updateAnimationSpeedText();
+                updateAnimationSpeed();
             });
 
             // 平台缩放调整
             elements.platformScale.addEventListener('input', function() {
                 elements.platformScaleValue.textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
             });
 
             // 触摸事件支持
