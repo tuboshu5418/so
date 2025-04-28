@@ -116,8 +116,7 @@
             border-radius: 0;
         }
 
-        .cmd-mode .platform-grid,
-        .cmd-mode .favorites-grid {
+        .cmd-mode .platform-grid {
             display: none;
         }
 
@@ -207,35 +206,11 @@
             opacity: 1;
         }
 
-        /* 收藏夹网格 */
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(1, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-            position: relative;
-            z-index: 1;
-            transform: scale(var(--platform-scale));
-            transform-origin: center;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.loaded .favorites-grid {
-            opacity: 1;
-        }
-
         /* 竖屏5×2 */
         @media screen and (max-width: 767px) {
             .platform-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(5, 1fr);
-            }
-            
-            .favorites-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(3, 1fr);
             }
         }
 
@@ -246,13 +221,9 @@
                 grid-template-rows: repeat(3, 1fr);
                 gap: 0.8rem;
             }
-            
-            .favorites-grid.suggestions-visible {
-                display: none;
-            }
         }
 
-        .platform-card, .favorite-card {
+        .platform-card {
             padding: calc(0.8rem * var(--platform-scale));
             background: rgba(255, 255, 255, 0.15);
             border-radius: calc(1rem * var(--platform-scale));
@@ -270,8 +241,7 @@
             transition: var(--transition-all);
         }
 
-        body.loaded .platform-card,
-        body.loaded .favorite-card {
+        body.loaded .platform-card {
             transform: translateY(0);
             opacity: 1;
         }
@@ -287,12 +257,7 @@
         body.loaded .platform-card:nth-child(9) { transition-delay: 0.5s; }
         body.loaded .platform-card:nth-child(10) { transition-delay: 0.55s; }
 
-        body.loaded .favorite-card {
-            transition-delay: 0.6s;
-        }
-
-        body.animated .platform-card::before,
-        body.animated .favorite-card::before {
+        body.animated .platform-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -304,38 +269,30 @@
             transition: var(--transition-all);
         }
 
-        body.animated .platform-card:hover::before,
-        body.animated .favorite-card:hover::before {
+        body.animated .platform-card:hover::before {
             opacity: 1;
         }
 
-        .platform-card.active, .favorite-card.active {
+        .platform-card.active {
             background: rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        body.animated .platform-card:hover,
-        body.animated .favorite-card:hover {
+        body.animated .platform-card:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-3px) scale(1.05);
         }
 
-        /* 五彩图标效果 */
-        .platform-icon i, .favorite-icon i {
-            background: linear-gradient(45deg, 
-                #ff5e7d, #ff9966, #ffcc33, 
-                #33cc33, #3399ff, #9966ff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            background-size: 300% 300%;
-            animation: rainbow 5s ease infinite;
+        /* 修复图标加载问题 */
+        .platform-icon i {
+            font-size: calc(2rem * var(--platform-scale));
+            margin-bottom: calc(0.5rem * var(--platform-scale));
+            color: var(--墨色);
+            transition: var(--transition-all);
         }
 
-        @keyframes rainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        body.animated .platform-card:hover .platform-icon i {
+            transform: scale(1.1);
         }
 
         @keyframes 云游 {
@@ -426,8 +383,7 @@
             }
             
             /* 手机端建议弹出时下移平台 */
-            .platform-grid.suggestions-visible, 
-            .favorites-grid.suggestions-visible {
+            .platform-grid.suggestions-visible {
                 margin-bottom: 50vh;
             }
         }
@@ -486,30 +442,6 @@
         body.animated .signature:hover {
             opacity: 1;
             transform: translateY(0) scale(1.05);
-        }
-
-        /* 彩屑动画 */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: linear-gradient(45deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f);
-            opacity: 0.8;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            animation: confetti-fall 1s ease-out forwards;
-        }
-
-        @keyframes confetti-fall {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) rotate(360deg);
-                opacity: 0;
-            }
         }
 
         .loading {
@@ -650,9 +582,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: rgba(255, 255, 255, 0.9);
             z-index: 1000;
             display: flex;
             justify-content: center;
@@ -679,13 +609,10 @@
         }
         
         .search-animation-icon {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #0078d4, #4f9fff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: win11Pulse 1.5s infinite, win11Float 3s infinite ease-in-out;
+            color: var(--win11-accent);
+            animation: pulse 1.5s infinite;
         }
         
         .search-animation-text {
@@ -693,14 +620,10 @@
             color: var(--墨色);
         }
 
-        @keyframes win11Pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.9; }
-        }
-
-        @keyframes win11Float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* 平台选择动画 */
@@ -754,131 +677,6 @@
             margin-bottom: 0.3rem;
         }
 
-        /* 收藏夹管理面板 */
-        .favorites-manager {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: min(90vw, 600px);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            display: none;
-            color: var(--墨色);
-            max-height: 80vh;
-            overflow-y: auto;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .favorites-manager.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .favorites-manager h2 {
-            margin-top: 0;
-            text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            padding-bottom: 1rem;
-        }
-
-        .favorites-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .favorite-item {
-            padding: 0.8rem;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 0.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            transition: var(--transition-all);
-        }
-
-        .favorite-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .favorite-item .remove-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: rgba(255, 0, 0, 0.7);
-            color: white;
-            border: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .favorite-item:hover .remove-btn {
-            opacity: 1;
-        }
-
-        .favorite-item-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .favorite-item-name {
-            font-size: 0.9rem;
-            text-align: center;
-            word-break: break-all;
-        }
-
-        .add-favorite-form {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .add-favorite-input {
-            flex: 1;
-            padding: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-            font-family: var(--禅意-font);
-        }
-
-        .add-favorite-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            cursor: pointer;
-            font-family: var(--禅意-font);
-            transition: var(--transition-all);
-        }
-
-        .add-favorite-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .favorites-manager-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 2rem;
-        }
-
         /* 手表和手环设备适配 */
         @media screen and (max-width: 400px) and (max-height: 400px) {
             :root {
@@ -900,18 +698,18 @@
                 font-size: 1rem;
             }
             
-            .platform-grid, .favorites-grid {
+            .platform-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(5, 1fr);
                 gap: 0.5rem;
             }
             
-            .platform-card, .favorite-card {
+            .platform-card {
                 min-height: 60px;
                 padding: 0.5rem;
             }
             
-            .platform-icon, .favorite-icon {
+            .platform-icon i {
                 font-size: 1.5rem;
             }
             
@@ -947,7 +745,7 @@
                     padding: 1.5rem;
                 }
                 
-                .platform-grid, .favorites-grid {
+                .platform-grid {
                     display: none;
                 }
                 
@@ -980,16 +778,16 @@
                 padding: 0.3rem;
             }
             
-            .platform-grid, .favorites-grid {
+            .platform-grid {
                 gap: 0.3rem;
             }
             
-            .platform-card, .favorite-card {
+            .platform-card {
                 min-height: 50px;
                 padding: 0.3rem;
             }
             
-            .platform-icon, .favorite-icon {
+            .platform-icon i {
                 font-size: 1.2rem;
                 margin-bottom: 0.2rem;
             }
@@ -1025,7 +823,6 @@
             <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
             <div id="suggestions"></div>
         </div>
-        <div class="favorites-grid" id="favoritesGrid"></div>
         <div class="platform-grid" id="platformGrid"></div>
     </div>
     <div class="signature" id="signature">署名: zmf</div>
@@ -1044,21 +841,6 @@
     <div class="platform-selection" id="platformSelection">
         <div class="platform-selection-title">选择搜索平台</div>
         <div class="platform-selection-grid" id="platformSelectionGrid"></div>
-    </div>
-
-    <!-- 收藏夹管理面板 -->
-    <div class="overlay" id="favoritesOverlay"></div>
-    <div class="favorites-manager" id="favoritesManager">
-        <h2>收藏夹管理</h2>
-        <div class="favorites-list" id="favoritesList"></div>
-        <div class="add-favorite-form">
-            <input type="text" class="add-favorite-input" id="favoriteNameInput" placeholder="收藏名称">
-            <input type="text" class="add-favorite-input" id="favoriteUrlInput" placeholder="网址 (包含http://或https://)">
-            <button class="add-favorite-btn" id="addFavoriteBtn">添加</button>
-        </div>
-        <div class="favorites-manager-actions">
-            <button class="settings-btn" id="closeFavoritesManager">完成</button>
-        </div>
     </div>
 
     <!-- 设置面板 -->
@@ -1084,10 +866,6 @@
                 <div class="toggle-item" data-section="platforms">
                     <input type="checkbox" id="showPlatforms" checked>
                     <label for="showPlatforms">平台显示</label>
-                </div>
-                <div class="toggle-item" data-section="favorites">
-                    <input type="checkbox" id="showFavorites" checked>
-                    <label for="showFavorites">收藏夹</label>
                 </div>
                 <div class="toggle-item" data-section="login">
                     <input type="checkbox" id="showLogin" checked>
@@ -1242,13 +1020,11 @@
                     image: true,
                     dailyImage: true,
                     platforms: true,
-                    favorites: true,
                     login: true,
                     easterEgg: true,
                     animation: true
                 }
             },
-            favorites: [],
             
             holidays: {
                 'spring-festival': {
@@ -1318,7 +1094,6 @@
             searchInput: document.getElementById('searchInput'),
             suggestions: document.getElementById('suggestions'),
             platformGrid: document.getElementById('platformGrid'),
-            favoritesGrid: document.getElementById('favoritesGrid'),
             platformSelection: document.getElementById('platformSelection'),
             platformSelectionGrid: document.getElementById('platformSelectionGrid'),
             searchBtn: document.getElementById('searchBtn'),
@@ -1330,7 +1105,6 @@
             showImage: document.getElementById('showImage'),
             showDailyImage: document.getElementById('showDailyImage'),
             showPlatforms: document.getElementById('showPlatforms'),
-            showFavorites: document.getElementById('showFavorites'),
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
             showAnimation: document.getElementById('showAnimation'),
@@ -1345,14 +1119,7 @@
             platformScale: document.getElementById('platformScale'),
             platformScaleValue: document.getElementById('platformScaleValue'),
             searchAnimation: document.getElementById('searchAnimation'),
-            mainContainer: document.getElementById('mainContainer'),
-            favoritesOverlay: document.getElementById('favoritesOverlay'),
-            favoritesManager: document.getElementById('favoritesManager'),
-            favoritesList: document.getElementById('favoritesList'),
-            favoriteNameInput: document.getElementById('favoriteNameInput'),
-            favoriteUrlInput: document.getElementById('favoriteUrlInput'),
-            addFavoriteBtn: document.getElementById('addFavoriteBtn'),
-            closeFavoritesManager: document.getElementById('closeFavoritesManager')
+            mainContainer: document.getElementById('mainContainer')
         };
 
         // 状态变量
@@ -1368,19 +1135,8 @@
 
         // 初始化函数
         async function init() {
-            // 注册Service Worker
-            if ('serviceWorker' in navigator) {
-                try {
-                    await navigator.serviceWorker.register('/sw.js');
-                    console.log('Service Worker 注册成功');
-                } catch (error) {
-                    console.error('Service Worker 注册失败:', error);
-                }
-            }
-
-            // 加载设置和收藏夹
+            // 加载设置
             loadSettings();
-            loadFavorites();
             
             // 等待字体加载
             await document.fonts.ready;
@@ -1414,7 +1170,6 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
-            renderFavorites();
             renderPlatformSelection();
             
             // 应用板块显示设置
@@ -1439,180 +1194,10 @@
             applyPlatformScale();
         }
 
-        // 创建彩屑效果
-        function createConfetti(element) {
-            const rect = element.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-            
-            for (let i = 0; i < 10; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = `${x}px`;
-                confetti.style.top = `${y}px`;
-                confetti.style.setProperty('--tx', `${Math.random() * 200 - 100}px`);
-                confetti.style.setProperty('--ty', `${Math.random() * 200 - 100}px`);
-                document.body.appendChild(confetti);
-                
-                // 动画结束后移除
-                setTimeout(() => {
-                    confetti.remove();
-                }, 1000);
-            }
-        }
-
         // 应用平台缩放
         function applyPlatformScale() {
             const scale = config.settings.platformScale / 100;
             document.documentElement.style.setProperty('--platform-scale', scale);
-        }
-
-        // 加载收藏夹
-        function loadFavorites() {
-            const savedFavorites = localStorage.getItem('searchPortalFavorites');
-            if (savedFavorites) {
-                try {
-                    config.favorites = JSON.parse(savedFavorites);
-                } catch (e) {
-                    console.error('加载收藏夹失败:', e);
-                    config.favorites = [];
-                }
-            } else {
-                // 默认收藏夹
-                config.favorites = [
-                    { name: 'GitHub趋势', url: 'https://github.com/trending', icon: 'fa-github' },
-                    { name: 'B站热门', url: 'https://www.bilibili.com/v/popular', icon: 'fa-bilibili' },
-                    { name: '知乎热榜', url: 'https://www.zhihu.com/hot', icon: 'fa-zhihu' }
-                ];
-            }
-        }
-
-        // 保存收藏夹
-        function saveFavorites() {
-            localStorage.setItem('searchPortalFavorites', JSON.stringify(config.favorites));
-        }
-
-        // 渲染收藏夹
-        function renderFavorites() {
-            if (!config.settings.showSections.favorites || config.settings.cmdMode) {
-                elements.favoritesGrid.style.display = 'none';
-                return;
-            }
-
-            // 添加"管理收藏夹"按钮
-            const favoritesWithManage = [...config.favorites, { 
-                name: '管理收藏', 
-                url: '#manage', 
-                icon: 'fa-cog',
-                isManage: true 
-            }];
-
-            elements.favoritesGrid.innerHTML = favoritesWithManage.map((favorite, index) => `
-                <div class="favorite-card" data-index="${index}" data-url="${favorite.url}">
-                    <div class="favorite-icon"><i class="fas ${favorite.icon}"></i></div>
-                    <div>${favorite.name}</div>
-                </div>
-            `).join('');
-
-            // 添加收藏夹点击事件
-            document.querySelectorAll('.favorite-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const index = this.dataset.index;
-                    const url = this.dataset.url;
-                    
-                    if (url === '#manage') {
-                        openFavoritesManager();
-                        return;
-                    }
-                    
-                    if (url) {
-                        window.open(url, '_blank');
-                    }
-                });
-            });
-        }
-
-        // 打开收藏夹管理器
-        function openFavoritesManager() {
-            renderFavoritesList();
-            elements.favoritesOverlay.style.display = 'block';
-            elements.favoritesManager.style.display = 'block';
-            
-            setTimeout(() => {
-                elements.favoritesOverlay.classList.add('show');
-                elements.favoritesManager.classList.add('show');
-            }, 10);
-        }
-
-        // 关闭收藏夹管理器
-        function closeFavoritesManager() {
-            elements.favoritesOverlay.classList.remove('show');
-            elements.favoritesManager.classList.remove('show');
-            
-            setTimeout(() => {
-                elements.favoritesOverlay.style.display = 'none';
-                elements.favoritesManager.style.display = 'none';
-            }, 300);
-        }
-
-        // 渲染收藏夹列表
-        function renderFavoritesList() {
-            elements.favoritesList.innerHTML = config.favorites.map((favorite, index) => `
-                <div class="favorite-item" data-index="${index}">
-                    <button class="remove-btn">&times;</button>
-                    <div class="favorite-item-icon"><i class="fas ${favorite.icon || 'fa-star'}"></i></div>
-                    <div class="favorite-item-name">${favorite.name}</div>
-                    <div class="favorite-item-url">${favorite.url}</div>
-                </div>
-            `).join('');
-
-            // 添加删除按钮事件
-            document.querySelectorAll('.favorite-item .remove-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const index = this.parentElement.dataset.index;
-                    config.favorites.splice(index, 1);
-                    saveFavorites();
-                    renderFavoritesList();
-                    renderFavorites();
-                });
-            });
-        }
-
-        // 添加收藏
-        function addFavorite() {
-            const name = elements.favoriteNameInput.value.trim();
-            const url = elements.favoriteUrlInput.value.trim();
-            
-            if (!name || !url) {
-                alert('请填写收藏名称和网址');
-                return;
-            }
-            
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                alert('网址必须以http://或https://开头');
-                return;
-            }
-            
-            // 自动选择图标
-            let icon = 'fa-star';
-            if (url.includes('github.com')) icon = 'fa-github';
-            else if (url.includes('youtube.com') || url.includes('youtu.be')) icon = 'fa-youtube';
-            else if (url.includes('bilibili.com')) icon = 'fa-bilibili';
-            else if (url.includes('zhihu.com')) icon = 'fa-zhihu';
-            else if (url.includes('baidu.com')) icon = 'fa-baidu';
-            else if (url.includes('weibo.com')) icon = 'fa-weibo';
-            else if (url.includes('douyin.com')) icon = 'fa-tiktok';
-            else if (url.includes('stackoverflow.com')) icon = 'fa-stack-overflow';
-            
-            config.favorites.push({ name, url, icon });
-            saveFavorites();
-            renderFavoritesList();
-            renderFavorites();
-            
-            // 清空输入框
-            elements.favoriteNameInput.value = '';
-            elements.favoriteUrlInput.value = '';
         }
 
         // 应用CMD模式
@@ -1629,17 +1214,7 @@
                     <span class="verse">• 直接输入内容搜索</span>
                     <br><span class="cmd-prompt">></span>
                     <span class="verse">• 输入"设置"打开设置</span>
-                    <br><span class="cmd-prompt">></span>
-                    <span class="verse">• 输入收藏名称打开收藏</span>
                 `;
-                
-                // CMD模式下显示收藏夹命令
-                if (config.settings.showSections.favorites && config.favorites.length > 0) {
-                    elements.poetry.innerHTML += `
-                        <br><span class="cmd-prompt">></span>
-                        <span class="verse">收藏命令: ${config.favorites.map(f => `"${f.name}"`).join(', ')}</span>
-                    `;
-                }
             } else {
                 elements.mainContainer.classList.remove('cmd-mode');
                 elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
@@ -1657,9 +1232,6 @@
             
             // 平台
             elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
-            
-            // 收藏夹
-            elements.favoritesGrid.style.display = config.settings.showSections.favorites ? 'grid' : 'none';
             
             // 登录按钮
             elements.loginBtn.style.display = config.settings.showSections.login ? 
@@ -1679,7 +1251,6 @@
                     if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
                     if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
                     if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    if (elements.showFavorites) elements.showFavorites.checked = config.settings.showSections.favorites;
                     if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
                     if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
                     if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
@@ -1745,7 +1316,6 @@
                     image: elements.showImage.checked,
                     dailyImage: elements.showDailyImage.checked,
                     platforms: elements.showPlatforms.checked,
-                    favorites: elements.showFavorites.checked,
                     login: elements.showLogin.checked,
                     easterEgg: elements.showEasterEgg.checked,
                     animation: elements.showAnimation.checked
@@ -1768,8 +1338,7 @@
             
             closeSettings();
             
-            // 重新渲染收藏夹和平台
-            renderFavorites();
+            // 重新渲染平台
             renderPlatforms();
         }
 
@@ -1862,6 +1431,41 @@
             });
         }
 
+        // 渲染平台网格
+        function renderPlatforms() {
+            if (!config.settings.showSections.platforms || config.settings.cmdMode) {
+                elements.platformGrid.style.display = 'none';
+                return;
+            }
+
+            elements.platformGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-card').forEach(c =>
+                        c.classList.remove('active'));
+                    card.classList.add('active');
+
+                    selectedPlatform = card.dataset.id;
+                    const showLogin = card.dataset.login && config.settings.showSections.login;
+                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                });
+            });
+
+            // 默认显示登录按钮（如果必应需要）
+            const bingPlatform = config.platforms.find(p => p.id === 'bing');
+            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
+                elements.loginBtn.style.display = 'block';
+            }
+        }
+
         // 显示搜索建议
         function showSuggestions(input) {
             if (!input || input.length === 0 || config.settings.cmdMode) {
@@ -1909,10 +1513,8 @@
         function adjustPlatformLayout(suggestionsVisible) {
             if (suggestionsVisible) {
                 elements.platformGrid.classList.add('suggestions-visible');
-                elements.favoritesGrid.classList.add('suggestions-visible');
             } else {
                 elements.platformGrid.classList.remove('suggestions-visible');
-                elements.favoritesGrid.classList.remove('suggestions-visible');
             }
         }
 
@@ -1958,17 +1560,6 @@
             if (query.toLowerCase() === '设置') {
                 openSettings();
                 return;
-            }
-            
-            // 检查是否是收藏夹命令
-            if (config.settings.cmdMode) {
-                const favorite = config.favorites.find(f => 
-                    query.toLowerCase() === f.name.toLowerCase()
-                );
-                if (favorite) {
-                    window.open(favorite.url, '_blank');
-                    return;
-                }
             }
             
             // 严格检查URL
@@ -2085,41 +1676,6 @@
             setTimeout(() => {
                 container.style.width = 'min(800px, 90vw)';
             }, 100);
-        }
-
-        // 渲染平台网格
-        function renderPlatforms() {
-            if (!config.settings.showSections.platforms || config.settings.cmdMode) {
-                elements.platformGrid.style.display = 'none';
-                return;
-            }
-
-            elements.platformGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
-                     data-id="${platform.id}"
-                     data-login="${platform.login || ''}">
-                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
-                    <div>${platform.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.platform-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.platform-card').forEach(c =>
-                        c.classList.remove('active'));
-                    card.classList.add('active');
-
-                    selectedPlatform = card.dataset.id;
-                    const showLogin = card.dataset.login && config.settings.showSections.login;
-                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
-                });
-            });
-
-            // 默认显示登录按钮（如果必应需要）
-            const bingPlatform = config.platforms.find(p => p.id === 'bing');
-            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
-                elements.loginBtn.style.display = 'block';
-            }
         }
 
         // 打开设置
@@ -2240,172 +1796,16 @@
             clickCount++;
             lastClickTime = now;
             
-            // 添加视觉反馈
-            elements.signature.style.transform = 'scale(1.1)';
-            elements.signature.style.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
-            setTimeout(() => {
-                elements.signature.style.transform = '';
-            }, 200);
-            
             if (clickCount >= CLICK_THRESHOLD) {
                 openSettings();
                 clickCount = 0;
                 
-                // 添加庆祝动画
-                for (let i = 0; i < 7; i++) {
-                    setTimeout(() => createConfetti(elements.signature), i * 100);
-                }
+                // 添加点击动画
+                elements.signature.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    elements.signature.style.transform = '';
+                }, 300);
             }
-        }
-
-        // 节日彩蛋激活函数
-        function activateSpringFestival() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 春节彩蛋 - 显示灯笼和烟花
-            activateLanterns();
-            
-            // 每隔3秒放一个烟花
-            const fireworkInterval = setInterval(() => {
-                createFirework();
-            }, 3000);
-            
-            // 10秒后停止
-            setTimeout(() => {
-                clearInterval(fireworkInterval);
-            }, 10000);
-        }
-        
-        function activateLanternFestival() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 元宵节彩蛋 - 显示灯笼
-            activateLanterns();
-            alert('元宵节快乐！吃汤圆，赏花灯！');
-        }
-        
-        function activateQingmingFestival() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 清明节彩蛋 - 显示柳枝
-            alert('清明节安康！缅怀先人，踏青赏春！');
-        }
-        
-        function activateDragonBoatFestival() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 端午节彩蛋 - 显示龙舟
-            activateDragon();
-            alert('端午节快乐！粽香四溢，龙舟竞渡！');
-        }
-        
-        function activateMidAutumnFestival() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 中秋节彩蛋 - 显示月亮和月饼
-            alert('中秋节快乐！月圆人圆，阖家幸福！');
-            
-            // 创建月亮元素
-            const moon = document.createElement('div');
-            moon.style.position = 'fixed';
-            moon.style.top = '20%';
-            moon.style.right = '20%';
-            moon.style.width = '100px';
-            moon.style.height = '100px';
-            moon.style.background = 'radial-gradient(circle, #fff 30%, #ffeb3b 100%)';
-            moon.style.borderRadius = '50%';
-            moon.style.boxShadow = '0 0 30px #ffeb3b';
-            moon.style.zIndex = '10000';
-            document.body.appendChild(moon);
-            
-            // 5秒后消失
-            setTimeout(() => {
-                moon.remove();
-            }, 5000);
-        }
-        
-        function activateNationalDay() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 国庆节彩蛋 - 显示国旗和烟花
-            alert('国庆节快乐！繁荣昌盛，国泰民安！');
-            
-            // 创建国旗元素
-            const flag = document.createElement('div');
-            flag.style.position = 'fixed';
-            flag.style.top = '10%';
-            flag.style.left = '10%';
-            flag.style.width = '120px';
-            flag.style.height = '80px';
-            flag.style.background = 'linear-gradient(to bottom, #de2910, #de2910 50%, #ffde00 50%, #ffde00)';
-            flag.style.zIndex = '10000';
-            document.body.appendChild(flag);
-            
-            // 每隔2秒放一个烟花
-            const fireworkInterval = setInterval(() => {
-                createFirework();
-            }, 2000);
-            
-            // 10秒后停止
-            setTimeout(() => {
-                clearInterval(fireworkInterval);
-                flag.remove();
-            }, 10000);
-        }
-
-        // 激活灯笼彩蛋
-        function activateLanterns() {
-            // 创建多个灯笼
-            const positions = [
-                { top: '10%', left: '10%' },
-                { top: '15%', left: '80%' },
-                { top: '70%', left: '20%' },
-                { top: '80%', left: '75%' }
-            ];
-            
-            positions.forEach(pos => {
-                const lantern = document.createElement('div');
-                lantern.className = 'lantern';
-                lantern.style.top = pos.top;
-                lantern.style.left = pos.left;
-                lantern.style.display = 'block';
-                document.body.appendChild(lantern);
-            });
-            
-            // 10秒后消失
-            setTimeout(() => {
-                document.querySelectorAll('.lantern').forEach(lantern => {
-                    lantern.remove();
-                });
-            }, 10000);
-        }
-
-        // 激活龙彩蛋
-        function activateDragon() {
-            const dragon = document.createElement('div');
-            dragon.className = 'dragon';
-            dragon.style.display = 'block';
-            document.body.appendChild(dragon);
-            
-            // 龙飞过屏幕后消失
-            setTimeout(() => {
-                dragon.remove();
-            }, 10000);
-        }
-
-        // 创建烟花
-        function createFirework() {
-            const firework = document.createElement('div');
-            firework.className = 'firework';
-            firework.style.left = `${Math.random() * 80 + 10}%`;
-            firework.style.top = `${Math.random() * 80 + 10}%`;
-            firework.style.display = 'block';
-            document.body.appendChild(firework);
-            
-            // 动画结束后移除
-            setTimeout(() => {
-                firework.remove();
-            }, 1000);
         }
 
         // 添加事件监听
@@ -2461,18 +1861,12 @@
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
 
-            // 收藏夹管理事件
-            elements.addFavoriteBtn.addEventListener('click', addFavorite);
-            elements.closeFavoritesManager.addEventListener('click', closeFavoritesManager);
-            elements.favoritesOverlay.addEventListener('click', closeFavoritesManager);
-
             // 点击页面其他区域隐藏建议和平台选择
             document.addEventListener('click', function(e) {
                 if (!elements.searchInput.contains(e.target) && 
                     !elements.suggestions.contains(e.target) &&
                     !elements.searchBtn.contains(e.target) &&
-                    !elements.platformSelection.contains(e.target) &&
-                    !elements.favoritesManager.contains(e.target)) {
+                    !elements.platformSelection.contains(e.target)) {
                     hideSuggestions();
                     elements.platformSelection.classList.remove('show');
                 }
@@ -2485,7 +1879,6 @@
                         hideSuggestions();
                     }
                     elements.platformSelection.classList.remove('show');
-                    closeFavoritesManager();
                 }
             });
 
@@ -2519,7 +1912,7 @@
                 e.preventDefault();
             });
 
-            document.querySelectorAll('.platform-card, .favorite-card').forEach(card => {
+            document.querySelectorAll('.platform-card').forEach(card => {
                 card.addEventListener('touchend', function(e) {
                     this.click();
                     e.preventDefault();
