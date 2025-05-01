@@ -27,8 +27,8 @@
             --cmd-text: #cccccc;
             --platform-scale: 1;
             --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --favorites-width: 200px;
-            --left-panel-width: 60px;
+            --paper-plane-blue: #64b5f6;
+            --key-blue: #42a5f5;
         }
 
         * {
@@ -40,6 +40,8 @@
             min-height: 100vh;
             margin: 0;
             display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: var(--禅意-font);
             position: relative;
             overflow: hidden;
@@ -72,36 +74,6 @@
             z-index: -1;
         }
 
-        /* 左侧面板 */
-        .left-panel {
-            width: var(--left-panel-width);
-            background: linear-gradient(to bottom, #e6f7ff, #b3e0ff);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem 0;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* 主内容区 */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* 顶部搜索栏 */
-        .top-bar {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(var(--bg-blur));
-            z-index: 2;
-        }
-
         .container {
             position: relative;
             z-index: 1;
@@ -123,59 +95,41 @@
             opacity: 1;
         }
 
-        /* 收藏夹 */
-        .favorites-panel {
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: var(--favorites-width);
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(var(--bg-blur));
-            padding: 1rem;
-            overflow-y: auto;
-            z-index: 1;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+        /* 新布局样式 */
+        .main-layout {
+            display: grid;
+            grid-template-areas:
+                "search search"
+                "platforms favorites"
+                "footer footer";
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
         }
 
-        .favorites-panel.show {
-            transform: translateX(0);
-        }
-
-        .favorites-header {
+        .search-area {
+            grid-area: search;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        .favorite-item {
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 0.5rem;
-            cursor: pointer;
+        .platforms-area {
+            grid-area: platforms;
+        }
+
+        .favorites-area {
+            grid-area: favorites;
+            position: relative;
+        }
+
+        .footer-area {
+            grid-area: footer;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-        }
-
-        .favorite-item:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .favorite-icon {
-            width: 24px;
-            height: 24px;
-            margin-right: 0.5rem;
-            background-color: #b3e0ff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin-top: 1rem;
         }
 
         /* CMD模式样式 */
@@ -213,9 +167,8 @@
         .search-container {
             position: relative;
             display: flex;
-            margin-bottom: 1.5rem;
-            width: 100%;
-            z-index: 2;
+            flex-grow: 1;
+            margin-right: 1rem;
         }
 
         .search-box {
@@ -247,23 +200,32 @@
             border: none;
             cursor: pointer;
             font-size: calc(1.5rem * var(--platform-scale));
-            color: #4da6ff;
+            color: var(--paper-plane-blue);
             padding: 0.5rem;
+            width: 24px;
+            height: 24px;
         }
 
-        .search-btn i {
-            position: relative;
+        .search-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--paper-plane-blue);
+            clip-path: polygon(100% 50%, 0 0, 0 100%);
         }
 
-        .search-btn i::after {
-            content: '';
+        .search-btn::after {
+            content: "";
             position: absolute;
             top: 50%;
-            left: 50%;
-            width: 60%;
+            left: 30%;
+            width: 40%;
             height: 2px;
-            background: white;
-            transform: translate(-50%, -50%) rotate(45deg);
+            background-color: white;
+            transform: translateY(-50%) rotate(-45deg);
         }
 
         body.animated .search-btn:hover {
@@ -272,47 +234,51 @@
 
         /* 新登录按钮样式 - 钥匙 */
         .login-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: calc(1.5rem * var(--platform-scale));
-            color: #4da6ff;
+            font-size: calc(1.2rem * var(--platform-scale));
+            color: var(--key-blue);
             padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .login-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: var(--key-blue);
+            border-radius: 50%;
+        }
+
+        .login-btn::after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 16px;
+            background-color: var(--key-blue);
+            border-radius: 2px;
+        }
+
+        .login-text {
+            margin-left: 5px;
+            font-size: 0.8rem;
             display: none;
         }
 
-        .login-btn i {
-            position: relative;
-        }
-
-        .login-btn i::before {
-            content: '';
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            width: 40%;
-            height: 2px;
-            background: white;
-            transform: translate(-50%, -50%) rotate(45deg);
-        }
-
-        .login-btn i::after {
-            content: '';
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            width: 40%;
-            height: 2px;
-            background: white;
-            transform: translate(-50%, -50%) rotate(-45deg);
-        }
-
         body.animated .login-btn:hover {
-            transform: translateY(-50%) scale(1.1);
+            transform: scale(1.1);
         }
 
         /* 平台网格布局 - 横屏2×5 */
@@ -411,23 +377,94 @@
             transform: translateY(-3px) scale(1.05);
         }
 
-        /* 优化图标大小和位置 */
+        /* 优化图标大小 */
         .platform-icon {
-            height: 60px;
+            height: 60%;
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin-bottom: 0.5rem;
+            align-items: center;
         }
 
         .platform-icon i {
             font-size: calc(2.5rem * var(--platform-scale));
+            margin-bottom: calc(0.5rem * var(--platform-scale));
             color: var(--墨色);
             transition: var(--transition-all);
         }
 
         body.animated .platform-card:hover .platform-icon i {
             transform: scale(1.1);
+        }
+
+        /* 收藏夹样式 */
+        .favorites-container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 200px;
+            backdrop-filter: blur(5px);
+        }
+
+        .favorites-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--墨色);
+            text-align: left;
+        }
+
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .favorite-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .favorite-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .favorite-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+            background-color: #eee;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .favorite-name {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 页脚样式 */
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--墨色);
+            opacity: 0.7;
+        }
+
+        .settings-link {
+            color: var(--墨色);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .settings-link:hover {
+            text-decoration: underline;
         }
 
         @keyframes 云游 {
@@ -553,62 +590,106 @@
             transform: translateX(5px);
         }
 
-        .signature {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            font-size: calc(0.8rem * var(--platform-scale));
-            color: var(--墨色);
-            opacity: 0.8;
-            cursor: pointer;
-            user-select: none;
-            padding: 5px;
-            z-index: 10;
-            transform: translateY(10px);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.loaded .signature {
-            transform: translateY(0);
-            opacity: 0.8;
-        }
-
-        body.animated .signature:hover {
-            opacity: 1;
-            transform: translateY(0) scale(1.05);
-        }
-
-        .loading {
+        /* 搜索动画 */
+        .search-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-all);
+        }
+        
+        .search-animation.active {
+            opacity: 1;
+        }
+        
+        .search-animation-content {
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+        
+        .search-animation.active .search-animation-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-animation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--win11-accent);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .search-animation-text {
+            font-size: 1.2rem;
+            color: var(--墨色);
         }
 
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+        /* 平台选择面板 */
+        .platform-selection {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        .platform-selection.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .platform-selection-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .platform-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .platform-selection-item {
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: var(--transition-all);
+        }
+
+        .platform-selection-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-selection-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
         }
 
         /* 设置面板 */
@@ -710,108 +791,6 @@
             opacity: 1;
         }
 
-        /* Win11风格搜索动画 */
-        .search-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-all);
-        }
-        
-        .search-animation.active {
-            opacity: 1;
-        }
-        
-        .search-animation-content {
-            text-align: center;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-        
-        .search-animation.active .search-animation-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .search-animation-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--win11-accent);
-            animation: pulse 1.5s infinite;
-        }
-        
-        .search-animation-text {
-            font-size: 1.2rem;
-            color: var(--墨色);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* 平台选择动画 */
-        .platform-selection {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            display: none;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .platform-selection.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .platform-selection-title {
-            text-align: center;
-            margin-bottom: 1rem;
-            font-weight: bold;
-        }
-
-        .platform-selection-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-        }
-
-        .platform-selection-item {
-            padding: 0.5rem;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 0.5rem;
-            transition: var(--transition-all);
-        }
-
-        .platform-selection-item:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .platform-selection-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
-        }
-
         /* 手表和手环设备适配 */
         @media screen and (max-width: 400px) and (max-height: 400px) {
             :root {
@@ -859,12 +838,6 @@
             
             .author {
                 font-size: 0.7rem;
-            }
-            
-            .signature {
-                font-size: 0.6rem;
-                right: 5px;
-                bottom: 5px;
             }
             
             /* 圆形屏幕适配 */
@@ -938,70 +911,6 @@
             .author {
                 font-size: 0.6rem;
             }
-            
-            .signature {
-                font-size: 0.5rem;
-            }
-        }
-
-        /* 竖屏模式 */
-        @media screen and (max-width: 767px) {
-            .left-panel {
-                width: 50px;
-                padding: 0.5rem 0;
-            }
-            
-            .favorites-panel {
-                width: 180px;
-            }
-            
-            .platform-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(5, 1fr);
-            }
-        }
-
-        /* 开发者模式 */
-        .developer-options {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px dashed rgba(0, 0, 0, 0.2);
-        }
-
-        .developer-options h3 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
-        }
-
-        .developer-warning {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        /* 底部信息栏 */
-        .footer-info {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            z-index: 1;
-        }
-
-        .footer-info a {
-            color: var(--墨色);
-            text-decoration: none;
-        }
-
-        .footer-info a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -1010,45 +919,36 @@
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
-    
-    <!-- 左侧面板 -->
-    <div class="left-panel">
-        <button class="search-btn" id="leftSearchBtn"><i class="fas fa-paper-plane"></i></button>
-        <button class="login-btn" id="leftLoginBtn"><i class="fas fa-key"></i></button>
-        <button class="favorites-btn" id="favoritesBtn"><i class="fas fa-star"></i></button>
-    </div>
-    
-    <!-- 主内容区 -->
-    <div class="main-content">
-        <!-- 顶部搜索栏 -->
-        <div class="top-bar">
-            <div class="search-container">
-                <button class="search-btn" id="searchBtn"><i class="fas fa-paper-plane"></i></button>
-                <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-                <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
-                <div id="suggestions"></div>
+    <div class="container" id="mainContainer">
+        <div class="poetry" id="poetry"></div>
+        
+        <div class="main-layout">
+            <div class="search-area">
+                <div class="search-container">
+                    <button class="search-btn" id="searchBtn"></button>
+                    <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
+                    <div id="suggestions"></div>
+                </div>
+                <button class="login-btn" id="loginBtn"><span class="login-text">登录</span></button>
+            </div>
+            
+            <div class="platforms-area">
+                <div class="platform-grid" id="platformGrid"></div>
+            </div>
+            
+            <div class="favorites-area">
+                <div class="favorites-container">
+                    <div class="favorites-title">收藏夹</div>
+                    <div class="favorites-grid" id="favoritesGrid"></div>
+                </div>
+            </div>
+            
+            <div class="footer-area">
+                <span class="footer-text">设置</span>
+                <span class="footer-text">版权所有 © zmf</span>
             </div>
         </div>
-        
-        <!-- 主容器 -->
-        <div class="container" id="mainContainer">
-            <div class="poetry" id="poetry"></div>
-            <div class="platform-grid" id="platformGrid"></div>
-        </div>
     </div>
-    
-    <!-- 收藏夹面板 -->
-    <div class="favorites-panel" id="favoritesPanel">
-        <div class="favorites-header">
-            <h3>收藏夹</h3>
-            <button class="close-favorites" id="closeFavorites"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="favorites-list" id="favoritesList">
-            <!-- 收藏项将通过JavaScript动态添加 -->
-        </div>
-    </div>
-    
-    <div class="signature" id="signature">署名: zmf</div>
 
     <!-- 搜索动画 -->
     <div class="search-animation" id="searchAnimation">
@@ -1149,52 +1049,10 @@
             <span id="platformScaleValue">100%</span>
         </div>
         
-        <!-- 开发者选项 -->
-        <div class="developer-options">
-            <h3>开发者选项</h3>
-            <p class="developer-warning">警告: 这些选项仅供开发者使用，不当设置可能导致界面异常</p>
-            
-            <div class="setting-item">
-                <label for="devScale">界面缩放</label>
-                <input type="range" id="devScale" min="50" max="150" value="100" step="5">
-                <span id="devScaleValue">100%</span>
-            </div>
-            
-            <div class="setting-item">
-                <label for="devTheme">主题颜色</label>
-                <select id="devTheme" class="setting-control">
-                    <option value="default">默认(绿)</option>
-                    <option value="blue">蓝色</option>
-                    <option value="red">红色</option>
-                    <option value="purple">紫色</option>
-                    <option value="dark">暗黑</option>
-                </select>
-            </div>
-            
-            <div class="setting-item">
-                <label for="devAddPlatform">添加自定义平台</label>
-                <input type="text" id="devAddPlatform" class="setting-control" placeholder="平台名称">
-                <input type="text" id="devAddPlatformUrl" class="setting-control" placeholder="搜索URL (使用{query}作为查询参数)">
-                <button class="settings-btn" id="devAddPlatformBtn" style="margin-top: 0.5rem;">添加平台</button>
-            </div>
-            
-            <button class="settings-btn secondary" id="disableDevMode">关闭开发者选项</button>
-        </div>
-        
         <div class="settings-actions">
             <button class="settings-btn secondary" id="cancelSettings">取消</button>
             <button class="settings-btn" id="saveSettings">保存设置</button>
         </div>
-    </div>
-
-    <!-- 底部信息栏 -->
-    <div class="footer-info">
-        <div>
-            <a href="#" id="settingsLink">设置</a>
-            <span> | </span>
-            <a href="#" id="aboutLink">关于</a>
-        </div>
-        <div>版权所有 © 2023 zmf</div>
     </div>
 
     <script>
@@ -1274,15 +1132,15 @@
             ],
             favorites: [
                 { name: 'GitHub', url: 'https://github.com', icon: 'fa-github' },
-                { name: '知乎', url: 'https://zhihu.com', icon: 'fa-zhihu' },
-                { name: '哔哩哔哩', url: 'https://bilibili.com', icon: 'fa-bilibili' },
-                { name: 'YouTube', url: 'https://youtube.com', icon: 'fa-youtube' },
+                { name: '知乎', url: 'https://www.zhihu.com', icon: 'fa-zhihu' },
+                { name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'fa-bilibili' },
+                { name: 'YouTube', url: 'https://www.youtube.com', icon: 'fa-youtube' },
                 { name: '微博', url: 'https://weibo.com', icon: 'fa-weibo' },
-                { name: 'StackOverflow', url: 'https://stackoverflow.com', icon: 'fa-stack-overflow' },
-                { name: '豆瓣', url: 'https://douban.com', icon: 'fa-book' },
-                { name: 'Twitter', url: 'https://twitter.com', icon: 'fa-twitter' },
-                { name: 'Reddit', url: 'https://reddit.com', icon: 'fa-reddit' },
-                { name: 'Medium', url: 'https://medium.com', icon: 'fa-medium' }
+                { name: '抖音', url: 'https://www.douyin.com', icon: 'fa-tiktok' },
+                { name: '百度', url: 'https://www.baidu.com', icon: 'fa-baidu' },
+                { name: '谷歌', url: 'https://www.google.com', icon: 'fa-google' },
+                { name: '必应', url: 'https://www.bing.com', icon: 'fa-microsoft' },
+                { name: 'StackOverflow', url: 'https://stackoverflow.com', icon: 'fa-stack-overflow' }
             ],
             settings: {
                 showDailyImage: true,
@@ -1300,10 +1158,7 @@
                     login: true,
                     easterEgg: true,
                     animation: true
-                },
-                devMode: false,
-                devScale: 100,
-                devTheme: 'default'
+                }
             },
             
             holidays: {
@@ -1377,14 +1232,7 @@
             platformSelection: document.getElementById('platformSelection'),
             platformSelectionGrid: document.getElementById('platformSelectionGrid'),
             searchBtn: document.getElementById('searchBtn'),
-            leftSearchBtn: document.getElementById('leftSearchBtn'),
             loginBtn: document.getElementById('loginBtn'),
-            leftLoginBtn: document.getElementById('leftLoginBtn'),
-            favoritesBtn: document.getElementById('favoritesBtn'),
-            favoritesPanel: document.getElementById('favoritesPanel'),
-            closeFavorites: document.getElementById('closeFavorites'),
-            favoritesList: document.getElementById('favoritesList'),
-            signature: document.getElementById('signature'),
             settingsOverlay: document.getElementById('settingsOverlay'),
             settingsPanel: document.getElementById('settingsPanel'),
             showPoetry: document.getElementById('showPoetry'),
@@ -1406,15 +1254,7 @@
             platformScaleValue: document.getElementById('platformScaleValue'),
             searchAnimation: document.getElementById('searchAnimation'),
             mainContainer: document.getElementById('mainContainer'),
-            devScale: document.getElementById('devScale'),
-            devScaleValue: document.getElementById('devScaleValue'),
-            devTheme: document.getElementById('devTheme'),
-            devAddPlatform: document.getElementById('devAddPlatform'),
-            devAddPlatformUrl: document.getElementById('devAddPlatformUrl'),
-            devAddPlatformBtn: document.getElementById('devAddPlatformBtn'),
-            disableDevMode: document.getElementById('disableDevMode'),
-            settingsLink: document.getElementById('settingsLink'),
-            aboutLink: document.getElementById('aboutLink')
+            favoritesGrid: document.getElementById('favoritesGrid')
         };
 
         // 状态变量
@@ -1495,13 +1335,13 @@
 
         // 渲染收藏夹
         function renderFavorites() {
-            elements.favoritesList.innerHTML = config.favorites.map(fav => `
-                <div class="favorite-item" data-url="${fav.url}">
-                    <div class="favorite-icon"><i class="fab ${fav.icon}"></i></div>
-                    <div>${fav.name}</div>
+            elements.favoritesGrid.innerHTML = config.favorites.map(favorite => `
+                <div class="favorite-item" data-url="${favorite.url}">
+                    <div class="favorite-icon"><i class="fab ${favorite.icon}"></i></div>
+                    <div class="favorite-name">${favorite.name}</div>
                 </div>
             `).join('');
-            
+
             // 添加收藏项点击事件
             document.querySelectorAll('.favorite-item').forEach(item => {
                 item.addEventListener('click', function() {
@@ -1563,8 +1403,7 @@
             elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
             
             // 登录按钮
-            elements.loginBtn.style.display = config.settings.showSections.login ? 
-                (elements.loginBtn.style.display === 'block' ? 'block' : 'none') : 'none';
+            elements.loginBtn.querySelector('.login-text').style.display = config.settings.showSections.login ? 'inline' : 'none';
         }
 
         // 加载设置
@@ -1598,41 +1437,14 @@
                     if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
                     updateAnimationSpeedText();
                     
-                    // 开发者设置
-                    if (elements.devScale) elements.devScale.value = config.settings.devScale;
-                    if (elements.devScaleValue) elements.devScaleValue.textContent = `${config.settings.devScale}%`;
-                    if (elements.devTheme) elements.devTheme.value = config.settings.devTheme;
-                    
                     // 应用设置
                     document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
                     document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
                     updateAnimationSpeed();
-                    applyTheme();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
             }
-        }
-
-        // 应用主题
-        function applyTheme() {
-            let primaryColor = '#89c7b6'; // 默认绿色
-            switch(config.settings.devTheme) {
-                case 'blue':
-                    primaryColor = '#4da6ff';
-                    break;
-                case 'red':
-                    primaryColor = '#ff6b6b';
-                    break;
-                case 'purple':
-                    primaryColor = '#9b59b6';
-                    break;
-                case 'dark':
-                    primaryColor = '#34495e';
-                    break;
-            }
-            
-            document.documentElement.style.setProperty('--primary-color', primaryColor);
         }
 
         // 更新动画速度文本
@@ -1667,9 +1479,6 @@
                 platformScale: parseInt(elements.platformScale.value),
                 defaultPlatform: elements.defaultPlatform.value,
                 cmdMode: elements.cmdMode.checked,
-                devMode: config.settings.devMode,
-                devScale: parseInt(elements.devScale.value),
-                devTheme: elements.devTheme.value,
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
@@ -1688,7 +1497,6 @@
             document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
             updateAnimationSpeed();
             applyPlatformScale();
-            applyTheme();
             
             // 应用板块显示设置
             applySectionSettings();
@@ -1815,14 +1623,14 @@
 
                     selectedPlatform = card.dataset.id;
                     const showLogin = card.dataset.login && config.settings.showSections.login;
-                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                    elements.loginBtn.querySelector('.login-text').style.display = showLogin ? 'inline' : 'none';
                 });
             });
 
             // 默认显示登录按钮（如果必应需要）
             const bingPlatform = config.platforms.find(p => p.id === 'bing');
             if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
-                elements.loginBtn.style.display = 'block';
+                elements.loginBtn.querySelector('.login-text').style.display = 'inline';
             }
         }
 
@@ -2060,11 +1868,6 @@
             }, 300);
         }
 
-        // 切换收藏夹显示
-        function toggleFavorites() {
-            elements.favoritesPanel.classList.toggle('show');
-        }
-
         // 初始化彩蛋
         function initEasterEggs() {
             if (!config.settings.showSections.easterEgg) return;
@@ -2084,8 +1887,8 @@
                 }
             });
 
-            // 署名点击 - 连点7次打开设置
-            elements.signature.addEventListener('click', handleSignatureClick);
+            // 页脚设置点击 - 连点7次打开开发者设置
+            document.querySelector('.footer-text').addEventListener('click', handleSettingsClick);
 
             // 科乐美秘技监听
             document.addEventListener('keydown', function(e) {
@@ -2151,8 +1954,8 @@
             });
         }
 
-        // 署名点击处理
-        function handleSignatureClick() {
+        // 设置点击处理
+        function handleSettingsClick() {
             const now = Date.now();
             if (now - lastClickTime > CLICK_TIMEOUT) {
                 clickCount = 0;
@@ -2166,9 +1969,10 @@
                 clickCount = 0;
                 
                 // 添加点击动画
-                elements.signature.style.transform = 'scale(1.2)';
+                const footerText = document.querySelector('.footer-text');
+                footerText.style.transform = 'scale(1.2)';
                 setTimeout(() => {
-                    elements.signature.style.transform = '';
+                    footerText.style.transform = '';
                 }, 300);
             }
         }
@@ -2182,11 +1986,6 @@
                 performSearch(query);
             });
 
-            // 左侧搜索按钮
-            elements.leftSearchBtn.addEventListener('click', () => {
-                elements.searchInput.focus();
-            });
-
             // 登录按钮
             elements.loginBtn.addEventListener('click', () => {
                 if (!selectedPlatform) return;
@@ -2195,15 +1994,6 @@
                     window.open(platform.login, '_blank');
                 }
             });
-
-            // 左侧登录按钮
-            elements.leftLoginBtn.addEventListener('click', () => {
-                elements.loginBtn.click();
-            });
-
-            // 收藏夹按钮
-            elements.favoritesBtn.addEventListener('click', toggleFavorites);
-            elements.closeFavorites.addEventListener('click', toggleFavorites);
 
             // 搜索输入
             elements.searchInput.addEventListener('input', function() {
@@ -2236,6 +2026,7 @@
             });
 
             // 设置面板事件
+            document.querySelector('.footer-text').addEventListener('click', openSettings);
             elements.cancelSettings.addEventListener('click', closeSettings);
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
@@ -2258,7 +2049,6 @@
                         hideSuggestions();
                     }
                     elements.platformSelection.classList.remove('show');
-                    elements.favoritesPanel.classList.remove('show');
                 }
             });
 
@@ -2284,70 +2074,6 @@
             elements.platformScale.addEventListener('input', function() {
                 elements.platformScaleValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
-            });
-
-            // 开发者选项
-            elements.devScale.addEventListener('input', function() {
-                elements.devScaleValue.textContent = `${this.value}%`;
-                document.documentElement.style.fontSize = `${this.value/100}rem`;
-            });
-
-            elements.devTheme.addEventListener('change', function() {
-                applyTheme();
-            });
-
-            elements.devAddPlatformBtn.addEventListener('click', function() {
-                const name = elements.devAddPlatform.value.trim();
-                const url = elements.devAddPlatformUrl.value.trim();
-                
-                if (!name || !url) {
-                    alert('请填写平台名称和URL');
-                    return;
-                }
-                
-                if (!url.includes('{query}')) {
-                    alert('URL必须包含{query}作为查询参数占位符');
-                    return;
-                }
-                
-                // 生成一个随机ID
-                const id = 'custom-' + Math.random().toString(36).substr(2, 8);
-                
-                // 添加到平台列表
-                config.platforms.push({
-                    id,
-                    name,
-                    icon: 'fa-globe',
-                    search: url,
-                    login: ''
-                });
-                
-                // 重新渲染平台
-                renderPlatforms();
-                renderPlatformSelection();
-                
-                // 清空输入
-                elements.devAddPlatform.value = '';
-                elements.devAddPlatformUrl.value = '';
-                
-                alert(`平台"${name}"已添加`);
-            });
-
-            elements.disableDevMode.addEventListener('click', function() {
-                config.settings.devMode = false;
-                localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-                alert('开发者选项已关闭，刷新页面后生效');
-            });
-
-            // 底部链接
-            elements.settingsLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                openSettings();
-            });
-
-            elements.aboutLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                alert('星汉搜索 v1.0\n一个诗意化的多平台搜索门户\n作者: zmf');
             });
 
             // 触摸事件支持
