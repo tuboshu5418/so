@@ -3,7 +3,1610 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="v<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>星汉搜索 - 诗意探索</title>
+    <!-- 加载Font Awesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --墨色: #2c3e50;
+            --月白: #f0f2f5;
+            --青空: linear-gradient(135deg, #89c7b6 0%, #c6e4d9 100%);
+            --云纹: rgba(255, 255, 255, 0.15);
+            --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
+            --primary-color: #89c7b6;
+            --bg-blur: 12px;
+            --card-opacity: 0.8;
+            --animation-speed: 0.3s;
+            --win11-accent: #0078d4;
+            --win11-card-bg: rgba(255, 255, 255, 0.8);
+            --cmd-bg: #0c0c0c;
+            --cmd-text: #cccccc;
+            --platform-scale: 1;
+            --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --fluent-primary: #0078d4;
+            --fluent-secondary: #e6e6e6;
+            --fluent-bg: #f3f3f3;
+            --fluent-card: rgba(255, 255, 255, 0.8);
+            --fluent-text: #323130;
+            --fluent-accent: #0078d4;
+            --fluent-border: rgba(225, 223, 221, 0.7);
+            --fluent-hover: rgba(243, 243, 243, 0.7);
+            --suggestions-opacity: 0.9;
+            --poetry-opacity: 0.9;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: var(--transition-all);
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+            font-family: var(--禅意-font);
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            touch-action: manipulation;
+            background-color: var(--fluent-bg);
+            background-repeat: no-repeat;
+            transition: opacity 0.8s ease, background-image 1.2s ease;
+            grid-template-areas:
+                "header"
+                "main"
+                "footer";
+        }
+
+        body.fade-in {
+            opacity: 1;
+        }
+
+        body.animated::after {
+            content: '';
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            background:
+                radial-gradient(circle at 10% 20%,
+                    rgba(255, 255, 255, 0.1) 15%,
+                    transparent 30%),
+                linear-gradient(15deg,
+                    transparent 60%,
+                    rgba(255, 255, 255, 0.08) 80%);
+            animation: 云游 60s infinite linear;
+            z-index: -1;
+        }
+
+        .header {
+            grid-area: header;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            align-items: center;
+            backdrop-filter: blur(var(--bg-blur));
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .main {
+            grid-area: main;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            position: relative;
+        }
+
+        .footer {
+            grid-area: footer;
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            align-items: center;
+            backdrop-filter: blur(var(--bg-blur));
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            z-index: 2;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.8rem 3.5rem 0.8rem 1rem;
+            font-size: 1rem;
+            border: 1px solid var(--fluent-border);
+            border-radius: 4px;
+            background: var(--fluent-card);
+            color: var(--fluent-text);
+            font-family: var(--禅意-font);
+            transition: var(--transition-all);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            opacity: var(--card-opacity);
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--fluent-accent);
+            border-color: var(--fluent-accent);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--fluent-accent);
+            padding: 0.3rem;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: var(--fluent-accent);
+            padding: 0.5rem;
+            position: relative;
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--fluent-accent);
+            transition: width 0.3s ease;
+        }
+
+        .login-btn:hover::after {
+            width: 100%;
+        }
+
+        /* 平台网格布局 */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            opacity: var(--card-opacity);
+        }
+
+        .platform-card {
+            padding: 1rem;
+            background: var(--fluent-card);
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--fluent-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .platform-icon {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-icon i {
+            font-size: 2rem;
+            color: inherit;
+        }
+
+        .platform-name {
+            font-size: 0.9rem;
+            color: var(--fluent-text);
+        }
+
+        /* 收藏夹样式 */
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+            opacity: var(--card-opacity);
+        }
+
+        .favorite-card {
+            position: relative;
+            padding: 1rem;
+            background: var(--fluent-card);
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--fluent-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100px;
+            transition: transform 0.2s ease;
+        }
+
+        .favorite-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .favorite-icon {
+            height: 32px;
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .favorite-icon i {
+            font-size: 1.5rem;
+            color: inherit;
+        }
+
+        .favorite-name {
+            font-size: 0.8rem;
+            color: var(--fluent-text);
+        }
+
+        .favorite-badge {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            font-size: 0.7rem;
+            color: var(--fluent-accent);
+        }
+
+        /* 诗词样式 */
+        .poetry-container {
+            position: fixed;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 1rem;
+            backdrop-filter: blur(var(--bg-blur));
+            background-color: rgba(255, 255, 255, 0.7);
+            opacity: var(--poetry-opacity);
+            z-index: 10;
+        }
+
+        .poetry {
+            font-style: italic;
+            color: var(--fluent-text);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .verse {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .author {
+            font-size: 0.9rem;
+            color: var(--fluent-text);
+            opacity: 0.8;
+            display: block;
+        }
+
+        /* 搜索建议样式 */
+        #suggestions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            background: var(--fluent-card);
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            display: none;
+            max-height: 60vh;
+            overflow-y: auto;
+            opacity: var(--suggestions-opacity);
+            border: 1px solid var(--fluent-border);
+        }
+
+        #suggestions.show {
+            display: block;
+        }
+
+        .suggestion {
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--fluent-border);
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion:hover {
+            background: var(--fluent-hover);
+        }
+
+        /* 页脚样式 */
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--fluent-text);
+            opacity: 0.7;
+        }
+
+        .settings-link {
+            color: var(--fluent-accent);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .settings-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--fluent-accent);
+            transition: width 0.3s ease;
+        }
+
+        .settings-link:hover::after {
+            width: 100%;
+        }
+
+        /* CMD模式样式 */
+        .cmd-mode {
+            background-color: var(--cmd-bg);
+            color: var(--cmd-text);
+            font-family: 'Courier New', monospace;
+        }
+
+        .cmd-mode .search-box {
+            background-color: var(--cmd-bg);
+            color: var(--cmd-text);
+            border: 1px solid #333;
+            border-radius: 0;
+        }
+
+        .cmd-mode .poetry {
+            color: var(--cmd-text);
+        }
+
+        /* 设置面板 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(90vw, 800px);
+            background: var(--fluent-card);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            color: var(--fluent-text);
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .settings-panel.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--fluent-border);
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .settings-tab.active {
+            border-bottom: 2px solid var(--fluent-accent);
+            color: var(--fluent-accent);
+        }
+
+        .settings-content {
+            display: none;
+        }
+
+        .settings-content.active {
+            display: block;
+        }
+
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .setting-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--fluent-border);
+            border-radius: 4px;
+            font-family: var(--禅意-font);
+            background: var(--fluent-card);
+            color: var(--fluent-text);
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .settings-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background: var(--fluent-accent);
+            color: white;
+            cursor: pointer;
+            font-family: var(--禅意-font);
+            transition: var(--transition-all);
+        }
+
+        .settings-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .settings-btn.secondary {
+            background: var(--fluent-border);
+            color: var(--fluent-text);
+        }
+
+        /* 响应式设计 */
+        @media screen and (max-width: 768px) {
+            .platform-grid, .favorites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .poetry-container {
+                position: static;
+                margin-top: 1rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .platform-grid, .favorites-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .platform-card, .favorite-card {
+                min-height: 80px;
+                padding: 0.5rem;
+            }
+            
+            .platform-icon, .favorite-icon {
+                height: 30px;
+                width: 30px;
+            }
+            
+            .platform-icon i {
+                font-size: 1.5rem;
+            }
+            
+            .favorite-icon i {
+                font-size: 1.2rem;
+            }
+            
+            .settings-panel {
+                width: 95vw;
+                padding: 1rem;
+            }
+        }
+
+        /* 圆形屏幕适配 */
+        @media screen and (max-aspect-ratio: 1/1) {
+            body {
+                padding: 10px;
+            }
+            
+            .platform-grid, .favorites-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .header, .footer {
+                padding: 0.5rem;
+            }
+            
+            .poetry-container {
+                position: static;
+                margin-top: 1rem;
+            }
+        }
+
+        @keyframes 云游 {
+            0% { transform: translate(0, 0); }
+            33% { transform: translate(-30%, -15%); }
+            66% { transform: translate(-20%, 10%); }
+            100% { transform: translate(0, 0); }
+        }
+    </style>
+</head>
+
+<body class="animated">
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+    
+    <header class="header">
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="搜索..." id="searchInput">
+            <button class="search-btn" id="searchBtn">
+                <i class="fas fa-paper-plane" style="color: #4dabf7;"></i>
+            </button>
+        </div>
+        <button class="login-btn" id="loginBtn">
+            <i class="fas fa-key" style="color: #4dabf7;"></i>
+            <span>登录</span>
+        </button>
+    </header>
+    
+    <main class="main">
+        <div class="platform-grid" id="platformGrid"></div>
+        <div class="favorites-grid" id="favoritesGrid"></div>
+        <div id="suggestions"></div>
+    </main>
+    
+    <div class="poetry-container" id="poetryContainer">
+        <div class="poetry" id="poetry">
+            <span class="verse">众里寻他千百度</span>
+            <span class="verse">蓦然回首，那人却在灯火阑珊处</span>
+            <span class="author">—— 辛弃疾《青玉案·元夕》</span>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <span class="footer-text">
+            <span class="settings-link" id="settingsLink">设置</span> 
+            版权所有 © zmf
+        </span>
+    </footer>
+
+    <!-- 设置面板 -->
+    <div class="overlay" id="settingsOverlay"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-tabs">
+            <div class="settings-tab active" data-tab="sections">板块开关</div>
+            <div class="settings-tab" data-tab="adjustments">板块调节</div>
+            <div class="settings-tab" data-tab="themes">主题风格</div>
+            <div class="settings-tab developer" data-tab="developer" style="display:none;">开发者选项</div>
+        </div>
+        
+        <!-- 板块开关 -->
+        <div class="settings-content active" id="sectionsContent">
+            <div class="setting-item">
+                <label>显示控制</label>
+                <div class="section-toggle">
+                    <div class="toggle-item">
+                        <input type="checkbox" id="showPoetry" checked>
+                        <label for="showPoetry">诗句显示</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="showPlatforms" checked>
+                        <label for="showPlatforms">平台显示</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="showFavorites" checked>
+                        <label for="showFavorites">收藏夹显示</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="showSuggestions" checked>
+                        <label for="showSuggestions">搜索建议</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="cmdMode">
+                        <label for="cmdMode">CMD模式</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 板块调节 -->
+        <div class="settings-content" id="adjustmentsContent">
+            <div class="setting-item">
+                <label for="bgBlur">背景模糊度</label>
+                <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+                <span id="bgBlurValue">12px</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="cardOpacity">卡片透明度</label>
+                <input type="range" id="cardOpacity" min="0" max="100" value="80" step="1">
+                <span id="cardOpacityValue">80%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="suggestionsOpacity">搜索建议透明度</label>
+                <input type="range" id="suggestionsOpacity" min="0" max="100" value="90" step="1">
+                <span id="suggestionsOpacityValue">90%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="poetryOpacity">诗句透明度</label>
+                <input type="range" id="poetryOpacity" min="0" max="100" value="90" step="1">
+                <span id="poetryOpacityValue">90%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="animationSpeed">动画速度</label>
+                <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+                <span id="animationSpeedValue">中速</span>
+            </div>
+        </div>
+        
+        <!-- 主题风格 -->
+        <div class="settings-content" id="themesContent">
+            <div class="setting-item">
+                <label for="themeColor">主题颜色</label>
+                <select id="themeColor" class="setting-control">
+                    <option value="dark">深色</option>
+                    <option value="light" selected>浅色</option>
+                    <option value="blue">蓝色</option>
+                    <option value="green">绿色</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label for="themeStyle">主题风格</label>
+                <select id="themeStyle" class="setting-control">
+                    <option value="poetic">诗意</option>
+                    <option value="tech" selected>科技</option>
+                    <option value="retro">复古</option>
+                    <option value="fluent1">Fluent UI 1</option>
+                    <option value="fluent2">Fluent UI 2</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label for="customTheme">自定义主题</label>
+                <input type="color" id="primaryColor" value="#0078d4">
+                <input type="color" id="secondaryColor" value="#e6e6e6">
+                <button id="applyCustomTheme">应用自定义</button>
+            </div>
+        </div>
+        
+        <!-- 开发者选项 -->
+        <div class="settings-content" id="developerContent">
+            <div class="setting-item">
+                <label for="uiScale">界面缩放</label>
+                <input type="range" id="uiScale" min="50" max="150" value="100" step="5">
+                <span id="uiScaleValue">100%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="searchIcon">搜索按钮图标</label>
+                <select id="searchIcon" class="setting-control">
+                    <option value="fa-paper-plane">纸飞机</option>
+                    <option value="fa-search">放大镜</option>
+                    <option value="fa-rocket">火箭</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label for="loginIcon">登录按钮图标</label>
+                <select id="loginIcon" class="setting-control">
+                    <option value="fa-key">钥匙</option>
+                    <option value="fa-user">用户</option>
+                    <option value="fa-fingerprint">指纹</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label>自定义平台</label>
+                <button id="addPlatform">添加平台</button>
+                <div id="customPlatforms"></div>
+            </div>
+            
+            <div class="setting-item">
+                <button id="editSourceCode">编辑源代码</button>
+            </div>
+            
+            <div class="setting-item">
+                <button id="disableDeveloper" class="settings-btn secondary">关闭开发者选项</button>
+            </div>
+        </div>
+        
+        <div class="settings-actions">
+            <button class="settings-btn secondary" id="cancelSettings">取消</button>
+            <button class="settings-btn" id="saveSettings">保存设置</button>
+            <button class="settings-btn" id="previewSettings">预览</button>
+        </div>
+    </div>
+
+    <script>
+        // 配置数据
+        const config = {
+            platforms: [
+                {
+                    id: 'bing',
+                    name: 'Microsoft Bing',
+                    icon: 'fa-microsoft',
+                    color: '#0078d4',
+                    search: 'https://www.bing.com/search?q=',
+                    login: 'https://login.live.com/'
+                },
+                {
+                    id: 'google',
+                    name: 'Google',
+                    icon: 'fa-google',
+                    color: '#4285F4',
+                    search: 'https://www.google.com/search?q=',
+                    login: 'https://accounts.google.com/'
+                },
+                {
+                    id: 'baidu',
+                    name: '百度',
+                    icon: 'fa-baidu',
+                    color: '#2932E1',
+                    search: 'https://www.baidu.com/s?wd=',
+                    login: 'https://passport.baidu.com/v2/?login'
+                },
+                {
+                    id: 'bilibili',
+                    name: '哔哩哔哩',
+                    icon: 'fa-bilibili',
+                    color: '#FB7299',
+                    search: 'https://search.bilibili.com/all?keyword=',
+                    login: 'https://passport.bilibili.com/login'
+                },
+                {
+                    id: 'shenma',
+                    name: '神马',
+                    icon: 'fa-search',
+                    color: '#FF6A00',
+                    search: 'https://m.sm.cn/s?q=',
+                    login: ''
+                },
+                {
+                    id: 'sogou',
+                    name: '搜狗',
+                    icon: 'fa-paw',
+                    color: '#FF5000',
+                    search: 'https://www.sogou.com/web?query=',
+                    login: ''
+                },
+                {
+                    id: 'yandex',
+                    name: 'Yandex',
+                    icon: 'fa-yandex',
+                    color: '#FF0000',
+                    search: 'https://yandex.com/search/?text=',
+                    login: 'https://passport.yandex.com/auth'
+                },
+                {
+                    id: '360',
+                    name: '360搜索',
+                    icon: 'fa-search',
+                    color: '#19B955',
+                    search: 'https://www.so.com/s?q=',
+                    login: ''
+                },
+                {
+                    id: 'tencent',
+                    name: '腾讯云 Whois',
+                    icon: 'fa-cloud',
+                    color: '#0081FF',
+                    search: 'https://whois.cloud.tencent.com/',
+                    login: 'https://cloud.tencent.com/login'
+                }
+            ],
+            
+            favorites: [
+                {
+                    id: 'gmail',
+                    name: 'Gmail',
+                    icon: 'fa-envelope',
+                    color: '#D44638',
+                    url: 'https://mail.google.com/'
+                },
+                {
+                    id: 'outlook',
+                    name: 'Outlook',
+                    icon: 'fa-envelope',
+                    color: '#0078D4',
+                    url: 'https://outlook.live.com/'
+                },
+                {
+                    id: 'drive',
+                    name: 'Google Drive',
+                    icon: 'fa-hdd',
+                    color: '#4285F4',
+                    url: 'https://drive.google.com/'
+                },
+                {
+                    id: 'onedrive',
+                    name: 'OneDrive',
+                    icon: 'fa-cloud',
+                    color: '#0078D4',
+                    url: 'https://onedrive.live.com/'
+                },
+                {
+                    id: 'twitter',
+                    name: 'Twitter',
+                    icon: 'fa-twitter',
+                    color: '#1DA1F2',
+                    url: 'https://twitter.com/'
+                },
+                {
+                    id: 'facebook',
+                    name: 'Facebook',
+                    icon: 'fa-facebook',
+                    color: '#1877F2',
+                    url: 'https://www.facebook.com/'
+                },
+                {
+                    id: 'reddit',
+                    name: 'Reddit',
+                    icon: 'fa-reddit',
+                    color: '#FF5700',
+                    url: 'https://www.reddit.com/'
+                },
+                {
+                    id: 'wikipedia',
+                    name: 'Wikipedia',
+                    icon: 'fa-wikipedia-w',
+                    color: '#000000',
+                    url: 'https://www.wikipedia.org/'
+                },
+                {
+                    id: 'amazon',
+                    name: 'Amazon',
+                    icon: 'fa-amazon',
+                    color: '#FF9900',
+                    url: 'https://www.amazon.com/'
+                },
+                {
+                    id: 'netflix',
+                    name: 'Netflix',
+                    icon: 'fa-netflix',
+                    color: '#E50914',
+                    url: 'https://www.netflix.com/'
+                }
+            ],
+            
+            settings: {
+                bgBlur: 12,
+                cardOpacity: 80,
+                suggestionsOpacity: 90,
+                poetryOpacity: 90,
+                animationSpeed: 3,
+                themeColor: 'light',
+                themeStyle: 'tech',
+                showPoetry: true,
+                showPlatforms: true,
+                showFavorites: true,
+                showSuggestions: true,
+                cmdMode: false,
+                developerMode: false
+            }
+        };
+
+        // DOM元素
+        const elements = {
+            loading: document.getElementById('loading'),
+            poetry: document.getElementById('poetry'),
+            poetryContainer: document.getElementById('poetryContainer'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            loginBtn: document.getElementById('loginBtn'),
+            platformGrid: document.getElementById('platformGrid'),
+            favoritesGrid: document.getElementById('favoritesGrid'),
+            suggestions: document.getElementById('suggestions'),
+            settingsLink: document.getElementById('settingsLink'),
+            settingsOverlay: document.getElementById('settingsOverlay'),
+            settingsPanel: document.getElementById('settingsPanel'),
+            bgBlur: document.getElementById('bgBlur'),
+            bgBlurValue: document.getElementById('bgBlurValue'),
+            cardOpacity: document.getElementById('cardOpacity'),
+            cardOpacityValue: document.getElementById('cardOpacityValue'),
+            suggestionsOpacity: document.getElementById('suggestionsOpacity'),
+            suggestionsOpacityValue: document.getElementById('suggestionsOpacityValue'),
+            poetryOpacity: document.getElementById('poetryOpacity'),
+            poetryOpacityValue: document.getElementById('poetryOpacityValue'),
+            animationSpeed: document.getElementById('animationSpeed'),
+            animationSpeedValue: document.getElementById('animationSpeedValue'),
+            themeColor: document.getElementById('themeColor'),
+            themeStyle: document.getElementById('themeStyle'),
+            showPoetry: document.getElementById('showPoetry'),
+            showPlatforms: document.getElementById('showPlatforms'),
+            showFavorites: document.getElementById('showFavorites'),
+            showSuggestions: document.getElementById('showSuggestions'),
+            cmdMode: document.getElementById('cmdMode'),
+            cancelSettings: document.getElementById('cancelSettings'),
+            saveSettings: document.getElementById('saveSettings'),
+            previewSettings: document.getElementById('previewSettings'),
+            uiScale: document.getElementById('uiScale'),
+            uiScaleValue: document.getElementById('uiScaleValue'),
+            searchIcon: document.getElementById('searchIcon'),
+            loginIcon: document.getElementById('loginIcon'),
+            disableDeveloper: document.getElementById('disableDeveloper')
+        };
+
+        // 状态变量
+        let selectedPlatform = 'bing';
+        let isSettingsOpen = false;
+        let settingsClickCount = 0;
+        let lastSettingsClickTime = 0;
+        const SETTINGS_CLICK_THRESHOLD = 7;
+        const SETTINGS_CLICK_TIMEOUT = 1000;
+        let isDeveloperMode = false;
+
+        // 初始化函数
+        async function init() {
+            // 加载设置
+            loadSettings();
+            
+            // 等待字体加载
+            await document.fonts.ready;
+            
+            // 检查屏幕尺寸
+            checkScreenSize();
+            window.addEventListener('resize', checkScreenSize);
+            
+            // 渲染内容
+            renderPlatforms();
+            renderFavorites();
+            
+            // 应用设置
+            applySettings();
+            
+            // 聚焦搜索框
+            elements.searchInput.focus();
+            
+            // 添加事件监听
+            addEventListeners();
+            
+            // 隐藏加载动画
+            elements.loading.style.display = 'none';
+            document.body.classList.add('fade-in');
+        }
+
+        // 加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('searchPortalSettings');
+            if (savedSettings) {
+                try {
+                    const parsed = JSON.parse(savedSettings);
+                    config.settings = {...config.settings, ...parsed};
+                    
+                    // 更新UI控件
+                    if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
+                    if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
+                    if (elements.cardOpacity) elements.cardOpacity.value = config.settings.cardOpacity;
+                    if (elements.cardOpacityValue) elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
+                    if (elements.suggestionsOpacity) elements.suggestionsOpacity.value = config.settings.suggestionsOpacity;
+                    if (elements.suggestionsOpacityValue) elements.suggestionsOpacityValue.textContent = `${config.settings.suggestionsOpacity}%`;
+                    if (elements.poetryOpacity) elements.poetryOpacity.value = config.settings.poetryOpacity;
+                    if (elements.poetryOpacityValue) elements.poetryOpacityValue.textContent = `${config.settings.poetryOpacity}%`;
+                    if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
+                    if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
+                    if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
+                    if (elements.showPoetry) elements.showPoetry.checked = config.settings.showPoetry;
+                    if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showPlatforms;
+                    if (elements.showFavorites) elements.showFavorites.checked = config.settings.showFavorites;
+                    if (elements.showSuggestions) elements.showSuggestions.checked = config.settings.showSuggestions;
+                    if (elements.cmdMode) elements.cmdMode.checked = config.settings.cmdMode;
+                    
+                    selectedPlatform = config.settings.defaultPlatform || 'bing';
+                    isDeveloperMode = config.settings.developerMode || false;
+                    
+                    updateAnimationSpeedText();
+                    updateDeveloperTab();
+                } catch (e) {
+                    console.error('加载设置失败:', e);
+                }
+            }
+        }
+
+        // 保存设置
+        function saveSettings() {
+            config.settings = {
+                bgBlur: parseInt(elements.bgBlur.value),
+                cardOpacity: parseInt(elements.cardOpacity.value),
+                suggestionsOpacity: parseInt(elements.suggestionsOpacity.value),
+                poetryOpacity: parseInt(elements.poetryOpacity.value),
+                animationSpeed: parseInt(elements.animationSpeed.value),
+                themeColor: elements.themeColor.value,
+                themeStyle: elements.themeStyle.value,
+                showPoetry: elements.showPoetry.checked,
+                showPlatforms: elements.showPlatforms.checked,
+                showFavorites: elements.showFavorites.checked,
+                showSuggestions: elements.showSuggestions.checked,
+                cmdMode: elements.cmdMode.checked,
+                developerMode: isDeveloperMode
+            };
+            
+            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
+            
+            // 应用新设置
+            applySettings();
+            
+            closeSettings();
+        }
+
+        // 应用设置
+        function applySettings() {
+            // 背景模糊
+            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+            
+            // 卡片透明度
+            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+            
+            // 搜索建议透明度
+            document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
+            
+            // 诗句透明度
+            document.documentElement.style.setProperty('--poetry-opacity', `${config.settings.poetryOpacity/100}`);
+            
+            // 动画速度
+            updateAnimationSpeed();
+            
+            // 主题颜色
+            applyThemeColor();
+            
+            // 主题风格
+            applyThemeStyle();
+            
+            // 显示/隐藏板块
+            elements.poetryContainer.style.display = config.settings.showPoetry ? 'block' : 'none';
+            elements.platformGrid.style.display = config.settings.showPlatforms ? 'grid' : 'none';
+            elements.favoritesGrid.style.display = config.settings.showFavorites ? 'grid' : 'none';
+            
+            // CMD模式
+            applyCmdMode();
+            
+            // 开发者模式
+            updateDeveloperTab();
+        }
+
+        // 更新动画速度
+        function updateAnimationSpeed() {
+            let speed = 0.3;
+            switch (parseInt(config.settings.animationSpeed)) {
+                case 0: speed = 0; break;
+                case 1: speed = 0.8; break;
+                case 2: speed = 0.5; break;
+                case 3: speed = 0.3; break;
+                case 4: speed = 0.15; break;
+                case 5: speed = 0.1; break;
+            }
+            document.documentElement.style.setProperty('--animation-speed', `${speed}s`);
+        }
+
+        // 更新动画速度文本
+        function updateAnimationSpeedText() {
+            const speeds = ['关闭', '极慢', '慢速', '中速', '快速', '极快'];
+            const speedIndex = parseInt(config.settings.animationSpeed) || 3;
+            elements.animationSpeedValue.textContent = speeds[speedIndex];
+        }
+
+        // 应用主题颜色
+        function applyThemeColor() {
+            if (config.settings.themeColor === 'dark') {
+                document.documentElement.style.setProperty('--fluent-bg', '#1e1e1e');
+                document.documentElement.style.setProperty('--fluent-card', 'rgba(37, 37, 37, 0.8)');
+                document.documentElement.style.setProperty('--fluent-text', '#ffffff');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(68, 68, 68, 0.7)');
+                document.documentElement.style.setProperty('--fluent-hover', 'rgba(51, 51, 51, 0.7)');
+            } else if (config.settings.themeColor === 'blue') {
+                document.documentElement.style.setProperty('--fluent-bg', '#f0f5ff');
+                document.documentElement.style.setProperty('--fluent-card', 'rgba(240, 245, 255, 0.8)');
+                document.documentElement.style.setProperty('--fluent-text', '#1a365d');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(66, 153, 225, 0.5)');
+                document.documentElement.style.setProperty('--fluent-hover', 'rgba(66, 153, 225, 0.2)');
+                document.documentElement.style.setProperty('--fluent-accent', '#4299e1');
+            } else if (config.settings.themeColor === 'green') {
+                document.documentElement.style.setProperty('--fluent-bg', '#f0fff4');
+                document.documentElement.style.setProperty('--fluent-card', 'rgba(240, 255, 244, 0.8)');
+                document.documentElement.style.setProperty('--fluent-text', '#22543d');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(72, 187, 120, 0.5)');
+                document.documentElement.style.setProperty('--fluent-hover', 'rgba(72, 187, 120, 0.2)');
+                document.documentElement.style.setProperty('--fluent-accent', '#48bb78');
+            } else {
+                // 默认浅色
+                document.documentElement.style.setProperty('--fluent-bg', '#f3f3f3');
+                document.documentElement.style.setProperty('--fluent-card', 'rgba(255, 255, 255, 0.8)');
+                document.documentElement.style.setProperty('--fluent-text', '#323130');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(225, 223, 221, 0.7)');
+                document.documentElement.style.setProperty('--fluent-hover', 'rgba(243, 243, 243, 0.7)');
+                document.documentElement.style.setProperty('--fluent-accent', '#0078d4');
+            }
+        }
+
+        // 应用主题风格
+        function applyThemeStyle() {
+            if (config.settings.themeStyle === 'poetic') {
+                document.documentElement.style.setProperty('--fluent-primary', '#89c7b6');
+                document.documentElement.style.setProperty('--fluent-accent', '#89c7b6');
+            } else if (config.settings.themeStyle === 'tech') {
+                document.documentElement.style.setProperty('--fluent-primary', '#0078d4');
+                document.documentElement.style.setProperty('--fluent-accent', '#0078d4');
+            } else if (config.settings.themeStyle === 'retro') {
+                document.documentElement.style.setProperty('--fluent-primary', '#8a2be2');
+                document.documentElement.style.setProperty('--fluent-accent', '#8a2be2');
+            } else if (config.settings.themeStyle === 'fluent1') {
+                // Fluent UI 1 风格
+                document.documentElement.style.setProperty('--fluent-primary', '#0078d4');
+                document.documentElement.style.setProperty('--fluent-accent', '#0078d4');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(0, 0, 0, 0.1)');
+            } else if (config.settings.themeStyle === 'fluent2') {
+                // Fluent UI 2 风格
+                document.documentElement.style.setProperty('--fluent-primary', '#0f6cbd');
+                document.documentElement.style.setProperty('--fluent-accent', '#0f6cbd');
+                document.documentElement.style.setProperty('--fluent-border', 'rgba(0, 0, 0, 0.05)');
+            }
+        }
+
+        // 应用CMD模式
+        function applyCmdMode() {
+            if (config.settings.cmdMode) {
+                document.body.classList.add('cmd-mode');
+                elements.searchInput.placeholder = "> 输入命令...";
+            } else {
+                document.body.classList.remove('cmd-mode');
+                elements.searchInput.placeholder = "搜索...";
+            }
+        }
+
+        // 更新开发者选项卡
+        function updateDeveloperTab() {
+            const developerTab = document.querySelector('.settings-tab.developer');
+            if (config.settings.developerMode) {
+                developerTab.style.display = 'block';
+            } else {
+                developerTab.style.display = 'none';
+                // 确保开发者选项卡不是当前激活的
+                if (developerTab.classList.contains('active')) {
+                    document.querySelector('.settings-tab[data-tab="sections"]').click();
+                }
+            }
+        }
+
+        // 渲染平台网格
+        function renderPlatforms() {
+            elements.platformGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon" style="color: ${platform.color}">
+                        <i class="fab ${platform.icon}"></i>
+                    </div>
+                    <div class="platform-name">${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-card').forEach(c => 
+                        c.classList.remove('active'));
+                    card.classList.add('active');
+                    selectedPlatform = card.dataset.id;
+                });
+            });
+        }
+
+        // 渲染收藏夹
+        function renderFavorites() {
+            elements.favoritesGrid.innerHTML = config.favorites.map(favorite => `
+                <div class="favorite-card" data-id="${favorite.id}" data-url="${favorite.url}">
+                    <div class="favorite-icon" style="color: ${favorite.color}">
+                        <i class="fab ${favorite.icon}"></i>
+                    </div>
+                    <div class="favorite-name">${favorite.name}</div>
+                    <div class="favorite-badge">
+                        <i class="fas fa-bookmark"></i>
+                    </div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.favorite-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    window.open(card.dataset.url, '_blank');
+                });
+            });
+        }
+
+        // 显示搜索建议
+        function showSuggestions(input) {
+            if (!input || input.length === 0 || !config.settings.showSuggestions || config.settings.cmdMode) {
+                hideSuggestions();
+                return;
+            }
+
+            const callbackName = `bingSuggestionCallback_${Date.now()}`;
+            const script = document.createElement('script');
+            script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
+
+            window[callbackName] = function(data) {
+                if (data?.AS?.Results?.[0]?.Suggests) {
+                    elements.suggestions.innerHTML = data.AS.Results[0].Suggests.map(suggestion => `
+                        <div class="suggestion">${suggestion.Txt}</div>
+                    `).join('');
+
+                    // 添加建议点击事件
+                    document.querySelectorAll('.suggestion').forEach(item => {
+                        item.addEventListener('click', function() {
+                            elements.searchInput.value = this.textContent;
+                            hideSuggestions();
+                            performSearch(this.textContent);
+                        });
+                    });
+
+                    elements.suggestions.classList.add('show');
+                } else {
+                    hideSuggestions();
+                }
+                document.body.removeChild(script);
+                delete window[callbackName];
+            };
+
+            document.body.appendChild(script);
+        }
+
+        // 隐藏搜索建议
+        function hideSuggestions() {
+            elements.suggestions.classList.remove('show');
+        }
+
+        // 执行搜索
+        function performSearch(query) {
+            if (!query) return;
+            
+            // 检查是否是URL
+            if (isPotentialUrl(query)) {
+                navigateToUrl(query);
+                return;
+            }
+            
+            // 在CMD模式下使用默认平台
+            if (config.settings.cmdMode || !config.settings.showPlatforms) {
+                const platform = config.platforms.find(p => p.id === 'bing');
+                if (platform) {
+                    window.open(platform.search + encodeURIComponent(query), '_blank');
+                }
+                return;
+            }
+            
+            const platform = config.platforms.find(p => p.id === selectedPlatform);
+            if (platform) {
+                window.open(platform.search + encodeURIComponent(query), '_blank');
+            }
+        }
+
+        // 检查是否是URL
+        function isPotentialUrl(string) {
+            // 常见顶级域名
+            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev', '.me', '.info'];
+            const hasValidTLD = tlds.some(tld => string.includes(tld));
+            const hasProtocol = /^(https?:\/\/|ftp:\/\/)/i.test(string);
+            
+            // 排除纯中文和空格的情况
+            if (/[\u4e00-\u9fa5]/.test(string) || /\s/.test(string)) return false;
+            
+            return hasProtocol || (hasValidTLD && string.includes('.'));
+        }
+
+        // 导航到URL
+        function navigateToUrl(url) {
+            // 确保URL有协议
+            if (!/^(https?:\/\/|ftp:\/\/)/i.test(url)) {
+                url = 'http://' + url;
+            }
+            
+            window.open(url, '_blank');
+        }
+
+        // 打开设置
+        function openSettings() {
+            elements.settingsOverlay.style.display = 'block';
+            elements.settingsPanel.style.display = 'block';
+            
+            setTimeout(() => {
+                elements.settingsOverlay.classList.add('show');
+                elements.settingsPanel.classList.add('show');
+            }, 10);
+            
+            isSettingsOpen = true;
+        }
+
+        // 关闭设置
+        function closeSettings() {
+            elements.settingsOverlay.classList.remove('show');
+            elements.settingsPanel.classList.remove('show');
+            
+            setTimeout(() => {
+                elements.settingsOverlay.style.display = 'none';
+                elements.settingsPanel.style.display = 'none';
+            }, 300);
+            
+            isSettingsOpen = false;
+        }
+
+        // 检查屏幕尺寸
+        function checkScreenSize() {
+            // 根据屏幕尺寸调整布局
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            
+            if (width <= 768 || height <= 768) {
+                document.body.style.gridTemplateColumns = '1fr';
+                document.body.style.gridTemplateRows = 'auto 1fr auto';
+                document.body.style.gridTemplateAreas = `
+                    "header"
+                    "main"
+                    "footer"
+                `;
+                
+                elements.poetryContainer.style.position = 'static';
+                elements.poetryContainer.style.marginTop = '1rem';
+            } else {
+                document.body.style.gridTemplateColumns = '1fr';
+                document.body.style.gridTemplateRows = 'auto 1fr auto';
+                document.body.style.gridTemplateAreas = `
+                    "header"
+                    "main"
+                    "footer"
+                `;
+                
+                elements.poetryContainer.style.position = 'fixed';
+                elements.poetryContainer.style.bottom = '60px';
+            }
+        }
+
+        // 处理设置链接点击
+        function handleSettingsLinkClick() {
+            const now = Date.now();
+            if (now - lastSettingsClickTime > SETTINGS_CLICK_TIMEOUT) {
+                settingsClickCount = 0;
+            }
+            
+            settingsClickCount++;
+            lastSettingsClickTime = now;
+            
+            if (settingsClickCount >= SETTINGS_CLICK_THRESHOLD) {
+                activateDeveloperMode();
+                settingsClickCount = 0;
+            } else if (!isSettingsOpen) {
+                openSettings();
+            }
+        }
+
+        // 激活开发者模式
+        function activateDeveloperMode() {
+            isDeveloperMode = true;
+            config.settings.developerMode = true;
+            updateDeveloperTab();
+            alert('开发者模式已激活');
+        }
+
+        // 禁用开发者模式
+        function disableDeveloperMode() {
+            isDeveloperMode = false;
+            config.settings.developerMode = false;
+            updateDeveloperTab();
+            alert('开发者模式已关闭');
+        }
+
+        // 添加事件监听
+        function addEventListeners() {
+            // 搜索按钮
+            elements.searchBtn.addEventListener('click', () => {
+                const query = elements.searchInput.value.trim();
+                if (!query) return;
+                performSearch(query);
+            });
+
+            // 登录按钮
+            elements.loginBtn.addEventListener('click', () => {
+                if (!selectedPlatform) return;
+                const platform = config.platforms.find(p => p.id === selectedPlatform);
+                if (platform && platform.login) {
+                    window.open(platform.login, '_blank');
+                }
+            });
+
+            // 搜索输入
+            elements.searchInput.addEventListener('input', function() {
+                showSuggestions(this.value);
+            });
+
+            // 回车键搜索
+            elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = elements.searchInput.value.trim();
+                    if (!query) return;
+                    performSearch(query);
+                }
+            });
+
+            // 输入框聚焦/失焦
+            elements.searchInput.addEventListener('focus', function() {
+                if (this.value.trim().length > 0 && !config.settings.cmdMode && config.settings.showSuggestions) {
+                    showSuggestions(this.value);
+                }
+            });
+
+            elements.searchInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    if (!document.activeElement.classList.contains('suggestion')) {
+                        hideSuggestions();
+                    }
+                }, 200);
+            });
+
+            // 设置链接
+            elements.settingsLink.addEventListener('click', handleSettingsLinkClick);
+
+            // 设置面板事件
+            elements.cancelSettings.addEventListener('click', closeSettings);
+            elements.saveSettings.addEventListener('click', saveSettings);
+            elements.previewSettings.addEventListener('click', () => {
+                // 预览设置效果
+                const previewSettings = {
+                    bgBlur: parseInt(elements.bgBlur.value),
+                    cardOpacity: parseInt(elements.cardOpacity.value),
+                    suggestionsOpacity: parseInt(elements.suggestionsOpacity.value),
+                    poetryOpacity: parseInt(elements.poetryOpacity.value),
+                    animationSpeed: parseInt(elements.animationSpeed.value),
+                    themeColor: elements.themeColor.value,
+                    themeStyle: elements.themeStyle.value,
+                    showPoetry: elements.showPoetry.checked,
+                    showPlatforms: elements.showPlatforms.checked,
+                    showFavorites: elements.showFavorites.checked,
+                    showSuggestions: elements.showSuggestions.checked,
+                    cmdMode: elements.cmdMode.checked
+                };
+                
+                // 临时应用预览设置
+                const originalSettings = {...config.settings};
+                config.settings = previewSettings;
+                applySettings();
+                
+                // 3秒后恢复原设置
+                setTimeout(() => {
+                    config.settings = originalSettings;
+                    applySettings();
+                }, 3000);
+            });
+
+            elements.settingsOverlay.addEventListener('click', closeSettings);
+            
+            // 设置选项卡切换
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.settings-tab').forEach(t => 
+                        t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.settings-content').forEach(c => 
+                        c.classList.remove('active'));
+                    document.getElementById(`${this.dataset.tab}Content`).classList.add('active');
+                });
+            });
+            
+            // 开发者选项
+            elements.disableDeveloper.addEventListener('click', disableDeveloperMode);
+            
+            // 滑块事件
+            elements.bgBlur.addEventListener('input', function() {
+                elements.bgBlurValue.textContent = `${this.value}px`;
+            });
+            
+            elements.cardOpacity.addEventListener('input', function() {
+                elements.cardOpacityValue.textContent = `${this.value}%`;
+            });
+            
+            elements.suggestionsOpacity.addEventListener('input', function() {
+                elements.suggestionsOpacityValue.textContent = `${this.value}%`;
+            });
+            
+            elements.poetryOpacity.addEventListener('input', function() {
+                elements.poetryOpacityValue.textContent = `${this.value}%`;
+            });
+            
+            elements.animationSpeed.addEventListener('input', function() {
+                updateAnimationSpeedText();
+            });
+            
+            // 键盘快捷键
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'ArrowUp') {
+                    // 增加透明度
+                    const opacity = parseInt(elements.cardOpacity.value);
+                    if (opacity < 100) {
+                        elements.cardOpacity.value = opacity + 5;
+                        elements.cardOpacity.dispatchEvent(new Event('input'));
+                    }
+                } else if (e.ctrlKey && e.key === 'ArrowDown') {
+                    // 减少透明度
+                    const opacity = parseInt(elements.cardOpacity.value);
+                    if (opacity > 0) {
+                        elements.cardOpacity.value = opacity - 5;
+                        elements.cardOpacity.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>iewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>星汉搜索 - 诗意探索</title>
     <!-- 加载Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
