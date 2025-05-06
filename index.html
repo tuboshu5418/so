@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星汉搜索 - zmf</title>
+    <title>星汉搜索 - 诗意探索</title>
     <!-- 加载Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,8 @@
             min-height: 100vh;
             margin: 0;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             font-family: var(--禅意-font);
             position: relative;
             overflow: hidden;
@@ -51,7 +52,6 @@
             background-color: #f5f7fa;
             background-repeat: no-repeat;
             transition: opacity 0.8s ease, background-image 1.2s ease;
-            padding: 1rem;
         }
 
         body.fade-in {
@@ -74,417 +74,24 @@
             z-index: -1;
         }
 
-        body.dark-mode {
-            --墨色: #f0f2f5;
-            background-color: #1a1a1a;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .search-container {
-            position: relative;
-            display: flex;
-            width: 100%;
-            max-width: 800px;
-            z-index: 2;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 1rem 4rem 1rem 1rem;
-            font-size: 1.1rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 3rem;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--墨色);
-            font-family: var(--禅意-font);
-            transition: var(--transition-all);
-        }
-
-        body.dark-mode .search-box {
-            background: rgba(30, 30, 30, 0.9);
-            color: #f0f2f5;
-            border-color: rgba(0, 0, 0, 0.3);
-        }
-
-        .search-box:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
-            border-color: var(--primary-color);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #4dabf7;
-            padding: 0.5rem;
-        }
-
-        .login-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: #4dabf7;
-            padding: 0.5rem;
-            margin-left: 1rem;
-        }
-
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            position: relative;
-        }
-
-        /* 平台网格布局 */
-        .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
+        .container {
             position: relative;
             z-index: 1;
-            opacity: 1;
-            transition: var(--transition-all);
-        }
-
-        @media screen and (max-width: 767px) {
-            .platform-grid {
-                grid-template-columns: repeat(2, 1fr);
-                grid-template-rows: repeat(5, 1fr);
-            }
-        }
-
-        .platform-card {
-            padding: 1rem;
-            background: rgba(255, 255, 255, var(--card-opacity));
-            border-radius: 1rem;
-            cursor: pointer;
-            text-align: center;
-            backdrop-filter: blur(var(--bg-blur));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .platform-card {
-            background: rgba(30, 30, 30, var(--card-opacity));
-            border-color: rgba(0, 0, 0, 0.2);
-        }
-
-        .platform-card.active {
-            background: rgba(255, 255, 255, calc(var(--card-opacity) + 0.1));
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .platform-card.active {
-            background: rgba(50, 50, 50, calc(var(--card-opacity) + 0.1));
-        }
-
-        .platform-icon i {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* 收藏夹样式 */
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        @media screen and (max-width: 767px) {
-            .favorites-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .favorite-card {
-            padding: 1rem;
-            background: rgba(255, 255, 255, var(--card-opacity));
-            border-radius: 1rem;
-            cursor: pointer;
-            text-align: center;
-            backdrop-filter: blur(var(--bg-blur));
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .favorite-card {
-            background: rgba(30, 30, 30, var(--card-opacity));
-            border-color: rgba(0, 0, 0, 0.2);
-        }
-
-        .favorite-icon i {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .favorite-badge {
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            font-size: 0.8rem;
-            color: var(--primary-color);
-        }
-
-        /* 搜索建议 */
-        #suggestions {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, var(--suggestions-opacity));
-            border-radius: 1rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-            display: none;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            max-height: 50vh;
-            overflow-y: auto;
-            transform-origin: top center;
-            opacity: 0;
-            transition: var(--transition-all);
-            backdrop-filter: blur(var(--bg-blur));
-        }
-
-        body.dark-mode #suggestions {
-            background: rgba(30, 30, 30, var(--suggestions-opacity));
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        #suggestions.show {
-            opacity: 1;
-        }
-
-        .suggestion {
-            padding: 0.8rem 1.2rem;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            text-align: left;
-            white-space: nowrap;
-            transition: var(--transition-all);
-        }
-
-        body.dark-mode .suggestion {
-            border-bottom-color: rgba(255, 255, 255, 0.05);
-        }
-
-        /* 诗词样式 */
-        .poetry-container {
-            position: absolute;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            text-align: center;
-            z-index: 1;
-        }
-
-        .poetry {
-            font-style: italic;
-            color: var(--墨色);
-            text-align: center;
-            font-size: 1.2rem;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            background: rgba(255, 255, 255, var(--card-opacity));
-            border-radius: 1rem;
-            padding: 1rem;
-            backdrop-filter: blur(var(--bg-blur));
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        body.dark-mode .poetry {
-            background: rgba(30, 30, 30, var(--card-opacity));
-            border-color: rgba(0, 0, 0, 0.2);
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-        }
-
-        .verse {
-            font-size: 1.3rem;
-            letter-spacing: 2px;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .author {
-            font-size: 0.9rem;
-            color: rgba(44, 62, 80, 0.8);
-            display: block;
-        }
-
-        body.dark-mode .author {
-            color: rgba(240, 242, 245, 0.8);
-        }
-
-        /* 页脚样式 */
-        .footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: var(--墨色);
-            opacity: 0.8;
-        }
-
-        .settings-link {
-            cursor: pointer;
-            color: var(--primary-color);
-        }
-
-        /* 设置面板 */
-        .settings-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: min(90vw, 800px);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
+            width: min(800px, 90vw);
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            color: var(--墨色);
-            max-height: 80vh;
-            overflow-y: auto;
+            backdrop-filter: blur(var(--bg-blur));
+            border-radius: 1.5rem;
+            background: rgba(calc(255 - (var(--dark-mode) * 200), calc(255 - (var(--dark-mode) * 200), calc(255 - (var(--dark-mode) * 200)), calc(var(--card-opacity) * 0.8));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            transform: translateY(20px);
             opacity: 0;
             transition: var(--transition-all);
         }
 
-        body.dark-mode .settings-panel {
-            background: rgba(30, 30, 30, 0.98);
-            color: #f0f2f5;
-        }
-
-        .settings-panel.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .settings-tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            margin-bottom: 1.5rem;
-        }
-
-        body.dark-mode .settings-tabs {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .settings-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-
-        .settings-tab.active {
-            border-bottom-color: var(--primary-color);
-        }
-
-        .settings-content {
-            display: none;
-        }
-
-        .settings-content.active {
-            display: block;
-        }
-
-        .setting-item {
-            margin-bottom: 1.5rem;
-        }
-
-        .setting-item label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .setting-control {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-            font-family: var(--禅意-font);
-        }
-
-        body.dark-mode .setting-control {
-            border-color: rgba(255, 255, 255, 0.1);
-            background-color: rgba(30, 30, 30, 0.5);
-            color: #f0f2f5;
-        }
-
-        .settings-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-
-        .settings-btn {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 2rem;
-            background: rgba(137, 199, 182, 0.8);
-            color: white;
-            cursor: pointer;
-            font-family: var(--禅意-font);
-            transition: var(--transition-all);
-        }
-
-        .settings-btn.secondary {
-            background: rgba(200, 200, 200, 0.8);
-        }
-
-        body.dark-mode .settings-btn.secondary {
-            background: rgba(100, 100, 100, 0.8);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .overlay.show {
+        body.loaded .container {
+            transform: translateY(0);
             opacity: 1;
         }
 
@@ -493,6 +100,15 @@
             background-color: var(--cmd-bg);
             color: var(--cmd-text);
             font-family: 'Courier New', monospace;
+            border: 1px solid #333;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 1rem;
+        }
+
+        .cmd-mode .poetry {
+            color: var(--cmd-text);
+            text-shadow: none;
         }
 
         .cmd-mode .search-box {
@@ -502,12 +118,185 @@
             border-radius: 0;
         }
 
+        .cmd-mode .platform-grid {
+            display: none;
+        }
+
         .cmd-prompt {
             color: lime;
             margin-right: 0.5rem;
         }
 
-        /* 动画 */
+        .search-container {
+            position: relative;
+            display: flex;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 4rem;
+            font-size: calc(1.1rem * var(--platform-scale));
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--墨色);
+            font-family: var(--禅意-font);
+            transition: var(--transition-all);
+        }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
+            border-color: var(--primary-color);
+            transform: scale(1.02);
+        }
+
+        .search-btn {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: calc(1.5rem * var(--platform-scale));
+            color: var(--墨色);
+            padding: 0.5rem;
+        }
+
+        body.animated .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .login-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: calc(1.5rem * var(--platform-scale));
+            color: var(--墨色);
+            padding: 0.5rem;
+            display: none;
+        }
+
+        body.animated .login-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* 平台网格布局 - 横屏2×5 */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            position: relative;
+            z-index: 1;
+            transform: scale(var(--platform-scale));
+            transform-origin: center;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .platform-grid {
+            opacity: 1;
+        }
+
+        /* 竖屏5×2 */
+        @media screen and (max-width: 767px) {
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+            }
+        }
+
+        /* 横屏端建议弹出时调整布局 */
+        @media screen and (min-width: 768px) {
+            .platform-grid.suggestions-visible {
+                grid-template-columns: repeat(4, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                gap: 0.8rem;
+            }
+        }
+
+        .platform-card {
+            padding: calc(0.8rem * var(--platform-scale));
+            background: rgba(calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(var(--card-opacity) * 0.6));
+            border-radius: calc(1rem * var(--platform-scale));
+            cursor: pointer;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(80px * var(--platform-scale));
+            position: relative;
+            overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .platform-card {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        body.loaded .platform-card:nth-child(1) { transition-delay: 0.1s; }
+        body.loaded .platform-card:nth-child(2) { transition-delay: 0.15s; }
+        body.loaded .platform-card:nth-child(3) { transition-delay: 0.2s; }
+        body.loaded .platform-card:nth-child(4) { transition-delay: 0.25s; }
+        body.loaded .platform-card:nth-child(5) { transition-delay: 0.3s; }
+        body.loaded .platform-card:nth-child(6) { transition-delay: 0.35s; }
+        body.loaded .platform-card:nth-child(7) { transition-delay: 0.4s; }
+        body.loaded .platform-card:nth-child(8) { transition-delay: 0.45s; }
+        body.loaded .platform-card:nth-child(9) { transition-delay: 0.5s; }
+        body.loaded .platform-card:nth-child(10) { transition-delay: 0.55s; }
+
+        body.animated .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.animated .platform-card:hover::before {
+            opacity: 1;
+        }
+
+        .platform-card.active {
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.animated .platform-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* 修复图标加载问题 */
+        .platform-icon i {
+            font-size: calc(2rem * var(--platform-scale));
+            margin-bottom: calc(0.5rem * var(--platform-scale));
+            color: inherit;
+            transition: var(--transition-all);
+        }
+
+        body.animated .platform-card:hover .platform-icon i {
+            transform: scale(1.1);
+        }
+
         @keyframes 云游 {
             0% {
                 transform: translate(0, 0);
@@ -523,7 +312,148 @@
             }
         }
 
-        /* 加载动画 */
+        .poetry {
+            font-style: italic;
+            color: var(--墨色);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: calc(1.2rem * var(--platform-scale));
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .poetry {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .verse {
+            font-size: calc(1.3rem * var(--platform-scale));
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .author {
+            font-size: calc(0.9rem * var(--platform-scale));
+            color: rgba(44, 62, 80, 0.8);
+            display: block;
+        }
+
+        #suggestions-container {
+            position: relative;
+            width: 100%;
+            margin: 1rem 0;
+            min-height: 100px;
+        }
+
+        #suggestions {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(calc(255 - (var(--dark-mode) * 200), calc(255 - (var(--dark-mode) * 200), calc(255 - (var(--dark-mode) * 200)), var(--suggestions-opacity));
+            border-radius: 1rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+            display: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            max-height: 50vh;
+            overflow-y: auto;
+            transform-origin: top center;
+            opacity: 0;
+            transition: var(--transition-all);
+            backdrop-filter: blur(5px);
+        }
+
+        /* 手机设备建议框样式 */
+        @media screen and (max-width: 767px) {
+            #suggestions {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                transform: translateY(100%);
+                max-height: 50vh;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 1rem 1rem 0 0;
+            }
+            
+            #suggestions.show {
+                transform: translateY(0);
+            }
+            
+            /* 手机端建议弹出时下移平台 */
+            .platform-grid.suggestions-visible {
+                margin-bottom: 50vh;
+            }
+        }
+
+        #suggestions.show {
+            opacity: 1;
+        }
+
+        .suggestion {
+            padding: 0.8rem 1.2rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: left;
+            white-space: nowrap;
+            transition: var(--transition-all);
+        }
+
+        .suggestion:first-child {
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .suggestion:last-child {
+            border-bottom: none;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        body.animated .suggestion:hover {
+            background: rgba(137, 199, 182, 0.15);
+            transform: translateX(5px);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: calc(0.8rem * var(--platform-scale));
+            color: var(--墨色);
+            opacity: 0.8;
+            user-select: none;
+            padding: 5px;
+            z-index: 10;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .footer {
+            transform: translateY(0);
+            opacity: 0.8;
+        }
+
+        body.animated .footer:hover {
+            opacity: 1;
+        }
+
+        .settings-link {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
         .loading {
             position: fixed;
             top: 0;
@@ -555,6 +485,260 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* 设置面板 */
+        .settings-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(90vw, 500px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            color: var(--墨色);
+            max-height: 80vh;
+            overflow-y: auto;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        .settings-panel.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .settings-panel h2 {
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .settings-tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .settings-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        .settings-content {
+            display: none;
+        }
+
+        .settings-content.active {
+            display: block;
+        }
+
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .setting-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            font-family: var(--禅意-font);
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .settings-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 2rem;
+            background: rgba(137, 199, 182, 0.8);
+            color: white;
+            cursor: pointer;
+            font-family: var(--禅意-font);
+            transition: var(--transition-all);
+        }
+
+        body.animated .settings-btn:hover {
+            background: rgba(137, 199, 182, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-btn.secondary {
+            background: rgba(200, 200, 200, 0.8);
+        }
+
+        body.animated .settings-btn.secondary:hover {
+            background: rgba(200, 200, 200, 1);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        .overlay.show {
+            opacity: 1;
+        }
+
+        /* 手表和手环设备适配 */
+        @media screen and (max-width: 400px) and (max-height: 400px) {
+            :root {
+                --platform-scale: 0.9;
+            }
+            
+            .container {
+                width: 95vw;
+                padding: 1rem;
+                border-radius: 1rem;
+            }
+            
+            .search-box {
+                padding: 0.6rem 2.5rem;
+                font-size: 0.9rem;
+            }
+            
+            .search-btn, .login-btn {
+                font-size: 1rem;
+            }
+            
+            .platform-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(5, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .platform-card {
+                min-height: 60px;
+                padding: 0.5rem;
+            }
+            
+            .platform-icon i {
+                font-size: 1.5rem;
+            }
+            
+            .poetry {
+                font-size: 1rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .verse {
+                font-size: 1.1rem;
+            }
+            
+            .author {
+                font-size: 0.7rem;
+            }
+            
+            .footer {
+                font-size: 0.6rem;
+            }
+            
+            /* 圆形屏幕适配 */
+            @media screen and (max-aspect-ratio: 1/1) {
+                .container {
+                    border-radius: 50%;
+                    width: 90vmin;
+                    height: 90vmin;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 1.5rem;
+                }
+                
+                .platform-grid {
+                    display: none;
+                }
+                
+                .poetry {
+                    margin-bottom: 0.5rem;
+                }
+                
+                .search-container {
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+
+        /* 极低分辨率设备 */
+        @media screen and (max-width: 240px) {
+            :root {
+                --platform-scale: 0.8;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .search-box {
+                padding: 0.4rem 2rem;
+            }
+            
+            .search-btn, .login-btn {
+                font-size: 0.8rem;
+                padding: 0.3rem;
+            }
+            
+            .platform-grid {
+                gap: 0.3rem;
+            }
+            
+            .platform-card {
+                min-height: 50px;
+                padding: 0.3rem;
+            }
+            
+            .platform-icon i {
+                font-size: 1.2rem;
+                margin-bottom: 0.2rem;
+            }
+            
+            .poetry {
+                margin-bottom: 0.5rem;
+            }
+            
+            .verse {
+                font-size: 0.9rem;
+            }
+            
+            .author {
+                font-size: 0.6rem;
+            }
+            
+            .footer {
+                font-size: 0.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -562,40 +746,39 @@
     <div class="loading" id="loading">
         <div class="spinner"></div>
     </div>
-    
-    <div class="header">
+    <div class="container" id="mainContainer">
         <div class="search-container">
+            <button class="search-btn" id="searchBtn"><i class="fas fa-paper-plane" style="color: #4dabf7;"></i></button>
             <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-            <button class="search-btn" id="searchBtn"><i class="fas fa-paper-plane"></i></button>
+            <button class="login-btn" id="loginBtn"><i class="fas fa-key" style="color: #4dabf7;"></i></button>
         </div>
-        <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
-    </div>
-    
-    <div class="main-content">
+        
+        <div id="suggestions-container">
+            <div id="suggestions"></div>
+        </div>
+        
+        <div class="poetry" id="poetry"></div>
+        
         <div class="platform-grid" id="platformGrid"></div>
-        <div id="suggestions"></div>
-        <div class="favorites-grid" id="favoritesGrid"></div>
-        <div class="poetry-container">
-            <div class="poetry" id="poetry"></div>
-        </div>
     </div>
     
-    <div class="footer">
-        <span class="settings-link" id="settingsLink">设置</span>
-        <span>版权所有 © zmf</span>
+    <div class="footer" id="footer">
+        <span class="settings-link" id="settingsLink">设置</span> 版权所有 © zmf
     </div>
 
     <!-- 设置面板 -->
     <div class="overlay" id="settingsOverlay"></div>
     <div class="settings-panel" id="settingsPanel">
+        <h2>设置</h2>
+        
         <div class="settings-tabs">
             <div class="settings-tab active" data-tab="sections">板块开关</div>
             <div class="settings-tab" data-tab="adjustments">板块调节</div>
-            <div class="settings-tab" data-tab="theme">主题与风格</div>
-            <div class="settings-tab developer-tab" data-tab="developer" style="display:none;">开发者选项</div>
+            <div class="settings-tab" data-tab="theme">主题风格</div>
+            <div class="settings-tab" data-tab="developer" style="display:none;">开发者选项</div>
         </div>
         
-        <div class="settings-content active" id="sectionsContent">
+        <div class="settings-content active" id="sections-content">
             <div class="setting-item">
                 <label>显示控制</label>
                 <div class="section-toggle">
@@ -605,11 +788,7 @@
                     </div>
                     <div class="toggle-item">
                         <input type="checkbox" id="showPlatforms" checked>
-                        <label for="showPlatforms">平台</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="showFavorites" checked>
-                        <label for="showFavorites">收藏夹</label>
+                        <label for="showPlatforms">平台显示</label>
                     </div>
                     <div class="toggle-item">
                         <input type="checkbox" id="showSuggestions" checked>
@@ -623,7 +802,7 @@
             </div>
         </div>
         
-        <div class="settings-content" id="adjustmentsContent">
+        <div class="settings-content" id="adjustments-content">
             <div class="setting-item">
                 <label for="bgBlur">背景模糊度</label>
                 <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
@@ -649,30 +828,44 @@
             </div>
         </div>
         
-        <div class="settings-content" id="themeContent">
+        <div class="settings-content" id="theme-content">
             <div class="setting-item">
                 <label for="themeStyle">主题风格</label>
                 <select id="themeStyle" class="setting-control">
-                    <option value="poetic">诗意</option>
-                    <option value="tech">科技</option>
-                    <option value="retro">复古</option>
+                    <option value="poetic">诗意风格</option>
+                    <option value="tech">科技风格</option>
+                    <option value="fluent">Fluent UI</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="settings-content" id="developer-content">
+            <div class="setting-item">
+                <label for="platformScale">界面缩放比例</label>
+                <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
+                <span id="platformScaleValue">100%</span>
+            </div>
+            
+            <div class="setting-item">
+                <label for="customSearchIcon">搜索按钮图标</label>
+                <select id="customSearchIcon" class="setting-control">
+                    <option value="fa-paper-plane">纸飞机</option>
+                    <option value="fa-search">放大镜</option>
+                    <option value="fa-rocket">火箭</option>
                 </select>
             </div>
             
             <div class="setting-item">
-                <label for="cmdMode">CMD模式</label>
-                <input type="checkbox" id="cmdMode">
-            </div>
-        </div>
-        
-        <div class="settings-content" id="developerContent">
-            <div class="setting-item">
-                <label>开发者选项</label>
-                <p>这里可以添加开发者特定的设置选项</p>
+                <label for="customLoginIcon">登录按钮图标</label>
+                <select id="customLoginIcon" class="setting-control">
+                    <option value="fa-key">钥匙</option>
+                    <option value="fa-user">用户</option>
+                    <option value="fa-fingerprint">指纹</option>
+                </select>
             </div>
             
             <div class="setting-item">
-                <button class="settings-btn" id="disableDeveloper">关闭开发者选项</button>
+                <button class="settings-btn" id="resetDeveloper">重置开发者选项</button>
             </div>
         </div>
         
@@ -729,8 +922,8 @@
                 {
                     id: 'sogou',
                     name: '搜狗',
-                    icon: 'fa-search',
-                    color: '#FF6A00',
+                    icon: 'fa-paw',
+                    color: '#FF5000',
                     search: 'https://www.sogou.com/web?query=',
                     login: ''
                 },
@@ -740,122 +933,54 @@
                     icon: 'fa-yandex',
                     color: '#FF0000',
                     search: 'https://yandex.com/search/?text=',
-                    login: 'https://passport.yandex.com/auth'
+                    login: ''
                 },
                 {
                     id: '360',
-                    name: '360搜索',
+                    name: '360 搜索',
                     icon: 'fa-search',
-                    color: '#00A8FF',
+                    color: '#19B955',
                     search: 'https://www.so.com/s?q=',
                     login: ''
                 },
                 {
                     id: 'tencent',
                     name: '腾讯云 Whois',
-                    icon: 'fa-tencent-weibo',
-                    color: '#00A8FF',
-                    search: 'https://whois.cloud.tencent.com/domain?domain=',
+                    icon: 'fa-cloud',
+                    color: '#0081FF',
+                    search: 'https://whois.cloud.tencent.com/',
                     login: ''
                 },
                 {
-                    id: 'github',
-                    name: 'GitHub',
-                    icon: 'fa-github',
-                    color: '#181717',
-                    search: 'https://github.com/search?q=',
-                    login: 'https://github.com/login'
+                    id:'stackoverflow',
+                    name: 'StackOverflow',
+                    icon: 'fa-stack-overflow',
+                    color: '#F48024',
+                    search: 'https://stackoverflow.com/search?q=',
+                    login: 'https://stackoverflow.com/users/login'
                 }
             ],
-            
-            favorites: [
-                {
-                    id: 'gmail',
-                    name: 'Gmail',
-                    icon: 'fa-envelope',
-                    color: '#D44638',
-                    url: 'https://mail.google.com/'
-                },
-                {
-                    id: 'outlook',
-                    name: 'Outlook',
-                    icon: 'fa-envelope',
-                    color: '#0078D4',
-                    url: 'https://outlook.live.com/'
-                },
-                {
-                    id: 'drive',
-                    name: 'Google Drive',
-                    icon: 'fa-hdd',
-                    color: '#4285F4',
-                    url: 'https://drive.google.com/'
-                },
-                {
-                    id: 'onedrive',
-                    name: 'OneDrive',
-                    icon: 'fa-cloud',
-                    color: '#0078D4',
-                    url: 'https://onedrive.live.com/'
-                },
-                {
-                    id: 'twitter',
-                    name: 'Twitter',
-                    icon: 'fa-twitter',
-                    color: '#1DA1F2',
-                    url: 'https://twitter.com/'
-                },
-                {
-                    id: 'facebook',
-                    name: 'Facebook',
-                    icon: 'fa-facebook',
-                    color: '#1877F2',
-                    url: 'https://www.facebook.com/'
-                },
-                {
-                    id: 'reddit',
-                    name: 'Reddit',
-                    icon: 'fa-reddit',
-                    color: '#FF5700',
-                    url: 'https://www.reddit.com/'
-                },
-                {
-                    id: 'wikipedia',
-                    name: 'Wikipedia',
-                    icon: 'fa-wikipedia-w',
-                    color: '#000000',
-                    url: 'https://www.wikipedia.org/'
-                },
-                {
-                    id: 'amazon',
-                    name: 'Amazon',
-                    icon: 'fa-amazon',
-                    color: '#FF9900',
-                    url: 'https://www.amazon.com/'
-                },
-                {
-                    id: 'netflix',
-                    name: 'Netflix',
-                    icon: 'fa-netflix',
-                    color: '#E50914',
-                    url: 'https://www.netflix.com/'
-                }
-            ],
-            
             settings: {
+                showDailyImage: true,
                 bgBlur: 12,
                 cardOpacity: 80,
                 suggestionsOpacity: 90,
                 animationSpeed: 3,
-                themeStyle: 'poetic',
+                platformScale: 100,
+                defaultPlatform: 'bing',
                 cmdMode: false,
                 darkMode: false,
+                themeStyle: 'poetic',
                 showSections: {
                     poetry: true,
                     platforms: true,
-                    favorites: true,
                     suggestions: true
                 },
-                developerMode: false
+                developer: {
+                    active: false,
+                    searchIcon: 'fa-paper-plane',
+                    loginIcon: 'fa-key'
+                }
             },
             
             chineseKeywords: {
@@ -875,17 +1000,16 @@
             loading: document.getElementById('loading'),
             poetry: document.getElementById('poetry'),
             searchInput: document.getElementById('searchInput'),
+            suggestions: document.getElementById('suggestions'),
+            platformGrid: document.getElementById('platformGrid'),
             searchBtn: document.getElementById('searchBtn'),
             loginBtn: document.getElementById('loginBtn'),
-            platformGrid: document.getElementById('platformGrid'),
-            favoritesGrid: document.getElementById('favoritesGrid'),
-            suggestions: document.getElementById('suggestions'),
+            footer: document.getElementById('footer'),
             settingsLink: document.getElementById('settingsLink'),
             settingsOverlay: document.getElementById('settingsOverlay'),
             settingsPanel: document.getElementById('settingsPanel'),
             showPoetry: document.getElementById('showPoetry'),
             showPlatforms: document.getElementById('showPlatforms'),
-            showFavorites: document.getElementById('showFavorites'),
             showSuggestions: document.getElementById('showSuggestions'),
             darkMode: document.getElementById('darkMode'),
             bgBlur: document.getElementById('bgBlur'),
@@ -896,24 +1020,27 @@
             suggestionsOpacityValue: document.getElementById('suggestionsOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
+            platformScale: document.getElementById('platformScale'),
+            platformScaleValue: document.getElementById('platformScaleValue'),
             themeStyle: document.getElementById('themeStyle'),
-            cmdMode: document.getElementById('cmdMode'),
-            disableDeveloper: document.getElementById('disableDeveloper'),
+            customSearchIcon: document.getElementById('customSearchIcon'),
+            customLoginIcon: document.getElementById('customLoginIcon'),
+            resetDeveloper: document.getElementById('resetDeveloper'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings'),
-            settingsTabs: document.querySelectorAll('.settings-tab'),
-            settingsContents: document.querySelectorAll('.settings-content'),
-            developerTab: document.querySelector('.developer-tab')
+            mainContainer: document.getElementById('mainContainer')
         };
 
         // 状态变量
+        let hitokotoCache = null;
+        let clickCount = 0;
+        let lastClickTime = 0;
+        const CLICK_THRESHOLD = 7;
+        const CLICK_TIMEOUT = 1000;
         let selectedPlatform = 'bing';
         let isSuggestionsOpen = false;
-        let settingsClickCount = 0;
-        let lastSettingsClickTime = 0;
-        const SETTINGS_CLICK_THRESHOLD = 7;
-        const SETTINGS_CLICK_TIMEOUT = 1000;
-        let hitokotoCache = null;
+        let konamiCode = [];
+        const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
         // 初始化函数
         async function init() {
@@ -926,24 +1053,120 @@
             // 检查屏幕尺寸
             checkScreenSize();
             window.addEventListener('resize', checkScreenSize);
+            window.addEventListener('orientationchange', handleOrientationChange);
+            
+            // 加载壁纸
+            const imageUrl = await getWallpaper();
+            const img = new Image();
+            img.src = imageUrl;
+            img.onload = function() {
+                document.body.style.backgroundImage = `url(${imageUrl})`;
+                elements.loading.style.display = 'none';
+                document.body.classList.add('fade-in');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 100);
+            };
+            img.onerror = function() {
+                elements.loading.style.display = 'none';
+                console.error('图片加载失败');
+                document.body.classList.add('fade-in');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 100);
+            };
             
             // 渲染内容
-            renderPlatforms();
-            renderFavorites();
             showRandomHitokoto();
+            renderPlatforms();
             
-            // 应用设置
-            applySettings();
+            // 应用板块显示设置
+            applySectionSettings();
             
             // 聚焦搜索框
             elements.searchInput.focus();
             
             // 添加事件监听
             addEventListeners();
+
+            // 初始化彩蛋
+            initEasterEggs();
+
+            // 应用CMD模式
+            applyCmdMode();
             
-            // 隐藏加载动画
-            elements.loading.style.display = 'none';
-            document.body.classList.add('fade-in');
+            // 应用平台缩放
+            applyPlatformScale();
+            
+            // 注册Service Worker
+            registerServiceWorker();
+        }
+
+        // 注册Service Worker
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker 注册成功:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker 注册失败:', error);
+                    });
+            }
+        }
+
+        // 应用平台缩放
+        function applyPlatformScale() {
+            const scale = config.settings.platformScale / 100;
+            document.documentElement.style.setProperty('--platform-scale', scale);
+        }
+
+        // 应用CMD模式
+        function applyCmdMode() {
+            if (config.settings.cmdMode) {
+                elements.mainContainer.classList.add('cmd-mode');
+                elements.searchInput.placeholder = "> 输入搜索内容...";
+                elements.poetry.innerHTML = `
+                    <span class="cmd-prompt">></span>
+                    <span class="verse">欢迎使用CMD模式</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">命令列表:</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">• 直接输入内容搜索</span>
+                    <br><span class="cmd-prompt">></span>
+                    <span class="verse">• 输入"设置"打开设置</span>
+                `;
+            } else {
+                elements.mainContainer.classList.remove('cmd-mode');
+                elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
+            }
+        }
+
+        // 应用板块显示设置
+        function applySectionSettings() {
+            // 诗句
+            elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
+            
+            // 平台
+            elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
+            
+            // 搜索建议
+            document.getElementById('suggestions-container').style.display = config.settings.showSections.suggestions ? 'block' : 'none';
+            
+            // 深色模式
+            document.documentElement.style.setProperty('--dark-mode', config.settings.darkMode ? '1' : '0');
+            
+            // 应用主题风格
+            applyThemeStyle();
+        }
+
+        // 应用主题风格
+        function applyThemeStyle() {
+            // 清除所有主题类
+            document.body.classList.remove('poetic-theme', 'tech-theme', 'fluent-theme');
+            
+            // 添加当前主题类
+            document.body.classList.add(`${config.settings.themeStyle}-theme`);
         }
 
         // 加载设置
@@ -957,7 +1180,6 @@
                     // 更新UI控件
                     if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
                     if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    if (elements.showFavorites) elements.showFavorites.checked = config.settings.showSections.favorites;
                     if (elements.showSuggestions) elements.showSuggestions.checked = config.settings.showSections.suggestions;
                     if (elements.darkMode) elements.darkMode.checked = config.settings.darkMode;
                     if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
@@ -967,92 +1189,27 @@
                     if (elements.suggestionsOpacity) elements.suggestionsOpacity.value = config.settings.suggestionsOpacity;
                     if (elements.suggestionsOpacityValue) elements.suggestionsOpacityValue.textContent = `${config.settings.suggestionsOpacity}%`;
                     if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
+                    if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
+                    if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
                     if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
-                    if (elements.cmdMode) elements.cmdMode.checked = config.settings.cmdMode;
-                    
                     updateAnimationSpeedText();
                     
-                    // 开发者模式
-                    if (config.settings.developerMode) {
-                        elements.developerTab.style.display = 'block';
+                    // 开发者选项
+                    if (config.settings.developer.active) {
+                        document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
+                        if (elements.customSearchIcon) elements.customSearchIcon.value = config.settings.developer.searchIcon;
+                        if (elements.customLoginIcon) elements.customLoginIcon.value = config.settings.developer.loginIcon;
                     }
+                    
+                    // 应用设置
+                    document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+                    document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+                    document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
+                    updateAnimationSpeed();
+                    applyThemeStyle();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
-            }
-        }
-
-        // 保存设置
-        function saveSettings() {
-            config.settings = {
-                bgBlur: parseInt(elements.bgBlur.value),
-                cardOpacity: parseInt(elements.cardOpacity.value),
-                suggestionsOpacity: parseInt(elements.suggestionsOpacity.value),
-                animationSpeed: parseInt(elements.animationSpeed.value),
-                themeStyle: elements.themeStyle.value,
-                cmdMode: elements.cmdMode.checked,
-                darkMode: elements.darkMode.checked,
-                showSections: {
-                    poetry: elements.showPoetry.checked,
-                    platforms: elements.showPlatforms.checked,
-                    favorites: elements.showFavorites.checked,
-                    suggestions: elements.showSuggestions.checked
-                },
-                developerMode: config.settings.developerMode
-            };
-            
-            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-            
-            // 应用新设置
-            applySettings();
-            
-            closeSettings();
-        }
-
-        // 应用设置
-        function applySettings() {
-            // 背景模糊
-            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
-            
-            // 卡片透明度
-            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
-            
-            // 建议透明度
-            document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
-            
-            // 动画速度
-            updateAnimationSpeed();
-            
-            // 深色模式
-            if (config.settings.darkMode) {
-                document.body.classList.add('dark-mode');
-                document.documentElement.style.setProperty('--dark-mode', '1');
-            } else {
-                document.body.classList.remove('dark-mode');
-                document.documentElement.style.setProperty('--dark-mode', '0');
-            }
-            
-            // CMD模式
-            if (config.settings.cmdMode) {
-                document.body.classList.add('cmd-mode');
-                elements.searchInput.placeholder = "> 输入搜索内容...";
-            } else {
-                document.body.classList.remove('cmd-mode');
-                elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
-            }
-            
-            // 显示/隐藏板块
-            elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
-            elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
-            elements.favoritesGrid.style.display = config.settings.showSections.favorites ? 'grid' : 'none';
-            
-            // 主题风格
-            if (config.settings.themeStyle === 'poetic') {
-                document.documentElement.style.setProperty('--primary-color', '#89c7b6');
-            } else if (config.settings.themeStyle === 'tech') {
-                document.documentElement.style.setProperty('--primary-color', '#0078d4');
-            } else if (config.settings.themeStyle === 'retro') {
-                document.documentElement.style.setProperty('--primary-color', '#8a2be2');
             }
         }
 
@@ -1078,48 +1235,71 @@
             document.documentElement.style.setProperty('--animation-speed', `${speed}s`);
         }
 
-        // 渲染平台网格
-        function renderPlatforms() {
-            elements.platformGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
-                     data-id="${platform.id}"
-                     data-login="${platform.login || ''}">
-                    <div class="platform-icon" style="color: ${platform.color}">
-                        <i class="${platform.icon.startsWith('fa-') ? 'fab' : 'fa'} ${platform.icon}"></i>
-                    </div>
-                    <div>${platform.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.platform-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.platform-card').forEach(c => 
-                        c.classList.remove('active'));
-                    card.classList.add('active');
-                    selectedPlatform = card.dataset.id;
-                });
-            });
+        // 保存设置
+        function saveSettings() {
+            config.settings = {
+                showDailyImage: true,
+                bgBlur: parseInt(elements.bgBlur.value),
+                cardOpacity: parseInt(elements.cardOpacity.value),
+                suggestionsOpacity: parseInt(elements.suggestionsOpacity.value),
+                animationSpeed: parseInt(elements.animationSpeed.value),
+                platformScale: parseInt(elements.platformScale.value),
+                defaultPlatform: 'bing',
+                cmdMode: false,
+                darkMode: elements.darkMode.checked,
+                themeStyle: elements.themeStyle.value,
+                showSections: {
+                    poetry: elements.showPoetry.checked,
+                    platforms: elements.showPlatforms.checked,
+                    suggestions: elements.showSuggestions.checked
+                },
+                developer: {
+                    active: config.settings.developer.active,
+                    searchIcon: elements.customSearchIcon ? elements.customSearchIcon.value : 'fa-paper-plane',
+                    loginIcon: elements.customLoginIcon ? elements.customLoginIcon.value : 'fa-key'
+                }
+            };
+            
+            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
+            
+            // 应用新设置
+            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
+            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+            document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
+            updateAnimationSpeed();
+            applyPlatformScale();
+            applyThemeStyle();
+            
+            // 应用板块显示设置
+            applySectionSettings();
+            
+            // 应用CMD模式
+            applyCmdMode();
+            
+            closeSettings();
+            
+            // 重新渲染平台
+            renderPlatforms();
         }
 
-        // 渲染收藏夹
-        function renderFavorites() {
-            elements.favoritesGrid.innerHTML = config.favorites.map(favorite => `
-                <div class="favorite-card" data-url="${favorite.url}">
-                    <div class="favorite-icon" style="color: ${favorite.color}">
-                        <i class="fab ${favorite.icon}"></i>
-                    </div>
-                    <div class="favorite-name">${favorite.name}</div>
-                    <div class="favorite-badge">
-                        <i class="fas fa-bookmark"></i>
-                    </div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.favorite-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    window.open(card.dataset.url, '_blank');
-                });
-            });
+        // 获取壁纸
+        async function getWallpaper() {
+            const width = window.screen.width * window.devicePixelRatio;
+            const height = window.screen.height * window.devicePixelRatio;
+            
+            // 根据分辨率选择不同尺寸的壁纸
+            if (width >= 3840 && height >= 2160) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
+            } else if (width >= 1920 && height >= 1080) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg';
+            } else if (width >= 1280 && height >= 720) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1280x720.jpg';
+            } else if (width >= 1024 && height >= 768) {
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg';
+            } else {
+                // 默认返回适合移动设备的壁纸
+                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg';
+            }
         }
 
         // 显示随机一言
@@ -1135,10 +1315,24 @@
             }
 
             try {
+                // 使用缓存API提高性能
+                const cache = await caches.open('hitokoto-cache');
+                const cachedResponse = await cache.match('https://v1.hitokoto.cn/?c=i');
+                
+                if (cachedResponse) {
+                    const data = await cachedResponse.json();
+                    hitokotoCache = data;
+                    updatePoetryDisplay(data);
+                }
+                
+                // 无论是否有缓存都获取最新数据
                 const response = await fetch('https://v1.hitokoto.cn/?c=i');
                 const data = await response.json();
                 hitokotoCache = data;
                 updatePoetryDisplay(data);
+                
+                // 更新缓存
+                cache.put('https://v1.hitokoto.cn/?c=i', new Response(JSON.stringify(data)));
             } catch (error) {
                 console.error('获取一言语句时出错:', error);
                 updatePoetryDisplay({
@@ -1155,9 +1349,46 @@
             elements.poetry.style.display = 'block';
         }
 
+        // 渲染平台网格
+        function renderPlatforms() {
+            if (!config.settings.showSections.platforms || config.settings.cmdMode) {
+                elements.platformGrid.style.display = 'none';
+                return;
+            }
+
+            elements.platformGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
+                     data-id="${platform.id}"
+                     data-login="${platform.login || ''}">
+                    <div class="platform-icon" style="color: ${platform.color}">
+                        <i class="fab ${platform.icon}"></i>
+                    </div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.platform-card').forEach(c =>
+                        c.classList.remove('active'));
+                    card.classList.add('active');
+
+                    selectedPlatform = card.dataset.id;
+                    const showLogin = card.dataset.login && config.settings.showSections.login;
+                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                });
+            });
+
+            // 默认显示登录按钮（如果必应需要）
+            const bingPlatform = config.platforms.find(p => p.id === 'bing');
+            if (bingPlatform && bingPlatform.login) {
+                elements.loginBtn.style.display = 'block';
+            }
+        }
+
         // 显示搜索建议
         function showSuggestions(input) {
-            if (!input || input.length === 0 || !config.settings.showSections.suggestions || config.settings.cmdMode) {
+            if (!input || input.length === 0 || config.settings.cmdMode || !config.settings.showSections.suggestions) {
                 hideSuggestions();
                 return;
             }
@@ -1171,6 +1402,9 @@
                     elements.suggestions.innerHTML = data.AS.Results[0].Suggests.map(suggestion => `
                         <div class="suggestion">${suggestion.Txt}</div>
                     `).join('');
+
+                    // 根据建议内容调整宽度
+                    adjustSuggestionWidth(data.AS.Results[0].Suggests);
 
                     // 添加建议点击事件
                     document.querySelectorAll('.suggestion').forEach(item => {
@@ -1192,6 +1426,30 @@
             document.body.appendChild(script);
         }
 
+        // 调整平台布局
+        function adjustPlatformLayout(suggestionsVisible) {
+            if (suggestionsVisible) {
+                elements.platformGrid.classList.add('suggestions-visible');
+            } else {
+                elements.platformGrid.classList.remove('suggestions-visible');
+            }
+        }
+
+        // 根据建议内容调整宽度
+        function adjustSuggestionWidth(suggestions) {
+            if (!suggestions || suggestions.length === 0) return;
+            
+            // 找到最长的建议
+            const maxLength = Math.max(...suggestions.map(s => s.Txt.length));
+            // 设置最小宽度为搜索框宽度
+            const minWidth = elements.searchInput.offsetWidth;
+            // 根据字符数计算宽度
+            const charWidth = 10; // 每个字符大约10px
+            const calculatedWidth = Math.max(minWidth, maxLength * charWidth + 40); // 40px为padding
+            
+            elements.suggestions.style.width = `${calculatedWidth}px`;
+        }
+
         // 显示建议框
         function showSuggestionsUI() {
             elements.suggestions.style.display = 'block';
@@ -1207,12 +1465,19 @@
             setTimeout(() => {
                 elements.suggestions.style.display = 'none';
                 isSuggestionsOpen = false;
+                adjustPlatformLayout(false);
             }, 200);
         }
 
         // 执行搜索
         function performSearch(query) {
             if (!query) return;
+            
+            // 检查是否是设置命令
+            if (query.toLowerCase() === '设置') {
+                openSettings();
+                return;
+            }
             
             // 检查是否是URL
             if (isPotentialUrl(query)) {
@@ -1222,26 +1487,27 @@
             
             // 在CMD模式下使用默认平台
             if (config.settings.cmdMode || !config.settings.showSections.platforms) {
-                const platform = config.platforms.find(p => p.id === 'bing');
+                const platform = config.platforms.find(p => p.id === config.settings.defaultPlatform);
                 if (platform) {
                     window.open(platform.search + encodeURIComponent(query), '_blank');
                 }
                 return;
             }
             
+            // 使用选定的平台进行搜索
             const platform = config.platforms.find(p => p.id === selectedPlatform);
             if (platform) {
                 window.open(platform.search + encodeURIComponent(query), '_blank');
             }
         }
 
-        // 检查是否是URL
+        // 改进的URL检测逻辑
         function isPotentialUrl(string) {
             // 排除纯中文和空格的情况
             if (/[\u4e00-\u9fa5]/.test(string) || /\s/.test(string)) return false;
             
             // 包含协议头或常见顶级域名
-            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev'];
+            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev', '.me', '.info'];
             const hasValidTLD = tlds.some(tld => string.includes(tld));
             const hasProtocol = /^https?:\/\//i.test(string);
             
@@ -1260,16 +1526,34 @@
 
         // 检查屏幕尺寸
         function checkScreenSize() {
-            // 根据屏幕尺寸调整布局
+            // 根据屏幕尺寸调整缩放比例
             const width = window.innerWidth;
             const height = window.innerHeight;
             
-            if (width <= 768 || height <= 768) {
-                // 小屏幕设备调整
-                document.body.style.padding = '0.5rem';
-            } else {
-                document.body.style.padding = '1rem';
+            // 小屏幕设备进一步缩小
+            if (width <= 400 || height <= 400) {
+                document.documentElement.style.setProperty('--platform-scale', '0.9');
             }
+        }
+
+        // 处理方向变化
+        function handleOrientationChange() {
+            const grid = elements.platformGrid;
+            if (!grid) return;
+            
+            // 强制重绘
+            grid.style.display = 'none';
+            setTimeout(() => {
+                grid.style.display = 'grid';
+            }, 100);
+            
+            // 调整容器大小
+            const container = elements.mainContainer;
+            container.style.width = 'auto';
+            container.style.height = 'auto';
+            setTimeout(() => {
+                container.style.width = 'min(800px, 90vw)';
+            }, 100);
         }
 
         // 打开设置
@@ -1294,55 +1578,50 @@
             }, 300);
         }
 
-        // 处理设置链接点击
-        function handleSettingsLinkClick() {
-            const now = Date.now();
-            if (now - lastSettingsClickTime > SETTINGS_CLICK_TIMEOUT) {
-                settingsClickCount = 0;
+        // 初始化彩蛋
+        function initEasterEggs() {
+            // 署名点击 - 连点7次激活开发者模式
+            elements.footer.addEventListener('click', handleFooterClick);
+
+            // 科乐美秘技监听
+            document.addEventListener('keydown', function(e) {
+                konamiCode.push(e.key);
+                if (konamiCode.length > KONAMI_CODE.length) {
+                    konamiCode.shift();
+                }
+                
+                if (konamiCode.join(',') === KONAMI_CODE.join(',')) {
+                    activateDeveloperMode();
+                    konamiCode = [];
+                }
+            });
+        }
+
+        // 处理页脚点击
+        function handleFooterClick(e) {
+            if (e.target.classList.contains('settings-link')) {
+                return;
             }
             
-            settingsClickCount++;
-            lastSettingsClickTime = now;
+            const now = Date.now();
+            if (now - lastClickTime > CLICK_TIMEOUT) {
+                clickCount = 0;
+            }
             
-            if (settingsClickCount >= SETTINGS_CLICK_THRESHOLD) {
+            clickCount++;
+            lastClickTime = now;
+            
+            if (clickCount >= CLICK_THRESHOLD) {
                 activateDeveloperMode();
-                settingsClickCount = 0;
-            } else {
-                openSettings();
+                clickCount = 0;
             }
         }
 
         // 激活开发者模式
         function activateDeveloperMode() {
-            config.settings.developerMode = true;
-            elements.developerTab.style.display = 'block';
-            alert('开发者模式已激活');
-        }
-
-        // 禁用开发者模式
-        function disableDeveloperMode() {
-            config.settings.developerMode = false;
-            elements.developerTab.style.display = 'none';
-            alert('开发者模式已禁用');
-        }
-
-        // 切换设置标签
-        function switchSettingsTab(tabId) {
-            elements.settingsTabs.forEach(tab => {
-                if (tab.dataset.tab === tabId) {
-                    tab.classList.add('active');
-                } else {
-                    tab.classList.remove('active');
-                }
-            });
-            
-            elements.settingsContents.forEach(content => {
-                if (content.id === `${tabId}Content`) {
-                    content.classList.add('active');
-                } else {
-                    content.classList.remove('active');
-                }
-            });
+            config.settings.developer.active = true;
+            document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
+            alert('开发者模式已激活！');
         }
 
         // 添加事件监听
@@ -1350,6 +1629,7 @@
             // 搜索按钮
             elements.searchBtn.addEventListener('click', () => {
                 const query = elements.searchInput.value.trim();
+                if (!query) return;
                 performSearch(query);
             });
 
@@ -1362,17 +1642,18 @@
                 }
             });
 
+            // 搜索输入
+            elements.searchInput.addEventListener('input', function() {
+                showSuggestions(this.value);
+            });
+
             // 回车键搜索
             elements.searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const query = elements.searchInput.value.trim();
+                    if (!query) return;
                     performSearch(query);
                 }
-            });
-
-            // 输入框输入
-            elements.searchInput.addEventListener('input', function() {
-                showSuggestions(this.value);
             });
 
             // 输入框聚焦/失焦
@@ -1383,6 +1664,7 @@
             });
 
             elements.searchInput.addEventListener('blur', function() {
+                // 延迟隐藏以确保点击建议时有时间处理
                 setTimeout(() => {
                     if (!document.activeElement.classList.contains('suggestion')) {
                         hideSuggestions();
@@ -1391,20 +1673,22 @@
             });
 
             // 设置链接
-            elements.settingsLink.addEventListener('click', handleSettingsLinkClick);
+            elements.settingsLink.addEventListener('click', openSettings);
 
             // 设置面板事件
-            elements.cancelSettings.addEventListener('click', closeSettings);
-            elements.saveSettings.addEventListener('click', saveSettings);
-            elements.disableDeveloper.addEventListener('click', disableDeveloperMode);
-            elements.settingsOverlay.addEventListener('click', closeSettings);
-
-            // 设置标签切换
-            elements.settingsTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    switchSettingsTab(tab.dataset.tab);
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.settings-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${this.dataset.tab}-content`).classList.add('active');
                 });
             });
+
+            elements.cancelSettings.addEventListener('click', closeSettings);
+            elements.saveSettings.addEventListener('click', saveSettings);
+            elements.settingsOverlay.addEventListener('click', closeSettings);
 
             // 点击页面其他区域隐藏建议
             document.addEventListener('click', function(e) {
@@ -1448,25 +1732,36 @@
                 updateAnimationSpeed();
             });
 
-            // 键盘快捷键调整透明度
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey) {
-                    if (e.key === 'ArrowUp') {
-                        // 增加透明度
-                        const current = parseInt(elements.cardOpacity.value);
-                        if (current < 100) {
-                            elements.cardOpacity.value = current + 5;
-                            elements.cardOpacity.dispatchEvent(new Event('input'));
-                        }
-                    } else if (e.key === 'ArrowDown') {
-                        // 减少透明度
-                        const current = parseInt(elements.cardOpacity.value);
-                        if (current > 0) {
-                            elements.cardOpacity.value = current - 5;
-                            elements.cardOpacity.dispatchEvent(new Event('input'));
-                        }
-                    }
-                }
+            // 平台缩放调整
+            elements.platformScale.addEventListener('input', function() {
+                elements.platformScaleValue.textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
+            });
+
+            // 开发者选项 - 重置
+            if (elements.resetDeveloper) {
+                elements.resetDeveloper.addEventListener('click', function() {
+                    config.settings.developer = {
+                        active: false,
+                        searchIcon: 'fa-paper-plane',
+                        loginIcon: 'fa-key'
+                    };
+                    document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'none';
+                    alert('开发者选项已重置');
+                });
+            }
+
+            // 触摸事件支持
+            elements.searchInput.addEventListener('touchend', function(e) {
+                this.focus();
+                e.preventDefault();
+            });
+
+            document.querySelectorAll('.platform-card').forEach(card => {
+                card.addEventListener('touchend', function(e) {
+                    this.click();
+                    e.preventDefault();
+                });
             });
         }
 
