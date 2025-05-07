@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星汉搜索 - zmf</title>
+    <title>星汉搜索 - 诗意探索</title>
     <!-- 加载Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
             --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
             --primary-color: #89c7b6;
             --bg-blur: 12px;
-            --card-opacity: 0.8;
+            --card-opacity: 0.12;
             --animation-speed: 0.3s;
             --win11-accent: #0078d4;
             --win11-card-bg: rgba(255, 255, 255, 0.8);
@@ -27,7 +27,8 @@
             --cmd-text: #cccccc;
             --platform-scale: 1;
             --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --suggestions-opacity: 0.9;
+            --paper-plane-blue: #64b5f6;
+            --key-blue: #42a5f5;
             --dark-mode: 0;
         }
 
@@ -77,11 +78,11 @@
         .container {
             position: relative;
             z-index: 1;
-            width: min(800px, 90vw);
+            width: min(900px, 90vw);
             padding: 2rem;
             backdrop-filter: blur(var(--bg-blur));
             border-radius: 1.5rem;
-            background: rgba(calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(var(--card-opacity) * 0.8));
+            background: rgba(255, 255, 255, var(--card-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
@@ -93,6 +94,49 @@
         body.loaded .container {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        /* 新布局样式 */
+        .main-layout {
+            display: grid;
+            grid-template-areas:
+                "search search search"
+                "platforms suggestions favorites"
+                "footer footer footer";
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .search-area {
+            grid-area: search;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .platforms-area {
+            grid-area: platforms;
+        }
+
+        .suggestions-area {
+            grid-area: suggestions;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .favorites-area {
+            grid-area: favorites;
+            position: relative;
+        }
+
+        .footer-area {
+            grid-area: footer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
         }
 
         /* CMD模式样式 */
@@ -130,9 +174,8 @@
         .search-container {
             position: relative;
             display: flex;
-            margin-bottom: 1.5rem;
-            width: 100%;
-            z-index: 2;
+            flex-grow: 1;
+            margin-right: 1rem;
         }
 
         .search-box {
@@ -154,6 +197,7 @@
             transform: scale(1.02);
         }
 
+        /* 新搜索按钮样式 - 纸飞机 */
         .search-btn {
             position: absolute;
             left: 0.5rem;
@@ -163,37 +207,92 @@
             border: none;
             cursor: pointer;
             font-size: calc(1.5rem * var(--platform-scale));
-            color: var(--墨色);
+            color: var(--paper-plane-blue);
             padding: 0.5rem;
+            width: 24px;
+            height: 24px;
+        }
+
+        .search-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--paper-plane-blue);
+            clip-path: polygon(100% 50%, 0 0, 0 100%);
+        }
+
+        .search-btn::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 30%;
+            width: 40%;
+            height: 2px;
+            background-color: white;
+            transform: translateY(-50%) rotate(-45deg);
         }
 
         body.animated .search-btn:hover {
             transform: translateY(-50%) scale(1.1);
         }
 
+        /* 新登录按钮样式 - 钥匙 */
         .login-btn {
-            position: absolute;
-            right: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: calc(1.5rem * var(--platform-scale));
-            color: var(--墨色);
+            font-size: calc(1.2rem * var(--platform-scale));
+            color: var(--key-blue);
             padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .login-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background-color: var(--key-blue);
+            border-radius: 50%;
+        }
+
+        .login-btn::after {
+            content: "";
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 16px;
+            background-color: var(--key-blue);
+            border-radius: 2px;
+        }
+
+        .login-text {
+            margin-left: 5px;
+            font-size: 0.8rem;
             display: none;
         }
 
         body.animated .login-btn:hover {
-            transform: translateY(-50%) scale(1.1);
+            transform: scale(1.1);
         }
 
         /* 平台网格布局 - 横屏2×5 */
         .platform-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
             position: relative;
@@ -210,24 +309,28 @@
 
         /* 竖屏5×2 */
         @media screen and (max-width: 767px) {
+            .main-layout {
+                grid-template-areas:
+                    "search search"
+                    "platforms favorites"
+                    "footer footer";
+                grid-template-columns: 1fr 1fr;
+            }
+            
             .platform-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-rows: repeat(5, 1fr);
+                gap: 0.5rem;
             }
-        }
-
-        /* 横屏端建议弹出时调整布局 */
-        @media screen and (min-width: 768px) {
-            .platform-grid.suggestions-visible {
-                grid-template-columns: repeat(4, 1fr);
-                grid-template-rows: repeat(3, 1fr);
-                gap: 0.8rem;
+            
+            .suggestions-area {
+                display: none;
             }
         }
 
         .platform-card {
             padding: calc(0.8rem * var(--platform-scale));
-            background: rgba(calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(var(--card-opacity) * 0.6));
+            background: rgba(255, 255, 255, 0.15);
             border-radius: calc(1rem * var(--platform-scale));
             cursor: pointer;
             text-align: center;
@@ -285,16 +388,110 @@
             transform: translateY(-3px) scale(1.05);
         }
 
-        /* 修复图标加载问题 */
+        /* 优化图标大小 */
+        .platform-icon {
+            height: 60%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .platform-icon i {
-            font-size: calc(2rem * var(--platform-scale));
+            font-size: calc(2.5rem * var(--platform-scale));
             margin-bottom: calc(0.5rem * var(--platform-scale));
-            color: inherit;
+            color: var(--墨色);
             transition: var(--transition-all);
         }
 
         body.animated .platform-card:hover .platform-icon i {
             transform: scale(1.1);
+        }
+
+        /* 收藏夹样式 */
+        .favorites-container {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 200px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .favorites-title {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--墨色);
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .favorites-settings {
+            font-size: 0.8rem;
+            color: var(--墨色);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: var(--transition-all);
+        }
+
+        .favorites-settings:hover {
+            opacity: 1;
+        }
+
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .favorite-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .favorite-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .favorite-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 0.5rem;
+            background-color: #eee;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .favorite-name {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 页脚样式 */
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--墨色);
+            opacity: 0.7;
+        }
+
+        .settings-link {
+            color: var(--墨色);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .settings-link:hover {
+            text-decoration: underline;
         }
 
         @keyframes 云游 {
@@ -315,7 +512,7 @@
         .poetry {
             font-style: italic;
             color: var(--墨色);
-            margin: 1rem 0;
+            margin-bottom: 1rem;
             text-align: center;
             font-size: calc(1.2rem * var(--platform-scale));
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
@@ -343,17 +540,15 @@
             display: block;
         }
 
-        #suggestions-container {
-            position: relative;
-            width: 100%;
-            min-height: 100px;
-            margin: 1rem 0;
-        }
-
         #suggestions {
-            position: relative;
-            width: 100%;
-            background: rgba(calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), calc(255 - (var(--dark-mode) * 200)), var(--suggestions-opacity));
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            width: auto;
+            min-width: 100%;
+            max-width: min(800px, 90vw);
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 1rem;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             z-index: 10;
@@ -361,6 +556,7 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             max-height: 50vh;
             overflow-y: auto;
+            transform-origin: top center;
             opacity: 0;
             transition: var(--transition-all);
             backdrop-filter: blur(5px);
@@ -392,8 +588,8 @@
         }
 
         #suggestions.show {
+            transform: translateX(-50%) translateY(0);
             opacity: 1;
-            display: block;
         }
 
         .suggestion {
@@ -421,67 +617,106 @@
             transform: translateX(5px);
         }
 
-        .footer {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: calc(0.8rem * var(--platform-scale));
-            color: var(--墨色);
-            opacity: 0.8;
-            user-select: none;
-            padding: 5px;
-            z-index: 10;
-            transform: translateY(10px);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.loaded .footer {
-            transform: translateY(0);
-            opacity: 0.8;
-        }
-
-        body.animated .footer:hover {
-            opacity: 1;
-        }
-
-        .settings-link {
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .loading {
+        /* 搜索动画 */
+        .search-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-all);
+        }
+        
+        .search-animation.active {
+            opacity: 1;
+        }
+        
+        .search-animation-content {
+            text-align: center;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+        
+        .search-animation.active .search-animation-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-animation-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--win11-accent);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .search-animation-text {
+            font-size: 1.2rem;
+            color: var(--墨色);
         }
 
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+        /* 平台选择面板 */
+        .platform-selection {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        .platform-selection.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .platform-selection-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .platform-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .platform-selection-item {
+            padding: 0.5rem;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: var(--transition-all);
+        }
+
+        .platform-selection-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-selection-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
         }
 
         /* 设置面板 */
@@ -515,31 +750,6 @@
             text-align: center;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             padding-bottom: 1rem;
-        }
-
-        .settings-tabs {
-            display: flex;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .settings-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-
-        .settings-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            font-weight: bold;
-        }
-
-        .settings-content {
-            display: none;
-        }
-
-        .settings-content.active {
-            display: block;
         }
 
         .setting-item {
@@ -608,6 +818,130 @@
             opacity: 1;
         }
 
+        /* 设置选项卡 */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .settings-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-all);
+        }
+
+        .settings-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        .settings-tab-content {
+            display: none;
+        }
+
+        .settings-tab-content.active {
+            display: block;
+        }
+
+        /* 数值输入控件 */
+        .range-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .range-control input[type="range"] {
+            flex-grow: 1;
+        }
+
+        .range-control .value-input {
+            width: 60px;
+            padding: 0.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.3rem;
+            text-align: center;
+            display: none;
+        }
+
+        .range-control .value-display {
+            width: 60px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* 板块开关 */
+        .section-toggle {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 开发者选项 */
+        .developer-options {
+            border-top: 1px dashed rgba(0, 0, 0, 0.2);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .developer-options h3 {
+            margin-top: 0;
+            color: #d9534f;
+        }
+
+        /* 深色模式 */
+        body.dark-mode {
+            --墨色: #f0f2f5;
+            background-color: #121212;
+        }
+
+        body.dark-mode .container {
+            background: rgba(0, 0, 0, var(--card-opacity));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .platform-card,
+        body.dark-mode .favorites-container {
+            background: rgba(0, 0, 0, 0.15);
+            color: #f0f2f5;
+        }
+
+        body.dark-mode .platform-card.active,
+        body.dark-mode .platform-card:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .platform-icon i {
+            color: #f0f2f5;
+        }
+
+        body.dark-mode .search-box {
+            background: rgba(0, 0, 0, 0.9);
+            color: #f0f2f5;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode #suggestions {
+            background: rgba(0, 0, 0, 0.98);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .suggestion {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .settings-panel {
+            background: rgba(0, 0, 0, 0.98);
+            color: #f0f2f5;
+        }
+
         /* 手表和手环设备适配 */
         @media screen and (max-width: 400px) and (max-height: 400px) {
             :root {
@@ -655,10 +989,6 @@
             
             .author {
                 font-size: 0.7rem;
-            }
-            
-            .footer {
-                font-size: 0.6rem;
             }
             
             /* 圆形屏幕适配 */
@@ -732,10 +1062,6 @@
             .author {
                 font-size: 0.6rem;
             }
-            
-            .footer {
-                font-size: 0.5rem;
-            }
         }
     </style>
 </head>
@@ -745,125 +1071,210 @@
         <div class="spinner"></div>
     </div>
     <div class="container" id="mainContainer">
-        <div class="search-container">
-            <button class="search-btn" id="searchBtn"><i class="fas fa-paper-plane" style="color: #4dabf7;"></i></button>
-            <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-            <button class="login-btn" id="loginBtn"><i class="fas fa-key" style="color: #4dabf7;"></i></button>
-        </div>
-        
-        <div id="suggestions-container">
-            <div id="suggestions"></div>
-        </div>
-        
         <div class="poetry" id="poetry"></div>
         
-        <div class="platform-grid" id="platformGrid"></div>
+        <div class="main-layout">
+            <div class="search-area">
+                <div class="search-container">
+                    <button class="search-btn" id="searchBtn"></button>
+                    <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
+                    <div id="suggestions"></div>
+                </div>
+                <button class="login-btn" id="loginBtn"><span class="login-text">登录</span></button>
+            </div>
+            
+            <div class="platforms-area">
+                <div class="platform-grid" id="platformGrid"></div>
+                <div class="footer-text" style="text-align: left; margin-top: -0.5rem;">
+                    <span class="settings-link" id="settingsBtn">设置</span>
+                </div>
+            </div>
+            
+            <div class="suggestions-area">
+                <!-- 搜索建议将在这里显示 -->
+            </div>
+            
+            <div class="favorites-area">
+                <div class="favorites-container">
+                    <div class="favorites-title">
+                        <span>收藏夹</span>
+                        <span class="favorites-settings" id="favoritesSettingsBtn">设置</span>
+                    </div>
+                    <div class="favorites-grid" id="favoritesGrid"></div>
+                </div>
+                <div class="footer-text" style="text-align: right; margin-top: 0.5rem;">
+                    <span>版权所有 © zmf</span>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="footer" id="footer">
-        <span class="settings-link" id="settingsLink">设置</span> 版权所有 © zmf
+
+    <!-- 搜索动画 -->
+    <div class="search-animation" id="searchAnimation">
+        <div class="search-animation-content">
+            <div class="search-animation-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="search-animation-text">正在搜索中...</div>
+        </div>
+    </div>
+
+    <!-- 平台选择面板 -->
+    <div class="platform-selection" id="platformSelection">
+        <div class="platform-selection-title">选择搜索平台</div>
+        <div class="platform-selection-grid" id="platformSelectionGrid"></div>
     </div>
 
     <!-- 设置面板 -->
     <div class="overlay" id="settingsOverlay"></div>
     <div class="settings-panel" id="settingsPanel">
-        <h2>设置</h2>
-        
         <div class="settings-tabs">
-            <div class="settings-tab active" data-tab="sections">板块开关</div>
-            <div class="settings-tab" data-tab="adjustments">板块调节</div>
+            <div class="settings-tab active" data-tab="display">显示设置</div>
             <div class="settings-tab" data-tab="theme">主题风格</div>
-            <div class="settings-tab" data-tab="developer" style="display:none;">开发者选项</div>
+            <div class="settings-tab" data-tab="developer">开发者选项</div>
         </div>
         
-        <div class="settings-content active" id="sections-content">
+        <div class="settings-tab-content active" id="displayTab">
             <div class="setting-item">
                 <label>显示控制</label>
                 <div class="section-toggle">
-                    <div class="toggle-item">
+                    <div class="toggle-item" data-section="poetry">
                         <input type="checkbox" id="showPoetry" checked>
                         <label for="showPoetry">诗句</label>
                     </div>
-                    <div class="toggle-item">
+                    <div class="toggle-item" data-section="image">
+                        <input type="checkbox" id="showImage" checked>
+                        <label for="showImage">背景图片</label>
+                    </div>
+                    <div class="toggle-item" data-section="dailyImage">
+                        <input type="checkbox" id="showDailyImage" checked>
+                        <label for="showDailyImage">每日一图</label>
+                    </div>
+                    <div class="toggle-item" data-section="platforms">
                         <input type="checkbox" id="showPlatforms" checked>
                         <label for="showPlatforms">平台显示</label>
                     </div>
+                    <div class="toggle-item" data-section="login">
+                        <input type="checkbox" id="showLogin" checked>
+                        <label for="showLogin">登录</label>
+                    </div>
+                    <div class="toggle-item" data-section="easterEgg">
+                        <input type="checkbox" id="showEasterEgg" checked>
+                        <label for="showEasterEgg">彩蛋</label>
+                    </div>
+                    <div class="toggle-item" data-section="animation">
+                        <input type="checkbox" id="showAnimation" checked>
+                        <label for="showAnimation">搜索动画</label>
+                    </div>
+                    <div class="toggle-item" data-section="cmdMode">
+                        <input type="checkbox" id="cmdMode">
+                        <label for="cmdMode">CMD模式</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label for="defaultPlatform">默认搜索平台</label>
+                <select id="defaultPlatform" class="setting-control">
+                    <option value="bing">必应搜索</option>
+                    <option value="google">谷歌搜索</option>
+                    <option value="baidu">百度搜索</option>
+                    <option value="github">GitHub</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="bilibili">哔哩哔哩</option>
+                    <option value="zhihu">知乎</option>
+                    <option value="douyin">抖音</option>
+                    <option value="weibo">微博</option>
+                    <option value="stackoverflow">StackOverflow</option>
+                </select>
+            </div>
+            
+            <div class="setting-item">
+                <label for="bgBlur">背景模糊度</label>
+                <div class="range-control">
+                    <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+                    <span class="value-display" id="bgBlurValue">12px</span>
+                    <input type="number" class="value-input" id="bgBlurInput" min="0" max="20" value="12" step="1">
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label for="cardOpacity">卡片透明度</label>
+                <div class="range-control">
+                    <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
+                    <span class="value-display" id="cardOpacityValue">12%</span>
+                    <input type="number" class="value-input" id="cardOpacityInput" min="0" max="100" value="12" step="1">
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label for="animationSpeed">动画速度</label>
+                <div class="range-control">
+                    <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+                    <span class="value-display" id="animationSpeedValue">中速</span>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label for="platformScale">平台缩放比例</label>
+                <div class="range-control">
+                    <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
+                    <span class="value-display" id="platformScaleValue">100%</span>
+                    <input type="number" class="value-input" id="platformScaleInput" min="50" max="150" value="100" step="5">
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-tab-content" id="themeTab">
+            <div class="setting-item">
+                <label>主题模式</label>
+                <div class="section-toggle">
                     <div class="toggle-item">
-                        <input type="checkbox" id="showSuggestions" checked>
-                        <label for="showSuggestions">搜索建议</label>
+                        <input type="radio" id="lightTheme" name="theme" value="light" checked>
+                        <label for="lightTheme">浅色模式</label>
                     </div>
                     <div class="toggle-item">
-                        <input type="checkbox" id="darkMode">
-                        <label for="darkMode">深色模式</label>
+                        <input type="radio" id="darkTheme" name="theme" value="dark">
+                        <label for="darkTheme">深色模式</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-item">
+                <label>风格预设</label>
+                <div class="section-toggle" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="toggle-item">
+                        <input type="radio" id="styleDefault" name="style" value="default" checked>
+                        <label for="styleDefault">默认</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="radio" id="styleMinimal" name="style" value="minimal">
+                        <label for="styleMinimal">极简</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="radio" id="styleNeon" name="style" value="neon">
+                        <label for="styleNeon">霓虹</label>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="settings-content" id="adjustments-content">
-            <div class="setting-item">
-                <label for="bgBlur">背景模糊度</label>
-                <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
-                <span id="bgBlurValue">12px</span>
-            </div>
-            
-            <div class="setting-item">
-                <label for="cardOpacity">卡片透明度</label>
-                <input type="range" id="cardOpacity" min="0" max="100" value="80" step="1">
-                <span id="cardOpacityValue">80%</span>
-            </div>
-            
-            <div class="setting-item">
-                <label for="suggestionsOpacity">建议透明度</label>
-                <input type="range" id="suggestionsOpacity" min="0" max="100" value="90" step="1">
-                <span id="suggestionsOpacityValue">90%</span>
-            </div>
-            
-            <div class="setting-item">
-                <label for="animationSpeed">动画速度</label>
-                <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
-                <span id="animationSpeedValue">中速</span>
-            </div>
-        </div>
-        
-        <div class="settings-content" id="theme-content">
-            <div class="setting-item">
-                <label for="themeStyle">主题风格</label>
-                <select id="themeStyle" class="setting-control">
-                    <option value="poetic">诗意风格</option>
-                    <option value="tech">科技风格</option>
-                    <option value="fluent">Fluent UI</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="settings-content" id="developer-content">
-            <div class="setting-item">
-                <label for="platformScale">界面缩放比例</label>
-                <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
-                <span id="platformScaleValue">100%</span>
-            </div>
-            
-            <div class="setting-item">
-                <label for="customSearchIcon">搜索按钮图标</label>
-                <select id="customSearchIcon" class="setting-control">
-                    <option value="fa-paper-plane">纸飞机</option>
-                    <option value="fa-search">放大镜</option>
-                    <option value="fa-rocket">火箭</option>
-                </select>
-            </div>
-            
-            <div class="setting-item">
-                <label for="customLoginIcon">登录按钮图标</label>
-                <select id="customLoginIcon" class="setting-control">
-                    <option value="fa-key">钥匙</option>
-                    <option value="fa-user">用户</option>
-                    <option value="fa-fingerprint">指纹</option>
-                </select>
-            </div>
-            
-            <div class="setting-item">
-                <button class="settings-btn" id="resetDeveloper">重置开发者选项</button>
+        <div class="settings-tab-content" id="developerTab">
+            <div class="developer-options">
+                <h3>开发者选项</h3>
+                <div class="setting-item">
+                    <label for="customPlatforms">自定义平台</label>
+                    <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
+                </div>
+                
+                <div class="setting-item">
+                    <label for="customCSS">自定义CSS</label>
+                    <textarea id="customCSS" class="setting-control" rows="5" placeholder="输入自定义CSS样式"></textarea>
+                </div>
+                
+                <div class="setting-item">
+                    <button class="settings-btn" id="resetSettings">重置所有设置</button>
+                </div>
             </div>
         </div>
         
@@ -879,105 +1290,156 @@
             platforms: [
                 {
                     id: 'bing',
-                    name: 'Microsoft Bing',
+                    name: '必应搜索',
                     icon: 'fa-microsoft',
-                    color: '#0078d4',
                     search: 'https://www.bing.com/search?q=',
                     login: 'https://login.live.com/'
                 },
                 {
                     id: 'google',
-                    name: 'Google',
+                    name: '谷歌搜索',
                     icon: 'fa-google',
-                    color: '#4285F4',
                     search: 'https://www.google.com/search?q=',
                     login: 'https://accounts.google.com/'
                 },
                 {
-                    id: 'baidu',
-                    name: '百度',
-                    icon: 'fa-brands fa-baidu',
-                    color: '#2932E1',
-                    search: 'https://www.baidu.com/s?wd=',
-                    login: 'https://passport.baidu.com/v2/?login'
+                    id: 'github',
+                    name: '代码星辰',
+                    icon: 'fa-github',
+                    search: 'https://github.com/search?q=',
+                    login: 'https://github.com/login'
+                },
+                {
+                    id: 'youtube',
+                    name: '视频星河',
+                    icon: 'fa-youtube',
+                    search: 'https://www.youtube.com/results?search_query=',
+                    login: 'https://accounts.google.com/'
                 },
                 {
                     id: 'bilibili',
-                    name: '哔哩哔哩',
-                    icon: 'fa-brands fa-bilibili',
-                    color: '#FB7299',
+                    name: '哔哩星海',
+                    icon: 'fa-bilibili',
                     search: 'https://search.bilibili.com/all?keyword=',
                     login: 'https://passport.bilibili.com/login'
                 },
                 {
-                    id: 'shenma',
-                    name: '神马',
-                    icon: 'fa-search',
-                    color: '#FF6A00',
-                    search: 'https://m.sm.cn/s?q=',
-                    login: ''
+                    id: 'zhihu',
+                    name: '知乎星云',
+                    icon: 'fa-zhihu',
+                    search: 'https://www.zhihu.com/search?q=',
+                    login: 'https://www.zhihu.com/signin'
                 },
                 {
-                    id: 'sogou',
-                    name: '搜狗',
-                    icon: 'fa-paw',
-                    color: '#FF5000',
-                    search: 'https://www.sogou.com/web?query=',
-                    login: ''
+                    id: 'baidu',
+                    name: '百度瀚海',
+                    icon: 'fa-baidu',
+                    search: 'https://www.baidu.com/s?wd=',
+                    login: 'https://passport.baidu.com/v2/?login'
                 },
                 {
-                    id: 'yandex',
-                    name: 'Yandex',
-                    icon: 'fa-brands fa-yandex',
-                    color: '#FF0000',
-                    search: 'https://yandex.com/search/?text=',
-                    login: ''
+                    id: 'douyin',
+                    name: '抖音幻域',
+                    icon: 'fa-tiktok',
+                    search: 'https://www.douyin.com/search/',
+                    login: 'https://www.douyin.com/login'
                 },
                 {
-                    id: '360',
-                    name: '360 搜索',
-                    icon: 'fa-search',
-                    color: '#19B955',
-                    search: 'https://www.so.com/s?q=',
-                    login: ''
-                },
-                {
-                    id: 'tencent',
-                    name: '腾讯云 Whois',
-                    icon: 'fa-cloud',
-                    color: '#0081FF',
-                    search: 'https://whois.cloud.tencent.com/',
-                    login: ''
+                    id: 'weibo',
+                    name: '微博星澜',
+                    icon: 'fa-weibo',
+                    search: 'https://s.weibo.com/weibo/',
+                    login: 'https://weibo.com/login.php'
                 },
                 {
                     id:'stackoverflow',
-                    name: 'StackOverflow',
-                    icon: 'fa-brands fa-stack-overflow',
-                    color: '#F48024',
+                    name: '技术星河',
+                    icon: 'fa-stack-overflow',
                     search: 'https://stackoverflow.com/search?q=',
                     login: 'https://stackoverflow.com/users/login'
                 }
             ],
+            favorites: [
+                { name: 'GitHub', url: 'https://github.com', icon: 'fa-github' },
+                { name: '知乎', url: 'https://www.zhihu.com', icon: 'fa-zhihu' },
+                { name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'fa-bilibili' },
+                { name: 'YouTube', url: 'https://www.youtube.com', icon: 'fa-youtube' },
+                { name: '微博', url: 'https://weibo.com', icon: 'fa-weibo' },
+                { name: '抖音', url: 'https://www.douyin.com', icon: 'fa-tiktok' },
+                { name: '百度', url: 'https://www.baidu.com', icon: 'fa-baidu' },
+                { name: '谷歌', url: 'https://www.google.com', icon: 'fa-google' },
+                { name: '必应', url: 'https://www.bing.com', icon: 'fa-microsoft' },
+                { name: 'StackOverflow', url: 'https://stackoverflow.com', icon: 'fa-stack-overflow' }
+            ],
             settings: {
                 showDailyImage: true,
                 bgBlur: 12,
-                cardOpacity: 80,
-                suggestionsOpacity: 90,
+                cardOpacity: 12,
                 animationSpeed: 3,
                 platformScale: 100,
                 defaultPlatform: 'bing',
                 cmdMode: false,
-                darkMode: false,
-                themeStyle: 'poetic',
+                theme: 'light',
+                style: 'default',
                 showSections: {
                     poetry: true,
+                    image: true,
+                    dailyImage: true,
                     platforms: true,
-                    suggestions: true
+                    login: true,
+                    easterEgg: true,
+                    animation: true
                 },
-                developer: {
-                    active: false,
-                    searchIcon: 'fa-paper-plane',
-                    loginIcon: 'fa-key'
+                customPlatforms: [],
+                customCSS: ''
+            },
+            
+            holidays: {
+                'spring-festival': {
+                    name: '春节',
+                    dateRange: [
+                        { month: 1, day: 21 }, { month: 1, day: 22 }, { month: 1, day: 23 }, 
+                        { month: 1, day: 24 }, { month: 1, day: 25 }, { month: 1, day: 26 }, 
+                        { month: 1, day: 27 }
+                    ],
+                    activator: 'activateSpringFestival'
+                },
+                'lantern-festival': {
+                    name: '元宵节',
+                    dateRange: [
+                        { month: 2, day: 4 }, { month: 2, day: 24 }
+                    ],
+                    activator: 'activateLanternFestival'
+                },
+                'qingming-festival': {
+                    name: '清明节',
+                    dateRange: [
+                        { month: 4, day: 4 }, { month: 4, day: 5 }
+                    ],
+                    activator: 'activateQingmingFestival'
+                },
+                'dragon-boat-festival': {
+                    name: '端午节',
+                    dateRange: [
+                        { month: 6, day: 22 }
+                    ],
+                    activator: 'activateDragonBoatFestival'
+                },
+                'mid-autumn-festival': {
+                    name: '中秋节',
+                    dateRange: [
+                        { month: 9, day: 29 }
+                    ],
+                    activator: 'activateMidAutumnFestival'
+                },
+                'national-day': {
+                    name: '国庆节',
+                    dateRange: [
+                        { month: 10, day: 1 }, { month: 10, day: 2 }, { month: 10, day: 3 },
+                        { month: 10, day: 4 }, { month: 10, day: 5 }, { month: 10, day: 6 },
+                        { month: 10, day: 7 }
+                    ],
+                    activator: 'activateNationalDay'
                 }
             },
             
@@ -1000,33 +1462,50 @@
             searchInput: document.getElementById('searchInput'),
             suggestions: document.getElementById('suggestions'),
             platformGrid: document.getElementById('platformGrid'),
+            platformSelection: document.getElementById('platformSelection'),
+            platformSelectionGrid: document.getElementById('platformSelectionGrid'),
             searchBtn: document.getElementById('searchBtn'),
             loginBtn: document.getElementById('loginBtn'),
-            footer: document.getElementById('footer'),
-            settingsLink: document.getElementById('settingsLink'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            favoritesSettingsBtn: document.getElementById('favoritesSettingsBtn'),
             settingsOverlay: document.getElementById('settingsOverlay'),
             settingsPanel: document.getElementById('settingsPanel'),
             showPoetry: document.getElementById('showPoetry'),
+            showImage: document.getElementById('showImage'),
+            showDailyImage: document.getElementById('showDailyImage'),
             showPlatforms: document.getElementById('showPlatforms'),
-            showSuggestions: document.getElementById('showSuggestions'),
-            darkMode: document.getElementById('darkMode'),
+            showLogin: document.getElementById('showLogin'),
+            showEasterEgg: document.getElementById('showEasterEgg'),
+            showAnimation: document.getElementById('showAnimation'),
+            cmdMode: document.getElementById('cmdMode'),
+            defaultPlatform: document.getElementById('defaultPlatform'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
+            bgBlurInput: document.getElementById('bgBlurInput'),
             cardOpacity: document.getElementById('cardOpacity'),
             cardOpacityValue: document.getElementById('cardOpacityValue'),
-            suggestionsOpacity: document.getElementById('suggestionsOpacity'),
-            suggestionsOpacityValue: document.getElementById('suggestionsOpacityValue'),
+            cardOpacityInput: document.getElementById('cardOpacityInput'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
             platformScale: document.getElementById('platformScale'),
             platformScaleValue: document.getElementById('platformScaleValue'),
-            themeStyle: document.getElementById('themeStyle'),
-            customSearchIcon: document.getElementById('customSearchIcon'),
-            customLoginIcon: document.getElementById('customLoginIcon'),
-            resetDeveloper: document.getElementById('resetDeveloper'),
+            platformScaleInput: document.getElementById('platformScaleInput'),
+            searchAnimation: document.getElementById('searchAnimation'),
+            mainContainer: document.getElementById('mainContainer'),
+            favoritesGrid: document.getElementById('favoritesGrid'),
+            lightTheme: document.getElementById('lightTheme'),
+            darkTheme: document.getElementById('darkTheme'),
+            styleDefault: document.getElementById('styleDefault'),
+            styleMinimal: document.getElementById('styleMinimal'),
+            styleNeon: document.getElementById('styleNeon'),
+            customPlatforms: document.getElementById('customPlatforms'),
+            customCSS: document.getElementById('customCSS'),
+            resetSettings: document.getElementById('resetSettings'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings'),
-            mainContainer: document.getElementById('mainContainer')
+            displayTab: document.getElementById('displayTab'),
+            themeTab: document.getElementById('themeTab'),
+            developerTab: document.getElementById('developerTab')
         };
 
         // 状态变量
@@ -1058,7 +1537,7 @@
             const img = new Image();
             img.src = imageUrl;
             img.onload = function() {
-                document.body.style.backgroundImage = `url(${imageUrl})`;
+                document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? `url(${imageUrl})` : 'none';
                 elements.loading.style.display = 'none';
                 document.body.classList.add('fade-in');
                 setTimeout(() => {
@@ -1077,9 +1556,14 @@
             // 渲染内容
             showRandomHitokoto();
             renderPlatforms();
+            renderPlatformSelection();
+            renderFavorites();
             
             // 应用板块显示设置
             applySectionSettings();
+            
+            // 应用主题设置
+            applyThemeSettings();
             
             // 聚焦搜索框
             elements.searchInput.focus();
@@ -1090,6 +1574,9 @@
             // 初始化彩蛋
             initEasterEggs();
 
+            // 检查节日
+            checkTodayHoliday();
+
             // 应用CMD模式
             applyCmdMode();
             
@@ -1098,6 +1585,23 @@
             
             // 注册Service Worker
             registerServiceWorker();
+        }
+
+        // 渲染收藏夹
+        function renderFavorites() {
+            elements.favoritesGrid.innerHTML = config.favorites.map(favorite => `
+                <div class="favorite-item" data-url="${favorite.url}">
+                    <div class="favorite-icon"><i class="fab ${favorite.icon}"></i></div>
+                    <div class="favorite-name">${favorite.name}</div>
+                </div>
+            `).join('');
+
+            // 添加收藏项点击事件
+            document.querySelectorAll('.favorite-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    window.open(this.dataset.url, '_blank');
+                });
+            });
         }
 
         // 注册Service Worker
@@ -1145,38 +1649,48 @@
             // 诗句
             elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
             
+            // 背景图片
+            document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? 
+                document.body.style.backgroundImage : 'none';
+            
             // 平台
             elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
             
-            // 搜索建议
-            document.getElementById('suggestions-container').style.display = config.settings.showSections.suggestions ? 'block' : 'none';
-            
-            // 深色模式
-            document.documentElement.style.setProperty('--dark-mode', config.settings.darkMode ? '1' : '0');
-            
-            // 应用主题风格
-            applyThemeStyle();
+            // 登录按钮
+            elements.loginBtn.querySelector('.login-text').style.display = config.settings.showSections.login ? 'inline' : 'none';
         }
 
-        // 应用主题风格
-        function applyThemeStyle() {
-            // 清除所有主题类
-            document.body.classList.remove('poetic-theme', 'tech-theme', 'fluent-theme');
+        // 应用主题设置
+        function applyThemeSettings() {
+            if (config.settings.theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                elements.darkTheme.checked = true;
+            } else {
+                document.body.classList.remove('dark-mode');
+                elements.lightTheme.checked = true;
+            }
             
-            // 添加当前主题类
-            document.body.classList.add(`${config.settings.themeStyle}-theme`);
+            // 应用风格预设
+            switch (config.settings.style) {
+                case 'minimal':
+                    // 应用极简风格
+                    break;
+                case 'neon':
+                    // 应用霓虹风格
+                    break;
+                default:
+                    // 默认风格
+            }
             
-            // 根据主题调整样式
-            switch(config.settings.themeStyle) {
-                case 'poetic':
-                    document.documentElement.style.setProperty('--primary-color', '#89c7b6');
-                    break;
-                case 'tech':
-                    document.documentElement.style.setProperty('--primary-color', '#4285F4');
-                    break;
-                case 'fluent':
-                    document.documentElement.style.setProperty('--primary-color', '#0078d4');
-                    break;
+            // 应用自定义CSS
+            if (config.settings.customCSS) {
+                let styleElement = document.getElementById('custom-css');
+                if (!styleElement) {
+                    styleElement = document.createElement('style');
+                    styleElement.id = 'custom-css';
+                    document.head.appendChild(styleElement);
+                }
+                styleElement.textContent = config.settings.customCSS;
             }
         }
 
@@ -1190,34 +1704,42 @@
                     
                     // 更新UI控件
                     if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
+                    if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
+                    if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
                     if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    if (elements.showSuggestions) elements.showSuggestions.checked = config.settings.showSections.suggestions;
-                    if (elements.darkMode) elements.darkMode.checked = config.settings.darkMode;
+                    if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
+                    if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+                    if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
+                    if (elements.cmdMode) elements.cmdMode.checked = config.settings.cmdMode;
+                    if (elements.defaultPlatform) {
+                        elements.defaultPlatform.value = config.settings.defaultPlatform || 'bing';
+                        selectedPlatform = config.settings.defaultPlatform || 'bing';
+                    }
+                    
                     if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
                     if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
                     if (elements.cardOpacity) elements.cardOpacity.value = config.settings.cardOpacity;
                     if (elements.cardOpacityValue) elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
-                    if (elements.suggestionsOpacity) elements.suggestionsOpacity.value = config.settings.suggestionsOpacity;
-                    if (elements.suggestionsOpacityValue) elements.suggestionsOpacityValue.textContent = `${config.settings.suggestionsOpacity}%`;
                     if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
                     if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
                     if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
-                    if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
-                    updateAnimationSpeedText();
                     
-                    // 开发者选项
-                    if (config.settings.developer.active) {
-                        document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
-                        if (elements.customSearchIcon) elements.customSearchIcon.value = config.settings.developer.searchIcon;
-                        if (elements.customLoginIcon) elements.customLoginIcon.value = config.settings.developer.loginIcon;
+                    // 自定义平台
+                    if (config.settings.customPlatforms && config.settings.customPlatforms.length > 0) {
+                        config.platforms = [...config.platforms, ...config.settings.customPlatforms];
                     }
+                    
+                    // 自定义CSS
+                    if (config.settings.customCSS) {
+                        elements.customCSS.value = config.settings.customCSS;
+                    }
+                    
+                    updateAnimationSpeedText();
                     
                     // 应用设置
                     document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
                     document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
-                    document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
                     updateAnimationSpeed();
-                    applyThemeStyle();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
@@ -1249,26 +1771,26 @@
         // 保存设置
         function saveSettings() {
             config.settings = {
-                showDailyImage: true,
+                showDailyImage: elements.showDailyImage.checked,
                 bgBlur: parseInt(elements.bgBlur.value),
                 cardOpacity: parseInt(elements.cardOpacity.value),
-                suggestionsOpacity: parseInt(elements.suggestionsOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
                 platformScale: parseInt(elements.platformScale.value),
-                defaultPlatform: 'bing',
-                cmdMode: false,
-                darkMode: elements.darkMode.checked,
-                themeStyle: elements.themeStyle.value,
+                defaultPlatform: elements.defaultPlatform.value,
+                cmdMode: elements.cmdMode.checked,
+                theme: document.querySelector('input[name="theme"]:checked').value,
+                style: document.querySelector('input[name="style"]:checked').value,
                 showSections: {
                     poetry: elements.showPoetry.checked,
+                    image: elements.showImage.checked,
+                    dailyImage: elements.showDailyImage.checked,
                     platforms: elements.showPlatforms.checked,
-                    suggestions: elements.showSuggestions.checked
+                    login: elements.showLogin.checked,
+                    easterEgg: elements.showEasterEgg.checked,
+                    animation: elements.showAnimation.checked
                 },
-                developer: {
-                    active: config.settings.developer.active,
-                    searchIcon: elements.customSearchIcon ? elements.customSearchIcon.value : 'fa-paper-plane',
-                    loginIcon: elements.customLoginIcon ? elements.customLoginIcon.value : 'fa-key'
-                }
+                customPlatforms: tryParseJSON(elements.customPlatforms.value) || [],
+                customCSS: elements.customCSS.value
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
@@ -1276,13 +1798,14 @@
             // 应用新设置
             document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
             document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
-            document.documentElement.style.setProperty('--suggestions-opacity', `${config.settings.suggestionsOpacity/100}`);
             updateAnimationSpeed();
             applyPlatformScale();
-            applyThemeStyle();
             
             // 应用板块显示设置
             applySectionSettings();
+            
+            // 应用主题设置
+            applyThemeSettings();
             
             // 应用CMD模式
             applyCmdMode();
@@ -1293,8 +1816,29 @@
             renderPlatforms();
         }
 
+        // 尝试解析JSON
+        function tryParseJSON(jsonString) {
+            try {
+                return JSON.parse(jsonString);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // 重置所有设置
+        function resetSettings() {
+            if (confirm('确定要重置所有设置吗？此操作不可撤销。')) {
+                localStorage.removeItem('searchPortalSettings');
+                location.reload();
+            }
+        }
+
         // 获取壁纸
         async function getWallpaper() {
+            if (!config.settings.showSections.dailyImage) {
+                return '';
+            }
+            
             const width = window.screen.width * window.devicePixelRatio;
             const height = window.screen.height * window.devicePixelRatio;
             
@@ -1360,6 +1904,24 @@
             elements.poetry.style.display = 'block';
         }
 
+        // 渲染平台选择面板
+        function renderPlatformSelection() {
+            elements.platformSelectionGrid.innerHTML = config.platforms.map(platform => `
+                <div class="platform-selection-item" data-id="${platform.id}">
+                    <div class="platform-selection-icon"><i class="fab ${platform.icon}"></i></div>
+                    <div>${platform.name}</div>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.platform-selection-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    selectedPlatform = this.dataset.id;
+                    elements.platformSelection.classList.remove('show');
+                    performSearch(elements.searchInput.value.trim());
+                });
+            });
+        }
+
         // 渲染平台网格
         function renderPlatforms() {
             if (!config.settings.showSections.platforms || config.settings.cmdMode) {
@@ -1371,9 +1933,7 @@
                 <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
                      data-id="${platform.id}"
                      data-login="${platform.login || ''}">
-                    <div class="platform-icon" style="color: ${platform.color}">
-                        <i class="${platform.icon}"></i>
-                    </div>
+                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
                     <div>${platform.name}</div>
                 </div>
             `).join('');
@@ -1386,20 +1946,20 @@
 
                     selectedPlatform = card.dataset.id;
                     const showLogin = card.dataset.login && config.settings.showSections.login;
-                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
+                    elements.loginBtn.querySelector('.login-text').style.display = showLogin ? 'inline' : 'none';
                 });
             });
 
             // 默认显示登录按钮（如果必应需要）
             const bingPlatform = config.platforms.find(p => p.id === 'bing');
-            if (bingPlatform && bingPlatform.login) {
-                elements.loginBtn.style.display = 'block';
+            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
+                elements.loginBtn.querySelector('.login-text').style.display = 'inline';
             }
         }
 
         // 显示搜索建议
         function showSuggestions(input) {
-            if (!input || input.length === 0 || config.settings.cmdMode || !config.settings.showSections.suggestions) {
+            if (!input || input.length === 0 || config.settings.cmdMode) {
                 hideSuggestions();
                 return;
             }
@@ -1427,6 +1987,9 @@
                     });
 
                     showSuggestionsUI();
+                    
+                    // 调整平台布局
+                    adjustPlatformLayout(true);
                 } else {
                     hideSuggestions();
                 }
@@ -1490,8 +2053,8 @@
                 return;
             }
             
-            // 检查是否是URL
-            if (isPotentialUrl(query)) {
+            // 严格检查URL
+            if (isPotentialUrl(query) && isValidUrl(query)) {
                 navigateToUrl(query);
                 return;
             }
@@ -1505,11 +2068,8 @@
                 return;
             }
             
-            // 使用选定的平台进行搜索
-            const platform = config.platforms.find(p => p.id === selectedPlatform);
-            if (platform) {
-                window.open(platform.search + encodeURIComponent(query), '_blank');
-            }
+            // 显示平台选择面板
+            elements.platformSelection.classList.add('show');
         }
 
         // 改进的URL检测逻辑
@@ -1518,21 +2078,63 @@
             if (/[\u4e00-\u9fa5]/.test(string) || /\s/.test(string)) return false;
             
             // 包含协议头或常见顶级域名
-            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev', '.me', '.info'];
+            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev'];
             const hasValidTLD = tlds.some(tld => string.includes(tld));
             const hasProtocol = /^https?:\/\//i.test(string);
             
             return hasProtocol || (hasValidTLD && string.includes('.'));
         }
 
+        // 检查是否是有效的URL
+        function isValidUrl(string) {
+            try {
+                // 更严格的协议检查
+                if (!/^https?:\/\//i.test(string)) {
+                    // 如果没有协议头但包含顶级域名
+                    if (!/[a-z0-9-]+\.[a-z]{2,}/i.test(string)) return false;
+                    string = 'http://' + string;
+                }
+                
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
         // 导航到URL
         function navigateToUrl(url) {
             // 确保URL有协议
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
+                url = 'http://' + url;
             }
             
-            window.open(url, '_blank');
+            // 显示搜索动画
+            if (config.settings.showSections.animation) {
+                showSearchAnimation();
+            }
+            
+            // 延迟打开链接，让动画有足够时间显示
+            setTimeout(() => {
+                window.open(url, '_blank');
+                
+                // 隐藏动画
+                if (config.settings.showSections.animation) {
+                    setTimeout(() => {
+                        hideSearchAnimation();
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        // 显示搜索动画
+        function showSearchAnimation() {
+            elements.searchAnimation.classList.add('active');
+        }
+
+        // 隐藏搜索动画
+        function hideSearchAnimation() {
+            elements.searchAnimation.classList.remove('active');
         }
 
         // 检查屏幕尺寸
@@ -1591,8 +2193,25 @@
 
         // 初始化彩蛋
         function initEasterEggs() {
-            // 署名点击 - 连点7次激活开发者模式
-            elements.footer.addEventListener('click', handleFooterClick);
+            if (!config.settings.showSections.easterEgg) return;
+            
+            // 中国传统文化关键词监听
+            elements.searchInput.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+                
+                // 检查是否匹配任何中国传统文化关键词
+                for (const [keyword, activator] of Object.entries(config.chineseKeywords)) {
+                    if (query.includes(keyword.toLowerCase())) {
+                        if (typeof this[activator] === 'function') {
+                            this[activator]();
+                        }
+                        break;
+                    }
+                }
+            });
+
+            // 页脚设置点击 - 连点7次打开开发者设置
+            document.querySelector('.footer-text').addEventListener('click', handleSettingsClick);
 
             // 科乐美秘技监听
             document.addEventListener('keydown', function(e) {
@@ -1602,18 +2221,64 @@
                 }
                 
                 if (konamiCode.join(',') === KONAMI_CODE.join(',')) {
-                    activateDeveloperMode();
+                    showSourceCode();
                     konamiCode = [];
                 }
             });
         }
 
-        // 处理页脚点击
-        function handleFooterClick(e) {
-            if (e.target.classList.contains('settings-link')) {
-                return;
-            }
+        // 检查今天是否是节日
+        function checkTodayHoliday() {
+            if (!config.settings.showSections.easterEgg) return;
             
+            const today = new Date();
+            const holiday = checkHoliday(today);
+            if (holiday) {
+                // 触发节日彩蛋
+                if (typeof this[holiday.activator] === 'function') {
+                    this[holiday.activator]();
+                }
+            }
+        }
+
+        // 检查日期是否是节日
+        function checkHoliday(date) {
+            const month = date.getMonth() + 1; // 0-11 → 1-12
+            const day = date.getDate();
+            
+            for (const [id, holiday] of Object.entries(config.holidays)) {
+                for (const d of holiday.dateRange) {
+                    if (d.month === month && d.day === day) {
+                        return { id, ...holiday };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // 显示源代码
+        function showSourceCode() {
+            const sourceViewer = document.createElement('div');
+            sourceViewer.className = 'source-viewer';
+            sourceViewer.innerHTML = `
+                <div class="source-header">
+                    <h3>星汉搜索 - 源代码</h3>
+                    <span class="source-close">×</span>
+                </div>
+                <pre>${document.documentElement.outerHTML}</pre>
+            `;
+            
+            document.body.appendChild(sourceViewer);
+            sourceViewer.style.display = 'block';
+            
+            // 添加关闭事件
+            sourceViewer.querySelector('.source-close').addEventListener('click', () => {
+                sourceViewer.style.display = 'none';
+            });
+        }
+
+        // 设置点击处理
+        function handleSettingsClick() {
             const now = Date.now();
             if (now - lastClickTime > CLICK_TIMEOUT) {
                 clickCount = 0;
@@ -1623,16 +2288,18 @@
             lastClickTime = now;
             
             if (clickCount >= CLICK_THRESHOLD) {
-                activateDeveloperMode();
+                openSettings();
+                // 切换到开发者选项
+                document.querySelector('.settings-tab[data-tab="developer"]').click();
                 clickCount = 0;
+                
+                // 添加点击动画
+                const footerText = document.querySelector('.footer-text');
+                footerText.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    footerText.style.transform = '';
+                }, 300);
             }
-        }
-
-        // 激活开发者模式
-        function activateDeveloperMode() {
-            config.settings.developer.active = true;
-            document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
-            alert('开发者模式已激活！');
         }
 
         // 添加事件监听
@@ -1640,7 +2307,7 @@
             // 搜索按钮
             elements.searchBtn.addEventListener('click', () => {
                 const query = elements.searchInput.value.trim();
-                if (!query) return;
+                if (!query) return alert('请输入搜索内容');
                 performSearch(query);
             });
 
@@ -1662,7 +2329,7 @@
             elements.searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const query = elements.searchInput.value.trim();
-                    if (!query) return;
+                    if (!query) return alert('请输入搜索内容');
                     performSearch(query);
                 }
             });
@@ -1683,39 +2350,34 @@
                 }, 200);
             });
 
-            // 设置链接
-            elements.settingsLink.addEventListener('click', openSettings);
-
+            // 设置按钮
+            elements.settingsBtn.addEventListener('click', openSettings);
+            elements.favoritesSettingsBtn.addEventListener('click', openSettings);
+            
             // 设置面板事件
-            document.querySelectorAll('.settings-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.settings-content').forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(`${this.dataset.tab}-content`).classList.add('active');
-                });
-            });
-
             elements.cancelSettings.addEventListener('click', closeSettings);
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
+            elements.resetSettings.addEventListener('click', resetSettings);
 
-            // 点击页面其他区域隐藏建议
+            // 点击页面其他区域隐藏建议和平台选择
             document.addEventListener('click', function(e) {
                 if (!elements.searchInput.contains(e.target) && 
                     !elements.suggestions.contains(e.target) &&
-                    !elements.searchBtn.contains(e.target)) {
+                    !elements.searchBtn.contains(e.target) &&
+                    !elements.platformSelection.contains(e.target)) {
                     hideSuggestions();
+                    elements.platformSelection.classList.remove('show');
                 }
             });
 
-            // 键盘ESC键隐藏建议
+            // 键盘ESC键隐藏建议和平台选择
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     if (isSuggestionsOpen) {
                         hideSuggestions();
                     }
+                    elements.platformSelection.classList.remove('show');
                 }
             });
 
@@ -1731,12 +2393,6 @@
                 document.documentElement.style.setProperty('--card-opacity', `${this.value/100}`);
             });
 
-            // 建议透明度调整
-            elements.suggestionsOpacity.addEventListener('input', function() {
-                elements.suggestionsOpacityValue.textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--suggestions-opacity', `${this.value/100}`);
-            });
-
             // 动画速度调整
             elements.animationSpeed.addEventListener('input', function() {
                 updateAnimationSpeedText();
@@ -1749,18 +2405,53 @@
                 document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
             });
 
-            // 开发者选项 - 重置
-            if (elements.resetDeveloper) {
-                elements.resetDeveloper.addEventListener('click', function() {
-                    config.settings.developer = {
-                        active: false,
-                        searchIcon: 'fa-paper-plane',
-                        loginIcon: 'fa-key'
-                    };
-                    document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'none';
-                    alert('开发者选项已重置');
+            // 数值输入控件交互
+            document.querySelectorAll('.value-display').forEach(display => {
+                display.addEventListener('click', function() {
+                    const input = this.nextElementSibling;
+                    this.style.display = 'none';
+                    input.style.display = 'block';
+                    input.focus();
                 });
-            }
+            });
+
+            document.querySelectorAll('.value-input').forEach(input => {
+                input.addEventListener('blur', function() {
+                    this.style.display = 'none';
+                    this.previousElementSibling.style.display = 'block';
+                    this.previousElementSibling.textContent = this.value + (this.id.includes('Blur') ? 'px' : '%');
+                    
+                    // 更新对应的滑块
+                    const sliderId = this.id.replace('Input', '');
+                    const slider = document.getElementById(sliderId);
+                    if (slider) {
+                        slider.value = this.value;
+                        slider.dispatchEvent(new Event('input'));
+                    }
+                });
+                
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        this.blur();
+                    }
+                });
+            });
+
+            // 设置选项卡切换
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 更新活动选项卡
+                    document.querySelectorAll('.settings-tab').forEach(t => 
+                        t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新活动内容
+                    const tabId = this.dataset.tab;
+                    document.querySelectorAll('.settings-tab-content').forEach(content => 
+                        content.classList.remove('active'));
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
 
             // 触摸事件支持
             elements.searchInput.addEventListener('touchend', function(e) {
