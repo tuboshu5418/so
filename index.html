@@ -124,12 +124,15 @@
 
         .suggestions-area {
             grid-area: suggestions;
-            min-height: 200px;
+            display: flex;
+            flex-direction: column;
         }
 
         .favorites-area {
             grid-area: favorites;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .footer-area {
@@ -416,6 +419,7 @@
             min-height: 200px;
             backdrop-filter: blur(5px);
             position: relative;
+            flex-grow: 1;
         }
 
         .favorites-title {
@@ -454,6 +458,9 @@
             align-items: center;
             cursor: pointer;
             transition: var(--transition-all);
+            min-height: calc(80px * var(--platform-scale));
+            justify-content: center;
+            flex-direction: column;
         }
 
         .favorite-item:hover {
@@ -464,11 +471,10 @@
             width: 24px;
             height: 24px;
             margin-right: 0.5rem;
-            background-color: #eee;
-            border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
+            margin-bottom: 0.5rem;
         }
 
         .favorite-name {
@@ -476,6 +482,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
         }
 
         /* 页脚样式 */
@@ -483,6 +491,7 @@
             font-size: 0.8rem;
             color: var(--墨色);
             opacity: 0.7;
+            margin-top: 0.5rem;
         }
 
         .settings-link {
@@ -1086,7 +1095,7 @@
             
             <div class="platforms-area">
                 <div class="platform-grid" id="platformGrid"></div>
-                <div class="footer-text" style="text-align: left; margin-top: -0.5rem;">
+                <div class="footer-text" style="text-align: left;">
                     <span class="settings-link" id="settingsBtn">设置</span>
                 </div>
             </div>
@@ -1103,7 +1112,7 @@
                     </div>
                     <div class="favorites-grid" id="favoritesGrid"></div>
                 </div>
-                <div class="footer-text" style="text-align: right; margin-top: 0.5rem;">
+                <div class="footer-text" style="text-align: right;">
                     <span>版权所有 © zmf</span>
                 </div>
             </div>
