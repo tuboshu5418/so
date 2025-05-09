@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星汉搜索 - zmf</title>
+    <title>星汉搜索 - 诗意探索</title>
     <!-- 加载Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +26,7 @@
             --cmd-bg: #0c0c0c;
             --cmd-text: #cccccc;
             --platform-scale: 1;
+            --favorites-scale: 1;
             --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
             --theme-color-dark: #1e3a8a;
             --theme-color-light: #60a5fa;
@@ -36,6 +37,7 @@
             --favorites-area-opacity: 0.12;
             --footer-area-opacity: 0.12;
             --overlay-opacity: 0.5;
+            --favorites-card-size: 80px;
         }
 
         * {
@@ -415,19 +417,21 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 1rem;
             margin: 1.5rem 0;
+            transform: scale(var(--favorites-scale));
+            transform-origin: center;
         }
 
         .favorite-card {
-            padding: 0.8rem;
+            padding: calc(0.8rem * var(--favorites-scale));
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 1rem;
+            border-radius: calc(1rem * var(--favorites-scale));
             cursor: pointer;
             text-align: center;
             backdrop-filter: blur(5px);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: 80px;
+            min-height: calc(var(--favorites-card-size) * var(--favorites-scale));
             position: relative;
             overflow: hidden;
             transition: var(--transition-all);
@@ -445,6 +449,13 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: var(--transition-all);
+        }
+
+        body.animated .favorite-card:hover .favorite-icon img {
+            transform: scale(1.1);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
 
         /* 搜索建议 */
@@ -1077,6 +1088,18 @@
                 <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
                 <span id="platformScaleValue">100%</span>
             </div>
+
+            <div class="setting-item">
+                <label for="favoritesScale">收藏夹缩放比例</label>
+                <input type="range" id="favoritesScale" min="50" max="150" value="100" step="5">
+                <span id="favoritesScaleValue">100%</span>
+            </div>
+
+            <div class="setting-item">
+                <label for="favoritesCardSize">收藏夹卡片大小</label>
+                <input type="range" id="favoritesCardSize" min="60" max="120" value="80" step="5">
+                <span id="favoritesCardSizeValue">80px</span>
+            </div>
         </div>
         
         <div class="settings-tab-content" id="themeTab">
@@ -1106,12 +1129,40 @@
                     <input type="checkbox" id="enableDevOptions">
                 </div>
                 <div class="setting-item">
+                    <label for="disableDevOptions">禁用开发者选项</label>
+                    <button class="settings-btn-panel secondary" id="disableDevOptions">禁用</button>
+                </div>
+                <div class="setting-item">
                     <label for="customPlatforms">自定义平台</label>
                     <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
                 </div>
                 <div class="setting-item">
                     <label for="customCSS">自定义CSS</label>
                     <textarea id="customCSS" class="setting-control" rows="5" placeholder="输入自定义CSS样式"></textarea>
+                </div>
+                <div class="setting-item">
+                    <label for="layoutType">布局类型</label>
+                    <select id="layoutType" class="setting-control">
+                        <option value="default">默认布局</option>
+                        <option value="compact">紧凑布局</option>
+                        <option value="full-width">全宽布局</option>
+                        <option value="vertical">垂直布局</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="experimentalFeatures">实验功能</label>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="enable3DEffects">
+                        <label for="enable3DEffects">3D效果</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="enableVoiceSearch">
+                        <label for="enableVoiceSearch">语音搜索</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="enablePWA">
+                        <label for="enablePWA">PWA支持</label>
+                    </div>
                 </div>
                 <div class="setting-item">
                     <button class="settings-btn-panel" id="resetSettings">重置所有设置</button>
@@ -1273,6 +1324,8 @@
                 overlayOpacity: 50,
                 animationSpeed: 3,
                 platformScale: 100,
+                favoritesScale: 100,
+                favoritesCardSize: 80,
                 defaultPlatform: 'bing',
                 cmdMode: false,
                 themeColor: 'light',
@@ -1288,7 +1341,13 @@
                 },
                 enableDevOptions: false,
                 customPlatforms: [],
-                customCSS: ''
+                customCSS: '',
+                layoutType: 'default',
+                experimentalFeatures: {
+                    enable3DEffects: false,
+                    enableVoiceSearch: false,
+                    enablePWA: false
+                }
             },
             
             holidays: {
@@ -1389,6 +1448,10 @@
             animationSpeedValue: document.getElementById('animationSpeedValue'),
             platformScale: document.getElementById('platformScale'),
             platformScaleValue: document.getElementById('platformScaleValue'),
+            favoritesScale: document.getElementById('favoritesScale'),
+            favoritesScaleValue: document.getElementById('favoritesScaleValue'),
+            favoritesCardSize: document.getElementById('favoritesCardSize'),
+            favoritesCardSizeValue: document.getElementById('favoritesCardSizeValue'),
             themeColor: document.getElementById('themeColor'),
             themeStyle: document.getElementById('themeStyle'),
             cancelSettings: document.getElementById('cancelSettings'),
@@ -1396,12 +1459,17 @@
             previewSettings: document.getElementById('previewSettings'),
             searchAnimation: document.getElementById('searchAnimation'),
             enableDevOptions: document.getElementById('enableDevOptions'),
+            disableDevOptions: document.getElementById('disableDevOptions'),
             customPlatforms: document.getElementById('customPlatforms'),
             customCSS: document.getElementById('customCSS'),
             resetSettings: document.getElementById('resetSettings'),
             displayTab: document.getElementById('displayTab'),
             themeTab: document.getElementById('themeTab'),
-            developerTab: document.getElementById('developerTab')
+            developerTab: document.getElementById('developerTab'),
+            layoutType: document.getElementById('layoutType'),
+            enable3DEffects: document.getElementById('enable3DEffects'),
+            enableVoiceSearch: document.getElementById('enableVoiceSearch'),
+            enablePWA: document.getElementById('enablePWA')
         };
 
         // 状态变量
@@ -1476,13 +1544,16 @@
             // 应用平台缩放
             applyPlatformScale();
             
+            // 应用收藏夹缩放
+            applyFavoritesScale();
+            
             // 注册Service Worker
             registerServiceWorker();
         }
 
         // 注册Service Worker
         function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
+            if ('serviceWorker' in navigator && config.settings.experimentalFeatures.enablePWA) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('ServiceWorker 注册成功:', registration.scope);
@@ -1497,6 +1568,14 @@
         function applyPlatformScale() {
             const scale = config.settings.platformScale / 100;
             document.documentElement.style.setProperty('--platform-scale', scale);
+        }
+
+        // 应用收藏夹缩放
+        function applyFavoritesScale() {
+            const scale = config.settings.favoritesScale / 100;
+            const size = config.settings.favoritesCardSize;
+            document.documentElement.style.setProperty('--favorites-scale', scale);
+            document.documentElement.style.setProperty('--favorites-card-size', `${size}px`);
         }
 
         // 应用CMD模式
@@ -1595,11 +1674,19 @@
                     if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
                     if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
                     if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
+                    if (elements.favoritesScale) elements.favoritesScale.value = config.settings.favoritesScale;
+                    if (elements.favoritesScaleValue) elements.favoritesScaleValue.textContent = `${config.settings.favoritesScale}%`;
+                    if (elements.favoritesCardSize) elements.favoritesCardSize.value = config.settings.favoritesCardSize;
+                    if (elements.favoritesCardSizeValue) elements.favoritesCardSizeValue.textContent = `${config.settings.favoritesCardSize}px`;
                     if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
                     if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
                     if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
                     if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
                     if (elements.customCSS) elements.customCSS.value = config.settings.customCSS;
+                    if (elements.layoutType) elements.layoutType.value = config.settings.layoutType || 'default';
+                    if (elements.enable3DEffects) elements.enable3DEffects.checked = config.settings.experimentalFeatures.enable3DEffects;
+                    if (elements.enableVoiceSearch) elements.enableVoiceSearch.checked = config.settings.experimentalFeatures.enableVoiceSearch;
+                    if (elements.enablePWA) elements.enablePWA.checked = config.settings.experimentalFeatures.enablePWA;
                     
                     // 更新开发者选项显示
                     updateDevOptionsDisplay();
@@ -1669,6 +1756,8 @@
                 overlayOpacity: parseInt(elements.overlayOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
                 platformScale: parseInt(elements.platformScale.value),
+                favoritesScale: parseInt(elements.favoritesScale.value),
+                favoritesCardSize: parseInt(elements.favoritesCardSize.value),
                 defaultPlatform: elements.defaultPlatform.value,
                 cmdMode: elements.cmdMode.checked,
                 themeColor: elements.themeColor.value,
@@ -1684,7 +1773,13 @@
                 },
                 enableDevOptions: elements.enableDevOptions.checked,
                 customPlatforms: tryParseJSON(elements.customPlatforms.value) || [],
-                customCSS: elements.customCSS.value
+                customCSS: elements.customCSS.value,
+                layoutType: elements.layoutType.value,
+                experimentalFeatures: {
+                    enable3DEffects: elements.enable3DEffects.checked,
+                    enableVoiceSearch: elements.enableVoiceSearch.checked,
+                    enablePWA: elements.enablePWA.checked
+                }
             };
             
             localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
@@ -1694,6 +1789,7 @@
             applyOpacitySettings();
             updateAnimationSpeed();
             applyPlatformScale();
+            applyFavoritesScale();
             applyThemeSettings();
             
             // 应用板块显示设置
@@ -1709,6 +1805,25 @@
             
             // 重新渲染平台
             renderPlatforms();
+            renderFavorites();
+        }
+
+        // 禁用开发者选项
+        function disableDevOptions() {
+            if (confirm('确定要禁用开发者选项吗？此操作将重置开发者设置。')) {
+                config.settings.enableDevOptions = false;
+                config.settings.customPlatforms = [];
+                config.settings.customCSS = '';
+                config.settings.layoutType = 'default';
+                config.settings.experimentalFeatures = {
+                    enable3DEffects: false,
+                    enableVoiceSearch: false,
+                    enablePWA: false
+                };
+                
+                localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
+                location.reload();
+            }
         }
 
         // 尝试解析JSON
@@ -2049,6 +2164,7 @@
             // 小屏幕设备进一步缩小
             if (width <= 400 || height <= 400) {
                 document.documentElement.style.setProperty('--platform-scale', '0.9');
+                document.documentElement.style.setProperty('--favorites-scale', '0.9');
             }
         }
 
@@ -2262,6 +2378,7 @@
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
             elements.resetSettings.addEventListener('click', resetSettings);
+            elements.disableDevOptions.addEventListener('click', disableDevOptions);
 
             // 点击页面其他区域隐藏建议和平台选择
             document.addEventListener('click', function(e) {
@@ -2331,6 +2448,18 @@
             elements.platformScale.addEventListener('input', function() {
                 elements.platformScaleValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
+            });
+
+            // 收藏夹缩放调整
+            elements.favoritesScale.addEventListener('input', function() {
+                elements.favoritesScaleValue.textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--favorites-scale', `${this.value/100}`);
+            });
+
+            // 收藏夹卡片大小调整
+            elements.favoritesCardSize.addEventListener('input', function() {
+                elements.favoritesCardSizeValue.textContent = `${this.value}px`;
+                document.documentElement.style.setProperty('--favorites-card-size', `${this.value}px`);
             });
 
             // 主题颜色调整
