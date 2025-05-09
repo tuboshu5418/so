@@ -30,6 +30,12 @@
             --theme-color-dark: #1e3a8a;
             --theme-color-light: #60a5fa;
             --favorites-bg: rgba(255, 255, 255, 0.2);
+            --search-area-opacity: 0.12;
+            --platform-area-opacity: 0.12;
+            --poetry-area-opacity: 0.12;
+            --favorites-area-opacity: 0.12;
+            --footer-area-opacity: 0.12;
+            --overlay-opacity: 0.5;
         }
 
         * {
@@ -87,7 +93,7 @@
             padding: 0 10px;
             backdrop-filter: blur(var(--bg-blur));
             border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--card-opacity));
+            background: rgba(255, 255, 255, var(--search-area-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -190,7 +196,7 @@
             grid-row: 2;
             backdrop-filter: blur(var(--bg-blur));
             border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--card-opacity));
+            background: rgba(255, 255, 255, var(--platform-area-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem;
@@ -203,7 +209,7 @@
             grid-row: 2;
             backdrop-filter: blur(var(--bg-blur));
             border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--card-opacity));
+            background: rgba(255, 255, 255, var(--favorites-area-opacity));
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem;
@@ -230,6 +236,11 @@
             justify-content: center;
             align-items: center;
             padding: 1rem;
+            backdrop-filter: blur(var(--bg-blur));
+            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, var(--poetry-area-opacity));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .poetry {
@@ -263,6 +274,44 @@
             display: block;
         }
 
+        /* 页脚区域 */
+        .footer-area {
+            grid-column: 1 / span 3;
+            grid-row: 3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            backdrop-filter: blur(var(--bg-blur));
+            border-radius: 1.5rem;
+            background: rgba(255, 255, 255, var(--footer-area-opacity));
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: var(--墨色);
+            opacity: 0.8;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .settings-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--墨色);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            transition: var(--transition-all);
+        }
+
+        body.animated .settings-btn:hover {
+            background: rgba(137, 199, 182, 0.2);
+        }
+
         /* 平台网格布局 */
         .platform-grid {
             display: grid;
@@ -278,6 +327,29 @@
         }
 
         body.loaded .platform-grid {
+            opacity: 1;
+        }
+
+        .platform-card {
+            padding: calc(0.8rem * var(--platform-scale));
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: calc(1rem * var(--platform-scale));
+            cursor: pointer;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(80px * var(--platform-scale));
+            position: relative;
+            overflow: hidden;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: var(--transition-all);
+        }
+
+        body.loaded .platform-card {
+            transform: translateY(0);
             opacity: 1;
         }
 
@@ -379,10 +451,8 @@
         #suggestions {
             position: absolute;
             top: calc(100% + 10px);
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
-            width: calc(100% - 20px);
-            max-width: min(800px, 90vw);
+            left: 0;
+            width: 100%;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 1rem;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -397,28 +467,8 @@
             backdrop-filter: blur(5px);
         }
 
-        /* 手机设备建议框样式 */
-        @media screen and (max-width: 768px) {
-            #suggestions {
-                position: fixed;
-                top: auto;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                transform: translateY(100%);
-                max-height: 50vh;
-                width: 100%;
-                max-width: 100%;
-                border-radius: 1rem 1rem 0 0;
-            }
-            
-            #suggestions.show {
-                transform: translateY(0);
-            }
-        }
-
         #suggestions.show {
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
             opacity: 1;
         }
 
@@ -509,33 +559,6 @@
             padding-bottom: 1rem;
         }
 
-        /* 设置选项卡 */
-        .settings-tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
-        }
-
-        .settings-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: var(--transition-all);
-        }
-
-        .settings-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            font-weight: bold;
-        }
-
-        .settings-tab-content {
-            display: none;
-        }
-
-        .settings-tab-content.active {
-            display: block;
-        }
-
         .setting-item {
             margin-bottom: 1.5rem;
         }
@@ -591,7 +614,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, var(--overlay-opacity));
             z-index: 999;
             display: none;
             opacity: 0;
@@ -600,108 +623,6 @@
 
         .overlay.show {
             opacity: 1;
-        }
-
-        /* 数值输入控件 */
-        .range-control {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .range-control input[type="range"] {
-            flex-grow: 1;
-        }
-
-        .range-control .value-input {
-            width: 60px;
-            padding: 0.5rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.3rem;
-            text-align: center;
-            display: none;
-        }
-
-        .range-control .value-display {
-            width: 60px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        /* 板块开关 */
-        .section-toggle {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-        }
-
-        .toggle-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* 开发者选项 */
-        .developer-options {
-            border-top: 1px dashed rgba(0, 0, 0, 0.2);
-            padding-top: 1rem;
-            margin-top: 1rem;
-        }
-
-        .developer-options h3 {
-            margin-top: 0;
-            color: #d9534f;
-        }
-
-        /* 深色模式 */
-        body.dark-mode {
-            --墨色: #f0f2f5;
-            --月白: #2c3e50;
-            background-color: #121212;
-        }
-
-        body.dark-mode .platform-area,
-        body.dark-mode .favorites-area,
-        body.dark-mode .footer-area,
-        body.dark-mode .search-area {
-            background: rgba(0, 0, 0, var(--card-opacity));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .platform-card,
-        body.dark-mode .favorite-card {
-            background: rgba(0, 0, 0, 0.15);
-            color: #f0f2f5;
-        }
-
-        body.dark-mode .platform-card.active,
-        body.dark-mode .platform-card:hover,
-        body.dark-mode .favorite-card:hover {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        body.dark-mode .platform-icon i {
-            color: #f0f2f5;
-        }
-
-        body.dark-mode .search-box {
-            background: rgba(0, 0, 0, 0.9);
-            color: #f0f2f5;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode #suggestions {
-            background: rgba(0, 0, 0, 0.98);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .suggestion {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .settings-panel {
-            background: rgba(0, 0, 0, 0.98);
-            color: #f0f2f5;
         }
 
         /* 搜索动画 */
@@ -804,6 +725,113 @@
         .platform-selection-icon {
             font-size: 1.5rem;
             margin-bottom: 0.3rem;
+        }
+
+        /* 设置选项卡 */
+        .settings-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .settings-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition-all);
+        }
+
+        .settings-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: bold;
+        }
+
+        .settings-tab-content {
+            display: none;
+        }
+
+        .settings-tab-content.active {
+            display: block;
+        }
+
+        /* 板块透明度调节 */
+        .section-opacity-control {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .opacity-control-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .opacity-control-item label {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .opacity-control-item input {
+            width: 100%;
+        }
+
+        .opacity-value {
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 0.3rem;
+        }
+
+        /* 开发者选项 */
+        .developer-options {
+            border-top: 1px dashed rgba(0, 0, 0, 0.2);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .developer-options h3 {
+            margin-top: 0;
+            color: #d9534f;
+        }
+
+        /* 深色模式样式 */
+        body.dark-mode {
+            --墨色: #f0f2f5;
+            --月白: #2c3e50;
+        }
+
+        body.dark-mode .platform-card,
+        body.dark-mode .favorite-card {
+            background: rgba(0, 0, 0, 0.15);
+            color: #f0f2f5;
+        }
+
+        body.dark-mode .platform-card.active,
+        body.dark-mode .platform-card:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        body.dark-mode .platform-icon i {
+            color: #f0f2f5;
+        }
+
+        body.dark-mode .search-box {
+            background: rgba(0, 0, 0, 0.9);
+            color: #f0f2f5;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode #suggestions {
+            background: rgba(0, 0, 0, 0.98);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .suggestion {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .settings-panel {
+            background: rgba(0, 0, 0, 0.98);
+            color: #f0f2f5;
         }
 
         /* 响应式布局 */
@@ -938,7 +966,7 @@
         <div class="settings-tabs">
             <div class="settings-tab active" data-tab="display">显示设置</div>
             <div class="settings-tab" data-tab="theme">主题风格</div>
-            <div class="settings-tab" data-tab="developer">开发者选项</div>
+            <div class="settings-tab" data-tab="developer" style="display:none">开发者选项</div>
         </div>
         
         <div class="settings-tab-content active" id="displayTab">
@@ -998,71 +1026,75 @@
             
             <div class="setting-item">
                 <label for="bgBlur">背景模糊度</label>
-                <div class="range-control">
-                    <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
-                    <span class="value-display" id="bgBlurValue">12px</span>
-                    <input type="number" class="value-input" id="bgBlurInput" min="0" max="20" value="12" step="1">
-                </div>
+                <input type="range" id="bgBlur" min="0" max="20" value="12" step="1">
+                <span id="bgBlurValue">12px</span>
             </div>
             
             <div class="setting-item">
-                <label for="cardOpacity">卡片透明度</label>
-                <div class="range-control">
-                    <input type="range" id="cardOpacity" min="0" max="100" value="12" step="1">
-                    <span class="value-display" id="cardOpacityValue">12%</span>
-                    <input type="number" class="value-input" id="cardOpacityInput" min="0" max="100" value="12" step="1">
+                <label>板块透明度</label>
+                <div class="section-opacity-control">
+                    <div class="opacity-control-item">
+                        <label for="searchAreaOpacity">搜索区域</label>
+                        <input type="range" id="searchAreaOpacity" min="0" max="100" value="12" step="1">
+                        <span class="opacity-value">12%</span>
+                    </div>
+                    <div class="opacity-control-item">
+                        <label for="platformAreaOpacity">平台区域</label>
+                        <input type="range" id="platformAreaOpacity" min="0" max="100" value="12" step="1">
+                        <span class="opacity-value">12%</span>
+                    </div>
+                    <div class="opacity-control-item">
+                        <label for="poetryAreaOpacity">诗词区域</label>
+                        <input type="range" id="poetryAreaOpacity" min="0" max="100" value="12" step="1">
+                        <span class="opacity-value">12%</span>
+                    </div>
+                    <div class="opacity-control-item">
+                        <label for="favoritesAreaOpacity">收藏夹区域</label>
+                        <input type="range" id="favoritesAreaOpacity" min="0" max="100" value="12" step="1">
+                        <span class="opacity-value">12%</span>
+                    </div>
+                    <div class="opacity-control-item">
+                        <label for="footerAreaOpacity">页脚区域</label>
+                        <input type="range" id="footerAreaOpacity" min="0" max="100" value="12" step="1">
+                        <span class="opacity-value">12%</span>
+                    </div>
+                    <div class="opacity-control-item">
+                        <label for="overlayOpacity">遮罩层</label>
+                        <input type="range" id="overlayOpacity" min="0" max="100" value="50" step="1">
+                        <span class="opacity-value">50%</span>
+                    </div>
                 </div>
             </div>
             
             <div class="setting-item">
                 <label for="animationSpeed">动画速度</label>
-                <div class="range-control">
-                    <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
-                    <span class="value-display" id="animationSpeedValue">中速</span>
-                </div>
+                <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
+                <span id="animationSpeedValue">中速</span>
             </div>
             
             <div class="setting-item">
                 <label for="platformScale">平台缩放比例</label>
-                <div class="range-control">
-                    <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
-                    <span class="value-display" id="platformScaleValue">100%</span>
-                    <input type="number" class="value-input" id="platformScaleInput" min="50" max="150" value="100" step="5">
-                </div>
+                <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
+                <span id="platformScaleValue">100%</span>
             </div>
         </div>
         
         <div class="settings-tab-content" id="themeTab">
             <div class="setting-item">
-                <label>主题模式</label>
-                <div class="section-toggle">
-                    <div class="toggle-item">
-                        <input type="radio" id="lightTheme" name="theme" value="light" checked>
-                        <label for="lightTheme">浅色模式</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="radio" id="darkTheme" name="theme" value="dark">
-                        <label for="darkTheme">深色模式</label>
-                    </div>
-                </div>
+                <label for="themeColor">主题颜色</label>
+                <select id="themeColor" class="setting-control">
+                    <option value="light">浅色</option>
+                    <option value="dark">深色</option>
+                </select>
             </div>
             
             <div class="setting-item">
-                <label>风格预设</label>
-                <div class="section-toggle" style="grid-template-columns: repeat(3, 1fr);">
-                    <div class="toggle-item">
-                        <input type="radio" id="styleDefault" name="style" value="default" checked>
-                        <label for="styleDefault">默认</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="radio" id="styleMinimal" name="style" value="minimal">
-                        <label for="styleMinimal">极简</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="radio" id="styleNeon" name="style" value="neon">
-                        <label for="styleNeon">霓虹</label>
-                    </div>
-                </div>
+                <label for="themeStyle">主题风格</label>
+                <select id="themeStyle" class="setting-control">
+                    <option value="poetic">诗意</option>
+                    <option value="tech">科技</option>
+                    <option value="retro">复古</option>
+                </select>
             </div>
         </div>
         
@@ -1070,20 +1102,17 @@
             <div class="developer-options">
                 <h3>开发者选项</h3>
                 <div class="setting-item">
+                    <label for="enableDevOptions">启用开发者选项</label>
+                    <input type="checkbox" id="enableDevOptions">
+                </div>
+                <div class="setting-item">
                     <label for="customPlatforms">自定义平台</label>
                     <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
                 </div>
-                
                 <div class="setting-item">
                     <label for="customCSS">自定义CSS</label>
                     <textarea id="customCSS" class="setting-control" rows="5" placeholder="输入自定义CSS样式"></textarea>
                 </div>
-                
-                <div class="setting-item">
-                    <label for="enableDevMode">启用开发者模式</label>
-                    <input type="checkbox" id="enableDevMode">
-                </div>
-                
                 <div class="setting-item">
                     <button class="settings-btn-panel" id="resetSettings">重置所有设置</button>
                 </div>
@@ -1236,14 +1265,18 @@
             settings: {
                 showDailyImage: true,
                 bgBlur: 12,
-                cardOpacity: 12,
+                searchAreaOpacity: 12,
+                platformAreaOpacity: 12,
+                poetryAreaOpacity: 12,
+                favoritesAreaOpacity: 12,
+                footerAreaOpacity: 12,
+                overlayOpacity: 50,
                 animationSpeed: 3,
                 platformScale: 100,
                 defaultPlatform: 'bing',
                 cmdMode: false,
-                theme: 'light',
-                style: 'default',
-                devMode: false,
+                themeColor: 'light',
+                themeStyle: 'poetic',
                 showSections: {
                     poetry: true,
                     image: true,
@@ -1253,6 +1286,7 @@
                     easterEgg: true,
                     animation: true
                 },
+                enableDevOptions: false,
                 customPlatforms: [],
                 customCSS: ''
             },
@@ -1345,29 +1379,25 @@
             defaultPlatform: document.getElementById('defaultPlatform'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
-            bgBlurInput: document.getElementById('bgBlurInput'),
-            cardOpacity: document.getElementById('cardOpacity'),
-            cardOpacityValue: document.getElementById('cardOpacityValue'),
-            cardOpacityInput: document.getElementById('cardOpacityInput'),
+            searchAreaOpacity: document.getElementById('searchAreaOpacity'),
+            platformAreaOpacity: document.getElementById('platformAreaOpacity'),
+            poetryAreaOpacity: document.getElementById('poetryAreaOpacity'),
+            favoritesAreaOpacity: document.getElementById('favoritesAreaOpacity'),
+            footerAreaOpacity: document.getElementById('footerAreaOpacity'),
+            overlayOpacity: document.getElementById('overlayOpacity'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
             platformScale: document.getElementById('platformScale'),
             platformScaleValue: document.getElementById('platformScaleValue'),
-            platformScaleInput: document.getElementById('platformScaleInput'),
             themeColor: document.getElementById('themeColor'),
             themeStyle: document.getElementById('themeStyle'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings'),
             previewSettings: document.getElementById('previewSettings'),
             searchAnimation: document.getElementById('searchAnimation'),
-            lightTheme: document.getElementById('lightTheme'),
-            darkTheme: document.getElementById('darkTheme'),
-            styleDefault: document.getElementById('styleDefault'),
-            styleMinimal: document.getElementById('styleMinimal'),
-            styleNeon: document.getElementById('styleNeon'),
+            enableDevOptions: document.getElementById('enableDevOptions'),
             customPlatforms: document.getElementById('customPlatforms'),
             customCSS: document.getElementById('customCSS'),
-            enableDevMode: document.getElementById('enableDevMode'),
             resetSettings: document.getElementById('resetSettings'),
             displayTab: document.getElementById('displayTab'),
             themeTab: document.getElementById('themeTab'),
@@ -1502,25 +1532,22 @@
 
         // 应用主题设置
         function applyThemeSettings() {
-            // 应用主题颜色
-            if (config.settings.theme === 'dark') {
+            if (config.settings.themeColor === 'dark') {
                 document.body.classList.add('dark-mode');
-                elements.darkTheme.checked = true;
             } else {
                 document.body.classList.remove('dark-mode');
-                elements.lightTheme.checked = true;
             }
             
-            // 应用风格预设
-            switch(config.settings.style) {
-                case 'minimal':
-                    // 应用极简风格
+            // 应用主题风格
+            switch(config.settings.themeStyle) {
+                case 'tech':
+                    document.documentElement.style.setProperty('--primary-color', '#4f46e5');
                     break;
-                case 'neon':
-                    // 应用霓虹风格
+                case 'retro':
+                    document.documentElement.style.setProperty('--primary-color', '#b45309');
                     break;
-                default: // default
-                    // 默认风格
+                default: // poetic
+                    document.documentElement.style.setProperty('--primary-color', '#89c7b6');
             }
             
             // 应用自定义CSS
@@ -1559,39 +1586,51 @@
                     
                     if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
                     if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
-                    if (elements.cardOpacity) elements.cardOpacity.value = config.settings.cardOpacity;
-                    if (elements.cardOpacityValue) elements.cardOpacityValue.textContent = `${config.settings.cardOpacity}%`;
+                    if (elements.searchAreaOpacity) elements.searchAreaOpacity.value = config.settings.searchAreaOpacity;
+                    if (elements.platformAreaOpacity) elements.platformAreaOpacity.value = config.settings.platformAreaOpacity;
+                    if (elements.poetryAreaOpacity) elements.poetryAreaOpacity.value = config.settings.poetryAreaOpacity;
+                    if (elements.favoritesAreaOpacity) elements.favoritesAreaOpacity.value = config.settings.favoritesAreaOpacity;
+                    if (elements.footerAreaOpacity) elements.footerAreaOpacity.value = config.settings.footerAreaOpacity;
+                    if (elements.overlayOpacity) elements.overlayOpacity.value = config.settings.overlayOpacity;
                     if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
                     if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
                     if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
-                    
-                    // 开发者选项
-                    if (elements.enableDevMode) elements.enableDevMode.checked = config.settings.devMode;
+                    if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
+                    if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
+                    if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
                     if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
                     if (elements.customCSS) elements.customCSS.value = config.settings.customCSS;
                     
-                    // 显示/隐藏开发者选项卡
-                    updateDevTabVisibility();
+                    // 更新开发者选项显示
+                    updateDevOptionsDisplay();
                     
                     updateAnimationSpeedText();
                     applyThemeSettings();
+                    
+                    // 应用透明度设置
+                    applyOpacitySettings();
                 } catch (e) {
                     console.error('加载设置失败:', e);
                 }
             }
         }
 
-        // 更新开发者选项卡可见性
-        function updateDevTabVisibility() {
-            const devTab = document.querySelector('.settings-tab[data-tab="developer"]');
-            if (devTab) {
-                devTab.style.display = config.settings.devMode ? 'block' : 'none';
-                if (!config.settings.devMode && devTab.classList.contains('active')) {
-                    devTab.classList.remove('active');
-                    document.querySelector('.settings-tab[data-tab="display"]').classList.add('active');
-                    document.getElementById('developerTab').classList.remove('active');
-                    document.getElementById('displayTab').classList.add('active');
-                }
+        // 应用透明度设置
+        function applyOpacitySettings() {
+            document.documentElement.style.setProperty('--search-area-opacity', `${config.settings.searchAreaOpacity/100}`);
+            document.documentElement.style.setProperty('--platform-area-opacity', `${config.settings.platformAreaOpacity/100}`);
+            document.documentElement.style.setProperty('--poetry-area-opacity', `${config.settings.poetryAreaOpacity/100}`);
+            document.documentElement.style.setProperty('--favorites-area-opacity', `${config.settings.favoritesAreaOpacity/100}`);
+            document.documentElement.style.setProperty('--footer-area-opacity', `${config.settings.footerAreaOpacity/100}`);
+            document.documentElement.style.setProperty('--overlay-opacity', `${config.settings.overlayOpacity/100}`);
+        }
+
+        // 更新开发者选项显示
+        function updateDevOptionsDisplay() {
+            if (config.settings.enableDevOptions) {
+                document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
+            } else {
+                document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'none';
             }
         }
 
@@ -1622,14 +1661,18 @@
             config.settings = {
                 showDailyImage: elements.showDailyImage.checked,
                 bgBlur: parseInt(elements.bgBlur.value),
-                cardOpacity: parseInt(elements.cardOpacity.value),
+                searchAreaOpacity: parseInt(elements.searchAreaOpacity.value),
+                platformAreaOpacity: parseInt(elements.platformAreaOpacity.value),
+                poetryAreaOpacity: parseInt(elements.poetryAreaOpacity.value),
+                favoritesAreaOpacity: parseInt(elements.favoritesAreaOpacity.value),
+                footerAreaOpacity: parseInt(elements.footerAreaOpacity.value),
+                overlayOpacity: parseInt(elements.overlayOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
                 platformScale: parseInt(elements.platformScale.value),
                 defaultPlatform: elements.defaultPlatform.value,
                 cmdMode: elements.cmdMode.checked,
-                theme: document.querySelector('input[name="theme"]:checked').value,
-                style: document.querySelector('input[name="style"]:checked').value,
-                devMode: elements.enableDevMode.checked,
+                themeColor: elements.themeColor.value,
+                themeStyle: elements.themeStyle.value,
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
@@ -1639,6 +1682,7 @@
                     easterEgg: elements.showEasterEgg.checked,
                     animation: elements.showAnimation.checked
                 },
+                enableDevOptions: elements.enableDevOptions.checked,
                 customPlatforms: tryParseJSON(elements.customPlatforms.value) || [],
                 customCSS: elements.customCSS.value
             };
@@ -1647,7 +1691,7 @@
             
             // 应用新设置
             document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
-            document.documentElement.style.setProperty('--card-opacity', `${config.settings.cardOpacity/100}`);
+            applyOpacitySettings();
             updateAnimationSpeed();
             applyPlatformScale();
             applyThemeSettings();
@@ -1658,8 +1702,8 @@
             // 应用CMD模式
             applyCmdMode();
             
-            // 更新开发者选项卡可见性
-            updateDevTabVisibility();
+            // 更新开发者选项显示
+            updateDevOptionsDisplay();
             
             closeSettings();
             
@@ -2138,17 +2182,7 @@
             lastClickTime = now;
             
             if (clickCount >= CLICK_THRESHOLD) {
-                // 启用开发者模式
-                config.settings.devMode = true;
-                elements.enableDevMode.checked = true;
-                updateDevTabVisibility();
-                
-                // 自动切换到开发者选项卡
-                document.querySelector('.settings-tab[data-tab="developer"]').click();
-                
-                // 打开设置面板
-                openSettings();
-                
+                openDeveloperSettings();
                 clickCount = 0;
                 
                 // 添加点击动画
@@ -2157,6 +2191,19 @@
                     elements.copyright.style.transform = '';
                 }, 300);
             }
+        }
+
+        // 打开开发者设置
+        function openDeveloperSettings() {
+            // 显示开发者选项
+            config.settings.enableDevOptions = true;
+            elements.enableDevOptions.checked = true;
+            updateDevOptionsDisplay();
+            
+            // 切换到开发者选项
+            document.querySelector('.settings-tab[data-tab="developer"]').click();
+            
+            alert('开发者模式已激活');
         }
 
         // 添加事件监听
@@ -2243,10 +2290,35 @@
                 document.documentElement.style.setProperty('--bg-blur', `${this.value}px`);
             });
 
-            // 卡片透明度调整
-            elements.cardOpacity.addEventListener('input', function() {
-                elements.cardOpacityValue.textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--card-opacity', `${this.value/100}`);
+            // 板块透明度调整
+            elements.searchAreaOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(1) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--search-area-opacity', `${this.value/100}`);
+            });
+            
+            elements.platformAreaOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(2) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--platform-area-opacity', `${this.value/100}`);
+            });
+            
+            elements.poetryAreaOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(3) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--poetry-area-opacity', `${this.value/100}`);
+            });
+            
+            elements.favoritesAreaOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(4) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--favorites-area-opacity', `${this.value/100}`);
+            });
+            
+            elements.footerAreaOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(5) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--footer-area-opacity', `${this.value/100}`);
+            });
+            
+            elements.overlayOpacity.addEventListener('input', function() {
+                document.querySelector('.opacity-control-item:nth-child(6) .opacity-value').textContent = `${this.value}%`;
+                document.documentElement.style.setProperty('--overlay-opacity', `${this.value/100}`);
             });
 
             // 动画速度调整
@@ -2261,50 +2333,19 @@
                 document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
             });
 
-            // 主题切换
-            document.querySelectorAll('input[name="theme"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    applyThemeSettings();
-                });
+            // 主题颜色调整
+            elements.themeColor.addEventListener('change', function() {
+                applyThemeSettings();
             });
 
-            // 风格切换
-            document.querySelectorAll('input[name="style"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    applyThemeSettings();
-                });
+            // 主题风格调整
+            elements.themeStyle.addEventListener('change', function() {
+                applyThemeSettings();
             });
 
-            // 数值输入控件交互
-            document.querySelectorAll('.value-display').forEach(display => {
-                display.addEventListener('click', function() {
-                    const input = this.nextElementSibling;
-                    this.style.display = 'none';
-                    input.style.display = 'block';
-                    input.focus();
-                });
-            });
-
-            document.querySelectorAll('.value-input').forEach(input => {
-                input.addEventListener('blur', function() {
-                    this.style.display = 'none';
-                    this.previousElementSibling.style.display = 'block';
-                    this.previousElementSibling.textContent = this.value + (this.id.includes('Blur') ? 'px' : '%');
-                    
-                    // 更新对应的滑块
-                    const sliderId = this.id.replace('Input', '');
-                    const slider = document.getElementById(sliderId);
-                    if (slider) {
-                        slider.value = this.value;
-                        slider.dispatchEvent(new Event('input'));
-                    }
-                });
-                
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        this.blur();
-                    }
-                });
+            // 开发者选项开关
+            elements.enableDevOptions.addEventListener('change', function() {
+                updateDevOptionsDisplay();
             });
 
             // 设置选项卡切换
