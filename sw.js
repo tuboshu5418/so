@@ -1,3 +1,4 @@
+// sw.js
 // 定义缓存名称
 const CACHE_NAME = 'star-search-cache-v1';
 // 定义需要缓存的资源
@@ -7,7 +8,8 @@ const urlsToCache = [
   '/styles.css',
   '/script.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap',
+  'https://bing.ee123.net/img/'
 ];
 
 // 安装 Service Worker
