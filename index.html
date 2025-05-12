@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星汉搜索 - 诗意探索</title>
+    <meta name="description" content="星汉搜索 - 诗意探索，星河璀璨，搜索无界。以诗意之心探索科技之美，在浩瀚信息宇宙中寻找属于你的星辰">
+    <title>星汉搜索-zmf - 诗意探索</title>
     <!-- 加载Font Awesome图标库 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +40,16 @@
             --overlay-opacity: 0.5;
             --favorites-card-size: 80px;
             --search-focus-opacity: 0.8;
+            --platform-card-size: 100px;
+            --poetic-font: 'Noto Serif SC', serif;
+            --tech-font: 'Arial', sans-serif;
+            --retro-font: 'SimSun', '宋体', serif;
+            --poetic-color: #2c3e50;
+            --tech-color: #333;
+            --retro-color: #5c3317;
+            --poetic-bg: #f5f7fa;
+            --tech-bg: #f0f2f5;
+            --retro-bg: #f5e7d9;
         }
 
         * {
@@ -346,7 +357,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: calc(80px * var(--platform-scale));
+            min-height: calc(var(--platform-card-size) * var(--platform-scale));
             position: relative;
             overflow: hidden;
             transform: translateY(10px);
@@ -893,6 +904,27 @@
             margin-bottom: 0.8rem;
         }
 
+        /* 主题风格样式 */
+        body.poetic-theme {
+            font-family: var(--poetic-font);
+            color: var(--poetic-color);
+            background-color: var(--poetic-bg);
+        }
+
+        body.tech-theme {
+            font-family: var(--tech-font);
+            color: var(--tech-color);
+            background-color: var(--tech-bg);
+            --primary-color: #4f46e5;
+        }
+
+        body.retro-theme {
+            font-family: var(--retro-font);
+            color: var(--retro-color);
+            background-color: var(--retro-bg);
+            --primary-color: #b45309;
+        }
+
         /* 响应式布局 */
         @media screen and (max-width: 768px) {
             body {
@@ -1032,7 +1064,6 @@
             <div class="settings-category">
                 <h3>板块开关</h3>
                 <div class="settings-subcategory">
-                    <h4>遮罩层</h4>
                     <div class="settings-item">
                         <input type="checkbox" id="showPoetry" checked>
                         <label for="showPoetry">诗句</label>
@@ -1061,10 +1092,6 @@
                         <input type="checkbox" id="showAnimation" checked>
                         <label for="showAnimation">搜索动画</label>
                     </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="cmdMode">
-                        <label for="cmdMode">CMD模式</label>
-                    </div>
                 </div>
             </div>
             
@@ -1072,49 +1099,55 @@
                 <h3>显示设置</h3>
                 <div class="settings-subcategory">
                     <h4>透明度调整</h4>
+                    <div class="section-opacity-control">
+                        <div class="opacity-control-item">
+                            <label for="searchAreaOpacity">搜索区域</label>
+                            <input type="range" id="searchAreaOpacity" min="0" max="100" value="12" step="1">
+                            <span class="opacity-value" id="searchAreaOpacityValue">12%</span>
+                        </div>
+                        <div class="opacity-control-item">
+                            <label for="platformAreaOpacity">平台区域</label>
+                            <input type="range" id="platformAreaOpacity" min="0" max="100" value="12" step="1">
+                            <span class="opacity-value" id="platformAreaOpacityValue">12%</span>
+                        </div>
+                        <div class="opacity-control-item">
+                            <label for="poetryAreaOpacity">诗词区域</label>
+                            <input type="range" id="poetryAreaOpacity" min="0" max="100" value="12" step="1">
+                            <span class="opacity-value" id="poetryAreaOpacityValue">12%</span>
+                        </div>
+                        <div class="opacity-control-item">
+                            <label for="favoritesAreaOpacity">收藏夹区域</label>
+                            <input type="range" id="favoritesAreaOpacity" min="0" max="100" value="12" step="1">
+                            <span class="opacity-value" id="favoritesAreaOpacityValue">12%</span>
+                        </div>
+                        <div class="opacity-control-item">
+                            <label for="footerAreaOpacity">页脚区域</label>
+                            <input type="range" id="footerAreaOpacity" min="0" max="100" value="12" step="1">
+                            <span class="opacity-value" id="footerAreaOpacityValue">12%</span>
+                        </div>
+                        <div class="opacity-control-item">
+                            <label for="overlayOpacity">遮罩层</label>
+                            <input type="range" id="overlayOpacity" min="0" max="100" value="50" step="1">
+                            <span class="opacity-value" id="overlayOpacityValue">50%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-subcategory">
+                    <h4>背景模糊</h4>
                     <div class="settings-item">
                         <label for="bgBlur">背景模糊度</label>
                         <input type="range" id="bgBlur" min="0" max="50" value="12" step="1">
                         <span id="bgBlurValue">12px</span>
                     </div>
+                </div>
+                
+                <div class="settings-subcategory">
+                    <h4>搜索框设置</h4>
                     <div class="settings-item">
                         <label for="searchFocusOpacity">搜索框聚焦度</label>
                         <input type="range" id="searchFocusOpacity" min="0" max="100" value="80" step="1">
                         <span id="searchFocusOpacityValue">80%</span>
-                    </div>
-                </div>
-                
-                <div class="settings-subcategory">
-                    <h4>板块透明度</h4>
-                    <div class="settings-item">
-                        <label for="searchAreaOpacity">搜索区域</label>
-                        <input type="range" id="searchAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="platformAreaOpacity">平台区域</label>
-                        <input type="range" id="platformAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="poetryAreaOpacity">诗词区域</label>
-                        <input type="range" id="poetryAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="favoritesAreaOpacity">收藏夹区域</label>
-                        <input type="range" id="favoritesAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="footerAreaOpacity">页脚区域</label>
-                        <input type="range" id="footerAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="overlayOpacity">遮罩层</label>
-                        <input type="range" id="overlayOpacity" min="0" max="100" value="50" step="1">
-                        <span class="opacity-value">50%</span>
                     </div>
                 </div>
                 
@@ -1125,51 +1158,6 @@
                         <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
                         <span id="animationSpeedValue">中速</span>
                     </div>
-                </div>
-            </div>
-            
-            <div class="settings-category">
-                <h3>卡片设置</h3>
-                <div class="settings-subcategory">
-                    <h4>平台卡片</h4>
-                    <div class="settings-item">
-                        <label for="platformScale">缩放比例</label>
-                        <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
-                        <span id="platformScaleValue">100%</span>
-                    </div>
-                </div>
-                
-                <div class="settings-subcategory">
-                    <h4>收藏夹卡片</h4>
-                    <div class="settings-item">
-                        <label for="favoritesScale">缩放比例</label>
-                        <input type="range" id="favoritesScale" min="50" max="150" value="100" step="5">
-                        <span id="favoritesScaleValue">100%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="favoritesCardSize">卡片大小</label>
-                        <input type="range" id="favoritesCardSize" min="60" max="120" value="80" step="5">
-                        <span id="favoritesCardSizeValue">80px</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-category">
-                <h3>搜索设置</h3>
-                <div class="settings-item">
-                    <label for="defaultPlatform">默认搜索平台</label>
-                    <select id="defaultPlatform" class="setting-control">
-                        <option value="bing">必应搜索</option>
-                        <option value="google">谷歌搜索</option>
-                        <option value="baidu">百度搜索</option>
-                        <option value="github">GitHub</option>
-                        <option value="youtube">YouTube</option>
-                        <option value="bilibili">哔哩哔哩</option>
-                        <option value="zhihu">知乎</option>
-                        <option value="douyin">抖音</option>
-                        <option value="weibo">微博</option>
-                        <option value="stackoverflow">StackOverflow</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -1188,10 +1176,47 @@
                 <div class="settings-item">
                     <label for="themeStyle">主题风格</label>
                     <select id="themeStyle" class="setting-control">
-                        <option value="poetic">诗意</option>
-                        <option value="tech">科技</option>
-                        <option value="retro">复古</option>
+                        <option value="poetic">诗意风格</option>
+                        <option value="tech">现代科技</option>
+                        <option value="retro">复古文化</option>
                     </select>
+                </div>
+                
+                <div class="settings-item">
+                    <label for="themeFontSize">字体大小</label>
+                    <input type="range" id="themeFontSize" min="12" max="24" value="16" step="1">
+                    <span id="themeFontSizeValue">16px</span>
+                </div>
+            </div>
+            
+            <div class="settings-category">
+                <h3>卡片设置</h3>
+                <div class="settings-subcategory">
+                    <h4>平台卡片</h4>
+                    <div class="settings-item">
+                        <label for="platformScale">缩放比例</label>
+                        <input type="range" id="platformScale" min="50" max="150" value="100" step="5">
+                        <span id="platformScaleValue">100%</span>
+                    </div>
+                    <div class="settings-item">
+                        <label for="platformCardSize">卡片大小</label>
+                        <input type="range" id="platformCardSize" min="60" max="150" value="100" step="5">
+                        <span id="platformCardSizeValue">100px</span>
+                    </div>
+                </div>
+                
+                <div class="settings-subcategory">
+                    <h4>收藏夹卡片</h4>
+                    <div class="settings-item">
+                        <label for="favoritesScale">缩放比例</label>
+                        <input type="range" id="favoritesScale" min="50" max="150" value="100" step="5">
+                        <span id="favoritesScaleValue">100%</span>
+                    </div>
+                    <div class="settings-item">
+                        <label for="favoritesCardSize">卡片大小</label>
+                        <input type="range" id="favoritesCardSize" min="60" max="120" value="80" step="5">
+                        <span id="favoritesCardSizeValue">80px</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1203,85 +1228,29 @@
                     <label for="enableDevOptions">启用开发者选项</label>
                     <input type="checkbox" id="enableDevOptions">
                 </div>
-                <div class="settings-item">
-                    <label for="disableDevOptions">禁用开发者选项</label>
-                    <button class="settings-btn-panel secondary" id="disableDevOptions">禁用</button>
+                
+                <div class="settings-subcategory">
+                    <h4>模式选择</h4>
+                    <div class="settings-item">
+                        <label for="modeSelection">选择模式</label>
+                        <select id="modeSelection" class="setting-control">
+                            <option value="normal">普通模式</option>
+                            <option value="cmd">CMD模式</option>
+                            <option value="network">网络技术引擎</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <div class="settings-item">
-                    <label for="enableNetworkDetection">启用网络技术探测引擎</label>
-                    <input type="checkbox" id="enableNetworkDetection">
-                </div>
-                
-                <div class="settings-item">
-                    <label>板块位置</label>
-                    <div class="section-position-control">
-                        <div class="position-item" data-section="search">
-                            <label for="searchPosition">搜索区域</label>
-                            <select id="searchPosition" class="setting-control">
-                                <option value="top">顶部</option>
-                                <option value="bottom">底部</option>
-                            </select>
-                        </div>
-                        <div class="position-item" data-section="platform">
-                            <label for="platformPosition">平台区域</label>
-                            <select id="platformPosition" class="setting-control">
-                                <option value="left">左侧</option>
-                                <option value="right">右侧</option>
-                            </select>
-                        </div>
-                        <div class="position-item" data-section="poetry">
-                            <label for="poetryPosition">诗词区域</label>
-                            <select id="poetryPosition" class="setting-control">
-                                <option value="center">中间</option>
-                                <option value="left">左侧</option>
-                                <option value="right">右侧</option>
-                            </select>
-                        </div>
-                        <div class="position-item" data-section="favorites">
-                            <label for="favoritesPosition">收藏夹区域</label>
-                            <select id="favoritesPosition" class="setting-control">
-                                <option value="right">右侧</option>
-                                <option value="left">左侧</option>
-                            </select>
-                        </div>
+                <div class="settings-subcategory">
+                    <h4>自定义平台</h4>
+                    <div class="settings-item">
+                        <label for="customPlatforms">自定义平台JSON</label>
+                        <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
                     </div>
                 </div>
                 
                 <div class="settings-item">
-                    <label for="customPlatforms">自定义平台</label>
-                    <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
-                </div>
-                <div class="settings-item">
-                    <label for="customCSS">自定义CSS</label>
-                    <textarea id="customCSS" class="setting-control" rows="5" placeholder="输入自定义CSS样式"></textarea>
-                </div>
-                <div class="settings-item">
-                    <label for="layoutType">布局类型</label>
-                    <select id="layoutType" class="setting-control">
-                        <option value="default">默认布局</option>
-                        <option value="compact">紧凑布局</option>
-                        <option value="full-width">全宽布局</option>
-                        <option value="vertical">垂直布局</option>
-                    </select>
-                </div>
-                <div class="settings-item">
-                    <label for="experimentalFeatures">实验功能</label>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="enable3DEffects">
-                        <label for="enable3DEffects">3D效果</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="enableVoiceSearch">
-                        <label for="enableVoiceSearch">语音搜索</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="enablePWA">
-                        <label for="enablePWA">PWA支持</label>
-                    </div>
-                </div>
-                <div class="settings-item">
-                    <button class="settings-btn-panel" id="resetSettings">重置所有设置</button>
+                    <button class="settings-btn-panel secondary" id="disableDevOptions">关闭开发者选项</button>
                 </div>
             </div>
         </div>
@@ -1432,6 +1401,7 @@
             settings: {
                 showDailyImage: true,
                 bgBlur: 12,
+                searchFocusOpacity: 80,
                 searchAreaOpacity: 12,
                 platformAreaOpacity: 12,
                 poetryAreaOpacity: 12,
@@ -1440,13 +1410,12 @@
                 overlayOpacity: 50,
                 animationSpeed: 3,
                 platformScale: 100,
+                platformCardSize: 100,
                 favoritesScale: 100,
                 favoritesCardSize: 80,
-                defaultPlatform: 'bing',
-                cmdMode: false,
                 themeColor: 'light',
                 themeStyle: 'poetic',
-                searchFocusOpacity: 80,
+                themeFontSize: 16,
                 showSections: {
                     poetry: true,
                     image: true,
@@ -1457,20 +1426,13 @@
                     animation: true
                 },
                 enableDevOptions: false,
-                enableNetworkDetection: false,
+                modeSelection: 'normal',
+                customPlatforms: [],
                 sectionPositions: {
                     search: 'top',
                     platform: 'left',
                     poetry: 'center',
                     favorites: 'right'
-                },
-                customPlatforms: [],
-                customCSS: '',
-                layoutType: 'default',
-                experimentalFeatures: {
-                    enable3DEffects: false,
-                    enableVoiceSearch: false,
-                    enablePWA: false
                 }
             },
             
@@ -1558,49 +1520,46 @@
             showLogin: document.getElementById('showLogin'),
             showEasterEgg: document.getElementById('showEasterEgg'),
             showAnimation: document.getElementById('showAnimation'),
-            cmdMode: document.getElementById('cmdMode'),
-            defaultPlatform: document.getElementById('defaultPlatform'),
             bgBlur: document.getElementById('bgBlur'),
             bgBlurValue: document.getElementById('bgBlurValue'),
             searchFocusOpacity: document.getElementById('searchFocusOpacity'),
             searchFocusOpacityValue: document.getElementById('searchFocusOpacityValue'),
             searchAreaOpacity: document.getElementById('searchAreaOpacity'),
+            searchAreaOpacityValue: document.getElementById('searchAreaOpacityValue'),
             platformAreaOpacity: document.getElementById('platformAreaOpacity'),
+            platformAreaOpacityValue: document.getElementById('platformAreaOpacityValue'),
             poetryAreaOpacity: document.getElementById('poetryAreaOpacity'),
+            poetryAreaOpacityValue: document.getElementById('poetryAreaOpacityValue'),
             favoritesAreaOpacity: document.getElementById('favoritesAreaOpacity'),
+            favoritesAreaOpacityValue: document.getElementById('favoritesAreaOpacityValue'),
             footerAreaOpacity: document.getElementById('footerAreaOpacity'),
+            footerAreaOpacityValue: document.getElementById('footerAreaOpacityValue'),
             overlayOpacity: document.getElementById('overlayOpacity'),
+            overlayOpacityValue: document.getElementById('overlayOpacityValue'),
             animationSpeed: document.getElementById('animationSpeed'),
             animationSpeedValue: document.getElementById('animationSpeedValue'),
             platformScale: document.getElementById('platformScale'),
             platformScaleValue: document.getElementById('platformScaleValue'),
+            platformCardSize: document.getElementById('platformCardSize'),
+            platformCardSizeValue: document.getElementById('platformCardSizeValue'),
             favoritesScale: document.getElementById('favoritesScale'),
             favoritesScaleValue: document.getElementById('favoritesScaleValue'),
             favoritesCardSize: document.getElementById('favoritesCardSize'),
             favoritesCardSizeValue: document.getElementById('favoritesCardSizeValue'),
             themeColor: document.getElementById('themeColor'),
             themeStyle: document.getElementById('themeStyle'),
+            themeFontSize: document.getElementById('themeFontSize'),
+            themeFontSizeValue: document.getElementById('themeFontSizeValue'),
             cancelSettings: document.getElementById('cancelSettings'),
             saveSettings: document.getElementById('saveSettings'),
-            previewSettings: document.getElementById('previewSettings'),
             searchAnimation: document.getElementById('searchAnimation'),
             enableDevOptions: document.getElementById('enableDevOptions'),
             disableDevOptions: document.getElementById('disableDevOptions'),
-            enableNetworkDetection: document.getElementById('enableNetworkDetection'),
-            searchPosition: document.getElementById('searchPosition'),
-            platformPosition: document.getElementById('platformPosition'),
-            poetryPosition: document.getElementById('poetryPosition'),
-            favoritesPosition: document.getElementById('favoritesPosition'),
+            modeSelection: document.getElementById('modeSelection'),
             customPlatforms: document.getElementById('customPlatforms'),
-            customCSS: document.getElementById('customCSS'),
-            resetSettings: document.getElementById('resetSettings'),
             displayTab: document.getElementById('displayTab'),
             themeTab: document.getElementById('themeTab'),
-            developerTab: document.getElementById('developerTab'),
-            layoutType: document.getElementById('layoutType'),
-            enable3DEffects: document.getElementById('enable3DEffects'),
-            enableVoiceSearch: document.getElementById('enableVoiceSearch'),
-            enablePWA: document.getElementById('enablePWA')
+            developerTab: document.getElementById('developerTab')
         };
 
         // 状态变量
@@ -1613,9 +1572,13 @@
         let isSuggestionsOpen = false;
         let konamiCode = [];
         const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let originalSettings = {};
 
         // 初始化函数
         async function init() {
+            // 保存原始设置
+            originalSettings = JSON.parse(JSON.stringify(config.settings));
+            
             // 加载设置
             loadSettings();
             
@@ -1672,8 +1635,8 @@
             // 检查节日
             checkTodayHoliday();
 
-            // 应用CMD模式
-            applyCmdMode();
+            // 应用模式设置
+            applyModeSettings();
             
             // 应用平台缩放
             applyPlatformScale();
@@ -1683,19 +1646,11 @@
             
             // 注册Service Worker
             registerServiceWorker();
-            
-            // 初始化网络探测
-            if (config.settings.enableNetworkDetection) {
-                initNetworkDetection();
-            }
-            
-            // 初始化拖动功能
-            initDraggableCards();
         }
 
         // 注册Service Worker
         function registerServiceWorker() {
-            if ('serviceWorker' in navigator && config.settings.experimentalFeatures.enablePWA) {
+            if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => {
                         console.log('ServiceWorker 注册成功:', registration.scope);
@@ -1703,6 +1658,26 @@
                     .catch(error => {
                         console.log('ServiceWorker 注册失败:', error);
                     });
+            }
+        }
+
+        // 应用模式设置
+        function applyModeSettings() {
+            switch(config.settings.modeSelection) {
+                case 'cmd':
+                    document.body.classList.add('cmd-mode');
+                    elements.searchInput.placeholder = "> 输入搜索内容...";
+                    elements.poetry.innerHTML = `
+                        <span class="verse">欢迎使用CMD模式</span>
+                        <span class="author">命令列表: 直接输入内容搜索 | 输入"设置"打开设置</span>
+                    `;
+                    break;
+                case 'network':
+                    initNetworkDetection();
+                    break;
+                default: // normal
+                    document.body.classList.remove('cmd-mode');
+                    elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
             }
         }
 
@@ -1744,199 +1719,12 @@
             }
         }
 
-        // 初始化可拖动卡片
-        function initDraggableCards() {
-            if (!config.settings.enableDevOptions) return;
-            
-            // 平台卡片拖动
-            const platformCards = document.querySelectorAll('.platform-card');
-            platformCards.forEach(card => {
-                makeDraggable(card, 'platformGrid');
-            });
-            
-            // 收藏夹卡片拖动
-            const favoriteCards = document.querySelectorAll('.favorite-card');
-            favoriteCards.forEach(card => {
-                makeDraggable(card, 'favoritesGrid');
-            });
-        }
-
-        // 使元素可拖动
-        function makeDraggable(element, gridId) {
-            let isDragging = false;
-            let startX, startY;
-            let initialIndex;
-            let grid = document.getElementById(gridId);
-            let items = Array.from(grid.children);
-            
-            // 长按开始拖动
-            let longPressTimer;
-            
-            element.addEventListener('mousedown', (e) => {
-                // 阻止默认行为避免文本选择
-                e.preventDefault();
-                
-                // 设置长按计时器
-                longPressTimer = setTimeout(() => {
-                    startDrag(e);
-                }, 500); // 500毫秒长按触发
-            });
-            
-            element.addEventListener('touchstart', (e) => {
-                longPressTimer = setTimeout(() => {
-                    startDrag(e.touches[0]);
-                }, 500);
-            });
-            
-            // 取消长按如果移动或释放
-            element.addEventListener('mousemove', cancelLongPress);
-            element.addEventListener('touchmove', cancelLongPress);
-            
-            element.addEventListener('mouseup', cancelLongPress);
-            element.addEventListener('mouseleave', cancelLongPress);
-            element.addEventListener('touchend', cancelLongPress);
-            
-            function cancelLongPress() {
-                clearTimeout(longPressTimer);
-            }
-            
-            function startDrag(e) {
-                if (!config.settings.enableDevOptions) return;
-                
-                isDragging = true;
-                initialIndex = items.indexOf(element);
-                
-                // 记录初始位置
-                startX = e.clientX - element.getBoundingClientRect().left;
-                startY = e.clientY - element.getBoundingClientRect().top;
-                
-                // 设置拖动样式
-                element.style.position = 'absolute';
-                element.style.zIndex = '1000';
-                element.style.cursor = 'grabbing';
-                element.style.boxShadow = '0 10px 20px rgba(0,0,0,0.2)';
-                element.style.transform = 'scale(1.05)';
-                
-                // 添加拖动事件
-                document.addEventListener('mousemove', drag);
-                document.addEventListener('touchmove', touchDrag, { passive: false });
-                document.addEventListener('mouseup', stopDrag);
-                document.addEventListener('touchend', stopDrag);
-            }
-            
-            function drag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                element.style.left = (e.clientX - startX) + 'px';
-                element.style.top = (e.clientY - startY) + 'px';
-                
-                updateDropPosition(e.clientX, e.clientY);
-            }
-            
-            function touchDrag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                const touch = e.touches[0];
-                element.style.left = (touch.clientX - startX) + 'px';
-                element.style.top = (touch.clientY - startY) + 'px';
-                
-                updateDropPosition(touch.clientX, touch.clientY);
-            }
-            
-            function updateDropPosition(x, y) {
-                // 重置所有项目的指示器
-                items.forEach(item => {
-                    item.style.border = '';
-                });
-                
-                // 找到当前悬停的项目
-                const hoveredElement = document.elementFromPoint(x, y);
-                const hoveredCard = hoveredElement?.closest('.platform-card, .favorite-card');
-                
-                if (hoveredCard && hoveredCard !== element) {
-                    // 显示放置位置指示器
-                    hoveredCard.style.border = '2px dashed var(--primary-color)';
-                }
-            }
-            
-            function stopDrag() {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                // 移除事件监听
-                document.removeEventListener('mousemove', drag);
-                document.removeEventListener('touchmove', touchDrag);
-                document.removeEventListener('mouseup', stopDrag);
-                document.removeEventListener('touchend', stopDrag);
-                
-                // 重置样式
-                element.style.position = '';
-                element.style.zIndex = '';
-                element.style.cursor = '';
-                element.style.boxShadow = '';
-                element.style.transform = '';
-                element.style.left = '';
-                element.style.top = '';
-                
-                // 找到当前悬停的项目
-                const finalX = parseInt(element.style.left) || element.getBoundingClientRect().left;
-                const finalY = parseInt(element.style.top) || element.getBoundingClientRect().top;
-                const hoveredElement = document.elementFromPoint(finalX, finalY);
-                const hoveredCard = hoveredElement?.closest('.platform-card, .favorite-card');
-                
-                // 重置所有项目的指示器
-                items.forEach(item => {
-                    item.style.border = '';
-                });
-                
-                // 如果有悬停的卡片，交换位置
-                if (hoveredCard && hoveredCard !== element) {
-                    const finalIndex = items.indexOf(hoveredCard);
-                    
-                    if (initialIndex !== finalIndex) {
-                        // 交换DOM位置
-                        if (finalIndex > initialIndex) {
-                            grid.insertBefore(element, hoveredCard.nextSibling);
-                        } else {
-                            grid.insertBefore(element, hoveredCard);
-                        }
-                        
-                        // 更新items数组
-                        items = Array.from(grid.children);
-                        
-                        // 保存新的顺序到设置
-                        saveCardOrder();
-                    }
-                }
-            }
-        }
-        
-        function saveCardOrder() {
-            const platformGrid = document.getElementById('platformGrid');
-            const favoritesGrid = document.getElementById('favoritesGrid');
-            
-            if (platformGrid) {
-                config.platforms = Array.from(platformGrid.children).map(card => {
-                    return config.platforms.find(p => p.id === card.dataset.id);
-                }).filter(Boolean);
-            }
-            
-            if (favoritesGrid) {
-                config.favorites = Array.from(favoritesGrid.children).map(card => {
-                    return config.favorites.find(f => f.id === card.dataset.id);
-                }).filter(Boolean);
-            }
-            
-            // 保存到本地存储
-            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-        }
-
         // 应用平台缩放
         function applyPlatformScale() {
             const scale = config.settings.platformScale / 100;
+            const size = config.settings.platformCardSize;
             document.documentElement.style.setProperty('--platform-scale', scale);
+            document.documentElement.style.setProperty('--platform-card-size', `${size}px`);
         }
 
         // 应用收藏夹缩放
@@ -1945,21 +1733,6 @@
             const size = config.settings.favoritesCardSize;
             document.documentElement.style.setProperty('--favorites-scale', scale);
             document.documentElement.style.setProperty('--favorites-card-size', `${size}px`);
-        }
-
-        // 应用CMD模式
-        function applyCmdMode() {
-            if (config.settings.cmdMode) {
-                document.body.classList.add('cmd-mode');
-                elements.searchInput.placeholder = "> 输入搜索内容...";
-                elements.poetry.innerHTML = `
-                    <span class="verse">欢迎使用CMD模式</span>
-                    <span class="author">命令列表: 直接输入内容搜索 | 输入"设置"打开设置</span>
-                `;
-            } else {
-                document.body.classList.remove('cmd-mode');
-                elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
-            }
         }
 
         // 应用板块显示设置
@@ -2009,6 +1782,7 @@
 
         // 应用主题设置
         function applyThemeSettings() {
+            // 应用主题颜色
             if (config.settings.themeColor === 'dark') {
                 document.body.classList.add('dark-mode');
             } else {
@@ -2016,27 +1790,11 @@
             }
             
             // 应用主题风格
-            switch(config.settings.themeStyle) {
-                case 'tech':
-                    document.documentElement.style.setProperty('--primary-color', '#4f46e5');
-                    break;
-                case 'retro':
-                    document.documentElement.style.setProperty('--primary-color', '#b45309');
-                    break;
-                default: // poetic
-                    document.documentElement.style.setProperty('--primary-color', '#89c7b6');
-            }
+            document.body.classList.remove('poetic-theme', 'tech-theme', 'retro-theme');
+            document.body.classList.add(`${config.settings.themeStyle}-theme`);
             
-            // 应用自定义CSS
-            if (config.settings.customCSS) {
-                let styleElement = document.getElementById('custom-css');
-                if (!styleElement) {
-                    styleElement = document.createElement('style');
-                    styleElement.id = 'custom-css';
-                    document.head.appendChild(styleElement);
-                }
-                styleElement.textContent = config.settings.customCSS;
-            }
+            // 应用字体大小
+            document.documentElement.style.fontSize = `${config.settings.themeFontSize}px`;
         }
 
         // 加载设置
@@ -2048,50 +1806,7 @@
                     config.settings = {...config.settings, ...parsed};
                     
                     // 更新UI控件
-                    if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
-                    if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
-                    if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
-                    if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
-                    if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
-                    if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
-                    if (elements.cmdMode) elements.cmdMode.checked = config.settings.cmdMode;
-                    if (elements.defaultPlatform) {
-                        elements.defaultPlatform.value = config.settings.defaultPlatform || 'bing';
-                        selectedPlatform = config.settings.defaultPlatform || 'bing';
-                    }
-                    
-                    if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
-                    if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
-                    if (elements.searchFocusOpacity) elements.searchFocusOpacity.value = config.settings.searchFocusOpacity;
-                    if (elements.searchFocusOpacityValue) elements.searchFocusOpacityValue.textContent = `${config.settings.searchFocusOpacity}%`;
-                    if (elements.searchAreaOpacity) elements.searchAreaOpacity.value = config.settings.searchAreaOpacity;
-                    if (elements.platformAreaOpacity) elements.platformAreaOpacity.value = config.settings.platformAreaOpacity;
-                    if (elements.poetryAreaOpacity) elements.poetryAreaOpacity.value = config.settings.poetryAreaOpacity;
-                    if (elements.favoritesAreaOpacity) elements.favoritesAreaOpacity.value = config.settings.favoritesAreaOpacity;
-                    if (elements.footerAreaOpacity) elements.footerAreaOpacity.value = config.settings.footerAreaOpacity;
-                    if (elements.overlayOpacity) elements.overlayOpacity.value = config.settings.overlayOpacity;
-                    if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
-                    if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
-                    if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
-                    if (elements.favoritesScale) elements.favoritesScale.value = config.settings.favoritesScale;
-                    if (elements.favoritesScaleValue) elements.favoritesScaleValue.textContent = `${config.settings.favoritesScale}%`;
-                    if (elements.favoritesCardSize) elements.favoritesCardSize.value = config.settings.favoritesCardSize;
-                    if (elements.favoritesCardSizeValue) elements.favoritesCardSizeValue.textContent = `${config.settings.favoritesCardSize}px`;
-                    if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
-                    if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
-                    if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
-                    if (elements.enableNetworkDetection) elements.enableNetworkDetection.checked = config.settings.enableNetworkDetection;
-                    if (elements.searchPosition) elements.searchPosition.value = config.settings.sectionPositions?.search || 'top';
-                    if (elements.platformPosition) elements.platformPosition.value = config.settings.sectionPositions?.platform || 'left';
-                    if (elements.poetryPosition) elements.poetryPosition.value = config.settings.sectionPositions?.poetry || 'center';
-                    if (elements.favoritesPosition) elements.favoritesPosition.value = config.settings.sectionPositions?.favorites || 'right';
-                    if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
-                    if (elements.customCSS) elements.customCSS.value = config.settings.customCSS;
-                    if (elements.layoutType) elements.layoutType.value = config.settings.layoutType || 'default';
-                    if (elements.enable3DEffects) elements.enable3DEffects.checked = config.settings.experimentalFeatures.enable3DEffects;
-                    if (elements.enableVoiceSearch) elements.enableVoiceSearch.checked = config.settings.experimentalFeatures.enableVoiceSearch;
-                    if (elements.enablePWA) elements.enablePWA.checked = config.settings.experimentalFeatures.enablePWA;
+                    updateUIControls();
                     
                     // 更新开发者选项显示
                     updateDevOptionsDisplay();
@@ -2106,6 +1821,54 @@
                     console.error('加载设置失败:', e);
                 }
             }
+        }
+
+        // 更新UI控件
+        function updateUIControls() {
+            if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
+            if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
+            if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
+            if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
+            if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
+            if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
+            if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
+            
+            if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
+            if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
+            if (elements.searchFocusOpacity) elements.searchFocusOpacity.value = config.settings.searchFocusOpacity;
+            if (elements.searchFocusOpacityValue) elements.searchFocusOpacityValue.textContent = `${config.settings.searchFocusOpacity}%`;
+            
+            if (elements.searchAreaOpacity) elements.searchAreaOpacity.value = config.settings.searchAreaOpacity;
+            if (elements.searchAreaOpacityValue) elements.searchAreaOpacityValue.textContent = `${config.settings.searchAreaOpacity}%`;
+            if (elements.platformAreaOpacity) elements.platformAreaOpacity.value = config.settings.platformAreaOpacity;
+            if (elements.platformAreaOpacityValue) elements.platformAreaOpacityValue.textContent = `${config.settings.platformAreaOpacity}%`;
+            if (elements.poetryAreaOpacity) elements.poetryAreaOpacity.value = config.settings.poetryAreaOpacity;
+            if (elements.poetryAreaOpacityValue) elements.poetryAreaOpacityValue.textContent = `${config.settings.poetryAreaOpacity}%`;
+            if (elements.favoritesAreaOpacity) elements.favoritesAreaOpacity.value = config.settings.favoritesAreaOpacity;
+            if (elements.favoritesAreaOpacityValue) elements.favoritesAreaOpacityValue.textContent = `${config.settings.favoritesAreaOpacity}%`;
+            if (elements.footerAreaOpacity) elements.footerAreaOpacity.value = config.settings.footerAreaOpacity;
+            if (elements.footerAreaOpacityValue) elements.footerAreaOpacityValue.textContent = `${config.settings.footerAreaOpacity}%`;
+            if (elements.overlayOpacity) elements.overlayOpacity.value = config.settings.overlayOpacity;
+            if (elements.overlayOpacityValue) elements.overlayOpacityValue.textContent = `${config.settings.overlayOpacity}%`;
+            
+            if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
+            if (elements.platformScale) elements.platformScale.value = config.settings.platformScale;
+            if (elements.platformScaleValue) elements.platformScaleValue.textContent = `${config.settings.platformScale}%`;
+            if (elements.platformCardSize) elements.platformCardSize.value = config.settings.platformCardSize;
+            if (elements.platformCardSizeValue) elements.platformCardSizeValue.textContent = `${config.settings.platformCardSize}px`;
+            if (elements.favoritesScale) elements.favoritesScale.value = config.settings.favoritesScale;
+            if (elements.favoritesScaleValue) elements.favoritesScaleValue.textContent = `${config.settings.favoritesScale}%`;
+            if (elements.favoritesCardSize) elements.favoritesCardSize.value = config.settings.favoritesCardSize;
+            if (elements.favoritesCardSizeValue) elements.favoritesCardSizeValue.textContent = `${config.settings.favoritesCardSize}px`;
+            
+            if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
+            if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
+            if (elements.themeFontSize) elements.themeFontSize.value = config.settings.themeFontSize;
+            if (elements.themeFontSizeValue) elements.themeFontSizeValue.textContent = `${config.settings.themeFontSize}px`;
+            
+            if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
+            if (elements.modeSelection) elements.modeSelection.value = config.settings.modeSelection;
+            if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
         }
 
         // 应用透明度设置
@@ -2168,12 +1931,12 @@
                 overlayOpacity: parseInt(elements.overlayOpacity.value),
                 animationSpeed: parseInt(elements.animationSpeed.value),
                 platformScale: parseInt(elements.platformScale.value),
+                platformCardSize: parseInt(elements.platformCardSize.value),
                 favoritesScale: parseInt(elements.favoritesScale.value),
                 favoritesCardSize: parseInt(elements.favoritesCardSize.value),
-                defaultPlatform: elements.defaultPlatform.value,
-                cmdMode: elements.cmdMode.checked,
                 themeColor: elements.themeColor.value,
                 themeStyle: elements.themeStyle.value,
+                themeFontSize: parseInt(elements.themeFontSize.value),
                 showSections: {
                     poetry: elements.showPoetry.checked,
                     image: elements.showImage.checked,
@@ -2184,20 +1947,13 @@
                     animation: elements.showAnimation.checked
                 },
                 enableDevOptions: elements.enableDevOptions.checked,
-                enableNetworkDetection: elements.enableNetworkDetection.checked,
-                sectionPositions: {
-                    search: elements.searchPosition.value,
-                    platform: elements.platformPosition.value,
-                    poetry: elements.poetryPosition.value,
-                    favorites: elements.favoritesPosition.value
-                },
+                modeSelection: elements.modeSelection.value,
                 customPlatforms: tryParseJSON(elements.customPlatforms.value) || [],
-                customCSS: elements.customCSS.value,
-                layoutType: elements.layoutType.value,
-                experimentalFeatures: {
-                    enable3DEffects: elements.enable3DEffects.checked,
-                    enableVoiceSearch: elements.enableVoiceSearch.checked,
-                    enablePWA: elements.enablePWA.checked
+                sectionPositions: {
+                    search: 'top',
+                    platform: 'left',
+                    poetry: 'center',
+                    favorites: 'right'
                 }
             };
             
@@ -2212,12 +1968,10 @@
             applyFavoritesScale();
             applyThemeSettings();
             applySectionPositions();
+            applyModeSettings();
             
             // 应用板块显示设置
             applySectionSettings();
-            
-            // 应用CMD模式
-            applyCmdMode();
             
             // 更新开发者选项显示
             updateDevOptionsDisplay();
@@ -2227,9 +1981,14 @@
             // 重新渲染平台
             renderPlatforms();
             renderFavorites();
-            
-            // 重新初始化拖动功能
-            initDraggableCards();
+        }
+
+        // 取消设置
+        function cancelSettings() {
+            // 恢复原始设置
+            config.settings = JSON.parse(JSON.stringify(originalSettings));
+            updateUIControls();
+            closeSettings();
         }
 
         // 禁用开发者选项
@@ -2237,13 +1996,7 @@
             if (confirm('确定要禁用开发者选项吗？此操作将重置开发者设置。')) {
                 config.settings.enableDevOptions = false;
                 config.settings.customPlatforms = [];
-                config.settings.customCSS = '';
-                config.settings.layoutType = 'default';
-                config.settings.experimentalFeatures = {
-                    enable3DEffects: false,
-                    enableVoiceSearch: false,
-                    enablePWA: false
-                };
+                config.settings.modeSelection = 'normal';
                 
                 localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
                 location.reload();
@@ -2259,14 +2012,6 @@
             }
         }
 
-        // 重置所有设置
-        function resetSettings() {
-            if (confirm('确定要重置所有设置吗？此操作不可撤销。')) {
-                localStorage.removeItem('searchPortalSettings');
-                location.reload();
-            }
-        }
-
         // 获取壁纸
         async function getWallpaper() {
             if (!config.settings.showSections.dailyImage) {
@@ -2276,24 +2021,20 @@
             const width = window.screen.width * window.devicePixelRatio;
             const height = window.screen.height * window.devicePixelRatio;
             
-            // 根据分辨率选择不同尺寸的壁纸
+            // 使用新的必应每日一图API
             if (width >= 3840 && height >= 2160) {
-                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_UHD.jpg';
+                return 'https://bing.ee123.net/img/4k';
             } else if (width >= 1920 && height >= 1080) {
-                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1920x1080.jpg';
-            } else if (width >= 1280 && height >= 720) {
-                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1280x720.jpg';
-            } else if (width >= 1024 && height >= 768) {
-                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_1024x768.jpg';
+                return 'https://bing.ee123.net/img/';
             } else {
                 // 默认返回适合移动设备的壁纸
-                return 'https://s.cn.bing.net/th?id=OHR.BunnyLove_ZH-CN1145897965_800x480.jpg';
+                return 'https://bing.ee123.net/img/?size=800x480';
             }
         }
 
         // 显示随机一言
         async function showRandomHitokoto() {
-            if (!config.settings.showSections.poetry || config.settings.cmdMode) {
+            if (!config.settings.showSections.poetry || config.settings.modeSelection === 'cmd') {
                 elements.poetry.style.display = 'none';
                 return;
             }
@@ -2358,7 +2099,7 @@
 
         // 渲染平台网格
         function renderPlatforms() {
-            if (!config.settings.showSections.platforms || config.settings.cmdMode) {
+            if (!config.settings.showSections.platforms || config.settings.modeSelection === 'cmd') {
                 elements.platformGrid.style.display = 'none';
                 return;
             }
@@ -2414,7 +2155,7 @@
 
         // 显示搜索建议
         function showSuggestions(input) {
-            if (!input || input.length === 0 || config.settings.cmdMode) {
+            if (!input || input.length === 0 || config.settings.modeSelection === 'cmd') {
                 hideSuggestions();
                 return;
             }
@@ -2501,9 +2242,9 @@
                 return;
             }
             
-            // 在CMD模式下使用默认平台
-            if (config.settings.cmdMode || !config.settings.showSections.platforms) {
-                const platform = config.platforms.find(p => p.id === config.settings.defaultPlatform);
+            // 在特殊模式下使用默认平台
+            if (config.settings.modeSelection !== 'normal' || !config.settings.showSections.platforms) {
+                const platform = config.platforms.find(p => p.id === 'bing');
                 if (platform) {
                     window.open(platform.search + encodeURIComponent(query), '_blank');
                 }
@@ -2605,6 +2346,9 @@
 
         // 打开设置
         function openSettings() {
+            // 保存当前设置作为原始设置
+            originalSettings = JSON.parse(JSON.stringify(config.settings));
+            
             elements.settingsOverlay.style.display = 'block';
             elements.settingsPanel.style.display = 'block';
             
@@ -2783,7 +2527,7 @@
 
             // 输入框聚焦/失焦
             elements.searchInput.addEventListener('focus', function() {
-                if (this.value.trim().length > 0 && !config.settings.cmdMode) {
+                if (this.value.trim().length > 0 && config.settings.modeSelection === 'normal') {
                     showSuggestions(this.value);
                 }
             });
@@ -2798,13 +2542,9 @@
             });
 
             // 设置面板事件
-            elements.cancelSettings.addEventListener('click', () => {
-                saveSettings(); // 点击取消也保存设置
-                closeSettings();
-            });
+            elements.cancelSettings.addEventListener('click', cancelSettings);
             elements.saveSettings.addEventListener('click', saveSettings);
             elements.settingsOverlay.addEventListener('click', closeSettings);
-            elements.resetSettings.addEventListener('click', resetSettings);
             elements.disableDevOptions.addEventListener('click', disableDevOptions);
 
             // 点击页面其他区域隐藏建议和平台选择
@@ -2842,32 +2582,32 @@
 
             // 板块透明度调整
             elements.searchAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(1) .opacity-value').textContent = `${this.value}%`;
+                elements.searchAreaOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--search-area-opacity', `${this.value/100}`);
             });
             
             elements.platformAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(2) .opacity-value').textContent = `${this.value}%`;
+                elements.platformAreaOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--platform-area-opacity', `${this.value/100}`);
             });
             
             elements.poetryAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(3) .opacity-value').textContent = `${this.value}%`;
+                elements.poetryAreaOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--poetry-area-opacity', `${this.value/100}`);
             });
             
             elements.favoritesAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(4) .opacity-value').textContent = `${this.value}%`;
+                elements.favoritesAreaOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--favorites-area-opacity', `${this.value/100}`);
             });
             
             elements.footerAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(5) .opacity-value').textContent = `${this.value}%`;
+                elements.footerAreaOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--footer-area-opacity', `${this.value/100}`);
             });
             
             elements.overlayOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(6) .opacity-value').textContent = `${this.value}%`;
+                elements.overlayOpacityValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--overlay-opacity', `${this.value/100}`);
             });
 
@@ -2881,6 +2621,12 @@
             elements.platformScale.addEventListener('input', function() {
                 elements.platformScaleValue.textContent = `${this.value}%`;
                 document.documentElement.style.setProperty('--platform-scale', `${this.value/100}`);
+            });
+
+            // 平台卡片大小调整
+            elements.platformCardSize.addEventListener('input', function() {
+                elements.platformCardSizeValue.textContent = `${this.value}px`;
+                document.documentElement.style.setProperty('--platform-card-size', `${this.value}px`);
             });
 
             // 收藏夹缩放调整
@@ -2905,37 +2651,20 @@
                 applyThemeSettings();
             });
 
+            // 字体大小调整
+            elements.themeFontSize.addEventListener('input', function() {
+                elements.themeFontSizeValue.textContent = `${this.value}px`;
+                document.documentElement.style.fontSize = `${this.value}px`;
+            });
+
             // 开发者选项开关
             elements.enableDevOptions.addEventListener('change', function() {
                 updateDevOptionsDisplay();
             });
             
-            // 网络探测开关
-            elements.enableNetworkDetection.addEventListener('change', function() {
-                if (this.checked) {
-                    initNetworkDetection();
-                }
-            });
-            
-            // 板块位置调整
-            elements.searchPosition.addEventListener('change', function() {
-                config.settings.sectionPositions.search = this.value;
-                applySectionPositions();
-            });
-            
-            elements.platformPosition.addEventListener('change', function() {
-                config.settings.sectionPositions.platform = this.value;
-                applySectionPositions();
-            });
-            
-            elements.poetryPosition.addEventListener('change', function() {
-                config.settings.sectionPositions.poetry = this.value;
-                applySectionPositions();
-            });
-            
-            elements.favoritesPosition.addEventListener('change', function() {
-                config.settings.sectionPositions.favorites = this.value;
-                applySectionPositions();
+            // 模式选择
+            elements.modeSelection.addEventListener('change', function() {
+                applyModeSettings();
             });
 
             // 设置选项卡切换
