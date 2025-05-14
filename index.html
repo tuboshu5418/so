@@ -132,8 +132,9 @@
             border-color: var(--primary-color);
             transform: scale(1.02);
         }
-
-        /* 纸飞机搜索按钮 */
+                /* ======================
+           纸飞机搜索按钮样式 
+           ====================== */
         .search-btn {
             position: absolute;
             left: 0.5rem;
@@ -146,12 +147,15 @@
             color: var(--theme-color-light);
             padding: 0.5rem;
             transition: var(--transition-all);
+            z-index: 10; /* 确保按钮在最上层 */
         }
 
         .search-btn i {
             position: relative;
+            display: block; /* 确保图标正确显示 */
         }
 
+        /* 纸飞机删除线效果 */
         .search-btn i::after {
             content: '';
             position: absolute;
@@ -162,13 +166,18 @@
             background: white;
             transform: translate(-50%, -50%) rotate(45deg);
             z-index: 1;
+            opacity: 0.8; /* 半透明效果 */
         }
 
+        /* 悬停动画效果 */
         body.animated .search-btn:hover {
             transform: translateY(-50%) scale(1.1) rotate(10deg);
+            color: var(--theme-color-lighter); /* 悬停颜色变化 */
         }
 
-        /* 钥匙登录按钮 */
+        /* ======================
+           钥匙登录按钮样式 
+           ====================== */
         .login-btn {
             background: transparent;
             border: none;
@@ -178,12 +187,15 @@
             padding: 0.5rem;
             position: relative;
             transition: var(--transition-all);
+            z-index: 10; /* 确保按钮在最上层 */
         }
 
         .login-btn i {
             position: relative;
+            display: block; /* 确保图标正确显示 */
         }
 
+        /* 钥匙齿效果 */
         .login-btn i::after {
             content: '';
             position: absolute;
@@ -194,25 +206,14 @@
             background: white;
             transform: translateX(-50%);
             z-index: 1;
+            opacity: 0.8; /* 半透明效果 */
         }
 
+        /* 悬停动画效果 */
         body.animated .login-btn:hover {
             transform: scale(1.1);
+            color: var(--theme-color-lighter); /* 悬停颜色变化 */
         }
-
-        /* 平台区域 */
-        .platform-area {
-            grid-column: 1;
-            grid-row: 2;
-            backdrop-filter: blur(var(--bg-blur));
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--platform-area-opacity));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem;
-            overflow-y: auto;
-        }
-
         /* 收藏夹区域 */
         .favorites-area {
             grid-column: 3;
