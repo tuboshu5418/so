@@ -1,2774 +1,1701 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="星汉搜索 - 诗意探索，在浩瀚星河中寻找知识的答案">
-    <title>星汉搜索-zmf</title>
-    <!-- 加载Font Awesome图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级五子棋AI系统</title>
     <style>
-        :root {
-            --墨色: #2c3e50;
-            --月白: #f0f2f5;
-            --青空: linear-gradient(135deg, #89c7b6 0%, #c6e4d9 100%);
-            --云纹: rgba(255, 255, 255, 0.15);
-            --禅意-font: 'Noto Serif SC', 'Source Han Serif SC', '宋体', serif;
-            --primary-color: #89c7b6;
-            --bg-blur: 12px;
-            --card-opacity: 0.12;
-            --animation-speed: 0.3s;
-            --win11-accent: #0078d4;
-            --win11-card-bg: rgba(255, 255, 255, 0.8);
-            --cmd-bg: #0c0c0c;
-            --cmd-text: #cccccc;
-            --platform-scale: 1;
-            --favorites-scale: 1;
-            --transition-all: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-            --theme-color-dark: #1e3a8a;
-            --theme-color-light: #60a5fa;
-            --favorites-bg: rgba(255, 255, 255, 0.2);
-            --search-area-opacity: 0.12;
-            --platform-area-opacity: 0.12;
-            --poetry-area-opacity: 0.12;
-            --favorites-area-opacity: 0.12;
-            --footer-area-opacity: 0.12;
-            --overlay-opacity: 0.5;
-            --favorites-card-width: 80px;
-            --favorites-card-height: 80px;
-            --platform-card-width: 80px;
-            --platform-card-height: 80px;
-            --search-focus-opacity: 0.8;
-            --platform-card-opacity: 0.8;
-            --favorite-card-opacity: 0.8;
-        }
-
-        * {
-            box-sizing: border-box;
-            transition: var(--transition-all);
-        }
-
         body {
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
             margin: 0;
-            display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
-            grid-template-rows: auto 1fr auto;
-            font-family: var(--禅意-font);
-            position: relative;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            touch-action: manipulation;
-            background-color: #f5f7fa;
-            background-repeat: no-repeat;
-            transition: opacity 0.8s ease, background-image 1.2s ease;
-            padding: 10px;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
+            justify-content: center;
+            max-width: 1000px;
         }
-
-        body.fade-in {
-            opacity: 1;
-        }
-
-        body.animated::after {
-            content: '';
-            position: absolute;
-            width: 300%;
-            height: 300%;
-            background:
-                radial-gradient(circle at 10% 20%,
-                    rgba(255, 255, 255, 0.1) 15%,
-                    transparent 30%),
-                linear-gradient(15deg,
-                    transparent 60%,
-                    rgba(255, 255, 255, 0.08) 80%);
-            animation: 云游 60s infinite linear;
-            z-index: -1;
-        }
-
-        /* 搜索框区域 */
-        .search-area {
-            grid-column: 1 / span 3;
-            grid-row: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 10px;
-            backdrop-filter: blur(var(--bg-blur));
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--search-area-opacity));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .search-container {
-            position: relative;
-            display: flex;
-            flex-grow: 1;
-            margin: 10px 0;
-        }
-
-        .search-box {
-            width: 100%;
-            padding: 1rem 4rem;
-            font-size: calc(1.1rem * var(--platform-scale));
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 3rem;
-            background: rgba(255, 255, 255, var(--search-focus-opacity));
-            color: var(--墨色);
-            font-family: var(--禅意-font);
-            transition: var(--transition-all);
-        }
-
-        .search-box:focus {
-            outline: none;
-            box-shadow: 0 0 15px rgba(137, 199, 182, 0.3);
-            border-color: var(--primary-color);
-            transform: scale(1.02);
-        }
-                /* ======================
-           纸飞机搜索按钮样式 
-           ====================== */
-        .search-btn {
-            position: absolute;
-            left: 0.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: calc(1.5rem * var(--platform-scale));
-            color: var(--theme-color-light);
-            padding: 0.5rem;
-            transition: var(--transition-all);
-            z-index: 10; /* 确保按钮在最上层 */
-        }
-
-        .search-btn i {
-            position: relative;
-            display: block; /* 确保图标正确显示 */
-        }
-
-        /* 纸飞机删除线效果 */
-        .search-btn i::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60%;
-            height: 2px;
-            background: white;
-            transform: translate(-50%, -50%) rotate(45deg);
-            z-index: 1;
-            opacity: 0.8; /* 半透明效果 */
-        }
-
-        /* 悬停动画效果 */
-        body.animated .search-btn:hover {
-            transform: translateY(-50%) scale(1.1) rotate(10deg);
-            color: var(--theme-color-lighter); /* 悬停颜色变化 */
-        }
-
-        /* ======================
-           钥匙登录按钮样式 
-           ====================== */
-        .login-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: calc(1.5rem * var(--platform-scale));
-            color: var(--theme-color-light);
-            padding: 0.5rem;
-            position: relative;
-            transition: var(--transition-all);
-            z-index: 10; /* 确保按钮在最上层 */
-        }
-
-        .login-btn i {
-            position: relative;
-            display: block; /* 确保图标正确显示 */
-        }
-
-        /* 钥匙齿效果 */
-        .login-btn i::after {
-            content: '';
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            width: 40%;
-            height: 3px;
-            background: white;
-            transform: translateX(-50%);
-            z-index: 1;
-            opacity: 0.8; /* 半透明效果 */
-        }
-
-        /* 悬停动画效果 */
-        body.animated .login-btn:hover {
-            transform: scale(1.1);
-            color: var(--theme-color-lighter); /* 悬停颜色变化 */
-        }
-        /* 收藏夹区域 */
-        .favorites-area {
-            grid-column: 3;
-            grid-row: 2;
-            backdrop-filter: blur(var(--bg-blur));
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--favorites-area-opacity));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 1rem;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .favorites-area::after {
-            content: '收藏夹';
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 0.8rem;
-            color: var(--墨色);
-            opacity: 0.6;
-        }
-
-        /* 诗词区域 */
-        .poetry-area {
-            grid-column: 2;
-            grid-row: 2;
+        .control-group {
             display: flex;
             flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 1rem;
-            backdrop-filter: blur(var(--bg-blur));
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--poetry-area-opacity));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
-        .poetry {
-            font-style: italic;
-            color: var(--墨色);
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: calc(1rem * var(--platform-scale));
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
-            line-height: 1.6;
-            transform: translateY(10px);
-            opacity: 0;
-            transition: var(--transition-all);
-            height: 15%;
-            margin-top: auto;
-        }
-
-        body.loaded .poetry {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .verse {
-            font-size: calc(1.1rem * var(--platform-scale));
-            letter-spacing: 2px;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .author {
-            font-size: calc(0.8rem * var(--platform-scale));
-            color: rgba(44, 62, 80, 0.8);
-            display: block;
-        }
-
-        /* 页脚区域 */
-        .footer-area {
-            grid-column: 1 / span 3;
-            grid-row: 3;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1rem;
-            backdrop-filter: blur(var(--bg-blur));
-            border-radius: 1.5rem;
-            background: rgba(255, 255, 255, var(--footer-area-opacity));
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .copyright {
-            font-size: 0.8rem;
-            color: var(--墨色);
-            opacity: 0.8;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .settings-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--墨色);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            transition: var(--transition-all);
-        }
-
-        body.animated .settings-btn:hover {
-            background: rgba(137, 199, 182, 0.2);
-        }
-
-        /* 平台网格布局 */
-        .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-            position: relative;
-            z-index: 1;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.loaded .platform-grid {
-            opacity: 1;
-        }
-
-        .platform-card {
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, var(--platform-card-opacity));
-            border-radius: 1rem;
-            cursor: pointer;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-width: var(--platform-card-width);
-            min-height: var(--platform-card-height);
-            position: relative;
-            overflow: hidden;
-            transform: translateY(10px);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.loaded .platform-card {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        body.loaded .platform-card:nth-child(1) { transition-delay: 0.1s; }
-        body.loaded .platform-card:nth-child(2) { transition-delay: 0.15s; }
-        body.loaded .platform-card:nth-child(3) { transition-delay: 0.2s; }
-        body.loaded .platform-card:nth-child(4) { transition-delay: 0.25s; }
-        body.loaded .platform-card:nth-child(5) { transition-delay: 0.3s; }
-        body.loaded .platform-card:nth-child(6) { transition-delay: 0.35s; }
-        body.loaded .platform-card:nth-child(7) { transition-delay: 0.4s; }
-        body.loaded .platform-card:nth-child(8) { transition-delay: 0.45s; }
-        body.loaded .platform-card:nth-child(9) { transition-delay: 0.5s; }
-        body.loaded .platform-card:nth-child(10) { transition-delay: 0.55s; }
-
-        body.animated .platform-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        body.animated .platform-card:hover::before {
-            opacity: 1;
-        }
-
-        .platform-card.active {
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        body.animated .platform-card:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px) scale(1.05);
-        }
-
-        /* 平台图标 - 占卡片高度的1/3 */
-        .platform-icon {
-            height: calc(33% - 0.5rem);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .platform-icon i {
-            font-size: 1.5rem;
-            color: var(--墨色);
-            transition: var(--transition-all);
-        }
-
-        body.animated .platform-card:hover .platform-icon i {
-            transform: scale(1.1);
-        }
-
-        /* 收藏夹网格布局 */
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
-
-        .favorite-card {
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, var(--favorite-card-opacity));
-            border-radius: 1rem;
-            cursor: pointer;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-width: var(--favorites-card-width);
-            min-height: var(--favorites-card-height);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition-all);
-        }
-
-        .favorite-icon {
-            height: 33%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .favorite-icon img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-            transition: var(--transition-all);
-        }
-
-        body.animated .favorite-card:hover .favorite-icon img {
-            transform: scale(1.1);
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-
-        /* 搜索建议 */
-        #suggestions {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            border-radius: 1rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            z-index: 10;
-            display: none;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            max-height: 30vh;
-            overflow-y: auto;
-            transform-origin: top center;
-            opacity: 0;
-            transition: var(--transition-all);
-            backdrop-filter: blur(5px);
-        }
-
-        #suggestions.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .suggestion {
-            padding: 0.8rem 1.2rem;
-            cursor: pointer;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            text-align: left;
-            white-space: nowrap;
-            transition: var(--transition-all);
-        }
-
-        .suggestion:first-child {
-            border-top-left-radius: 1rem;
-            border-top-right-radius: 1rem;
-        }
-
-        .suggestion:last-child {
-            border-bottom: none;
-            border-bottom-left-radius: 1rem;
-            border-bottom-right-radius: 1rem;
-        }
-
-        body.animated .suggestion:hover {
-            background: rgba(137, 199, 182, 0.15);
-            transform: translateX(5px);
-        }
-
-        /* 加载动画 */
-        .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 999;
-            transition: opacity 0.5s ease;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* 设置面板 */
-        .settings-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: min(90vw, 500px);
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            display: none;
-            color: var(--墨色);
-            max-height: 80vh;
-            overflow-y: auto;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .settings-panel.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .settings-panel h2 {
+        .control-group h3 {
             margin-top: 0;
-            text-align: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            padding-bottom: 1rem;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #555;
         }
-
-        .setting-item {
-            margin-bottom: 1.5rem;
+        button, select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
         }
-
-        .setting-item label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .setting-control {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-            font-family: var(--禅意-font);
-        }
-
-        .settings-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
-        }
-
-        .settings-btn-panel {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 2rem;
-            background: rgba(137, 199, 182, 0.8);
+        button {
+            background-color: #4CAF50;
             color: white;
+            border: none;
             cursor: pointer;
-            font-family: var(--禅意-font);
-            transition: var(--transition-all);
         }
-
-        body.animated .settings-btn-panel:hover {
-            background: rgba(137, 199, 182, 1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        button:hover {
+            background-color: #45a049;
         }
-
-        .settings-btn-panel.secondary {
-            background: rgba(200, 200, 200, 0.8);
+        button.secondary {
+            background-color: #f0f0f0;
+            color: #333;
         }
-
-        body.animated .settings-btn-panel.secondary:hover {
-            background: rgba(200, 200, 200, 1);
+        button.secondary:hover {
+            background-color: #e0e0e0;
         }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, var(--overlay-opacity));
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: var(--transition-all);
+        button.warning {
+            background-color: #ff9800;
+            color: white;
         }
-
-        .overlay.show {
-            opacity: 1;
+        button.warning:hover {
+            background-color: #e68a00;
         }
-
-        /* 搜索动画 */
-        .search-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.9);
-            z-index: 1000;
+        #board-container {
+            background-color: #DEB887;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(15, 30px);
+            grid-template-rows: repeat(15, 30px);
+            gap: 1px;
+            background-color: #DEB887;
+            background-image: 
+                linear-gradient(to right, #8B4513 1px, transparent 1px),
+                linear-gradient(to bottom, #8B4513 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition-all);
-        }
-        
-        .search-animation.active {
-            opacity: 1;
-        }
-        
-        .search-animation-content {
-            text-align: center;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-        
-        .search-animation.active .search-animation-content {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .search-animation-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--win11-accent);
-            animation: pulse 1.5s infinite;
-        }
-        
-        .search-animation-text {
-            font-size: 1.2rem;
-            color: var(--墨色);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* 平台选择面板 */
-        .platform-selection {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            padding: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            z-index: 1001;
-            display: none;
-            opacity: 0;
-            transition: var(--transition-all);
-        }
-
-        .platform-selection.show {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 1;
-        }
-
-        .platform-selection-title {
-            text-align: center;
-            margin-bottom: 1rem;
-            font-weight: bold;
-        }
-
-        .platform-selection-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-        }
-
-        .platform-selection-item {
-            padding: 0.5rem;
-            text-align: center;
             cursor: pointer;
-            border-radius: 0.5rem;
-            transition: var(--transition-all);
+            position: relative;
+            z-index: 1;
         }
-
-        .platform-selection-item:hover {
-            background: rgba(0, 0, 0, 0.1);
+        .black {
+            width: 24px;
+            height: 24px;
+            background-color: black;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
-
-        .platform-selection-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.3rem;
+        .white {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
-
-        /* 设置选项卡 */
-        .settings-tabs {
+        .last-move {
+            box-shadow: 0 0 5px 2px rgba(255, 215, 0, 0.7);
+        }
+        .debug-panel {
             display: flex;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+            gap: 20px;
         }
-
-        .settings-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: var(--transition-all);
+        .debug-info {
+            flex: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
         }
-
-        .settings-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            font-weight: bold;
+        .training-log {
+            flex: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
+            overflow-y: auto;
         }
-
-        .settings-tab-content {
-            display: none;
-        }
-
-        .settings-tab-content.active {
-            display: block;
-        }
-
-        /* 板块透明度调节 */
-        .section-opacity-control {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        .opacity-control-item {
+        .command-interface {
+            flex: 0.5;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-height: 500px;
             display: flex;
             flex-direction: column;
         }
-
-        .opacity-control-item label {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
+        #commandOutput {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            font-family: monospace;
+            background-color: #f8f8f8;
         }
-
-        .opacity-control-item input {
+        #commandInput {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .score-table th, .score-table td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+        }
+        .score-table th {
+            background-color: #f2f2f2;
+        }
+        .hidden {
+            display: none;
+        }
+        #status {
+            margin: 10px 0;
+            font-weight: bold;
+            min-height: 20px;
+            color: #333;
+        }
+        .training-progress {
+            width: 100%;
+            margin-top: 10px;
+        }
+        progress {
             width: 100%;
         }
-
-        .opacity-value {
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 0.3rem;
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
         }
-
-        /* 卡片透明度控制 */
-        .card-opacity-control {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .log-entry.win {
+            color: #4CAF50;
         }
-
-        .card-opacity-item {
+        .log-entry.loss {
+            color: #F44336;
+        }
+        .log-entry.draw {
+            color: #FF9800;
+        }
+        .move-history {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
         }
-
-        /* 卡片尺寸控制 */
-        .card-size-control {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+        .move-history button {
+            padding: 2px 5px;
+            font-size: 12px;
         }
-
-        .card-size-item {
-            display: flex;
-            flex-direction: column;
+        .center-point {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #8B4513;
+            border-radius: 50%;
+            z-index: 0;
         }
-
-        /* 开发者选项 */
-        .developer-options {
-            border-top: 1px dashed rgba(0, 0, 0, 0.2);
-            padding-top: 1rem;
-            margin-top: 1rem;
+        .cursor {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid red;
+            z-index: 2;
+            pointer-events: none;
+            box-sizing: border-box;
         }
-
-        .developer-options h3 {
-            margin-top: 0;
-            color: #d9534f;
-        }
-
-        /* 深色模式样式 */
-        body.dark-mode {
-            --墨色: #f0f2f5;
-            --月白: #2c3e50;
-        }
-
-        body.dark-mode .platform-card,
-        body.dark-mode .favorite-card {
-            background: rgba(0, 0, 0, 0.15);
-            color: #f0f2f5;
-        }
-
-        body.dark-mode .platform-card.active,
-        body.dark-mode .platform-card:hover {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        body.dark-mode .platform-icon i {
-            color: #f0f2f5;
-        }
-
-        body.dark-mode .search-box {
-            background: rgba(0, 0, 0, 0.9);
-            color: #f0f2f5;
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode #suggestions {
-            background: rgba(0, 0, 0, 0.98);
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .suggestion {
-            border-bottom-color: rgba(255, 255, 255, 0.1);
-        }
-
-        body.dark-mode .settings-panel {
-            background: rgba(0, 0, 0, 0.98);
-            color: #f0f2f5;
-        }
-
-        /* 设置分类样式 */
-        .settings-category {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            padding-bottom: 0.5rem;
-        }
-
-        .settings-category h3 {
-            margin-bottom: 0.8rem;
-            color: var(--primary-color);
-        }
-
-        .settings-subcategory {
-            margin-left: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .settings-subcategory h4 {
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        .settings-item {
-            margin-left: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-
-        /* 响应式布局 */
-        @media screen and (max-width: 768px) {
-            body {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
-            }
-
-            .search-area {
-                grid-column: 1;
-                grid-row: 1;
-            }
-
-            .platform-area {
-                grid-column: 1;
-                grid-row: 2;
-            }
-
-            .poetry-area {
-                grid-column: 1;
-                grid-row: 3;
-            }
-
-            .favorites-area {
-                grid-column: 1;
-                grid-row: 4;
-            }
-
-            .footer-area {
-                grid-column: 1;
-                grid-row: 5;
-            }
-
-            .platform-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .favorites-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .platform-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .favorites-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* 圆形屏幕适配 */
-        @media screen and (max-aspect-ratio: 1/1) {
-            body {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto 1fr auto;
-                padding: 5px;
-            }
-
-            .search-area {
-                border-radius: 50px;
-            }
-
-            .platform-area, .favorites-area {
-                border-radius: 20px;
-            }
-
-            .footer-area {
-                border-radius: 50px;
-            }
+        .rule-editor {
+            width: 100%;
+            height: 100px;
+            font-family: monospace;
         }
     </style>
 </head>
-
-<body class="animated">
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-    </div>
+<body>
+    <h1>高级五子棋AI系统</h1>
     
-    <!-- 搜索区域 -->
-    <div class="search-area">
-        <div class="search-container">
-            <button class="search-btn" id="searchBtn"><i class="fas fa-paper-plane"></i></button>
-            <input type="text" class="search-box" placeholder="众里寻他千百度，蓦然回首，答案却在星河处..." id="searchInput">
-            <div id="suggestions"></div>
-        </div>
-        <button class="login-btn" id="loginBtn"><i class="fas fa-key"></i></button>
-    </div>
-    
-    <!-- 平台区域 -->
-    <div class="platform-area">
-        <div class="platform-grid" id="platformGrid"></div>
-    </div>
-    
-    <!-- 诗词区域 -->
-    <div class="poetry-area">
-        <div class="poetry" id="poetry"></div>
-    </div>
-    
-    <!-- 收藏夹区域 -->
-    <div class="favorites-area">
-        <div class="favorites-grid" id="favoritesGrid"></div>
-    </div>
-    
-    <!-- 页脚区域 -->
-    <div class="footer-area">
-        <button class="settings-btn" id="settingsBtn">设置</button>
-        <div class="copyright" id="copyright">版权所有 © zmf</div>
-    </div>
-
-    <!-- 搜索动画 -->
-    <div class="search-animation" id="searchAnimation">
-        <div class="search-animation-content">
-            <div class="search-animation-icon">
-                <i class="fas fa-paper-plane"></i>
-            </div>
-            <div class="search-animation-text">正在搜索中...</div>
-        </div>
-    </div>
-
-    <!-- 平台选择面板 -->
-    <div class="platform-selection" id="platformSelection">
-        <div class="platform-selection-title">选择搜索平台</div>
-        <div class="platform-selection-grid" id="platformSelectionGrid"></div>
-    </div>
-
-    <!-- 设置面板 -->
-    <div class="overlay" id="settingsOverlay"></div>
-    <div class="settings-panel" id="settingsPanel">
-        <div class="settings-tabs">
-            <div class="settings-tab active" data-tab="display">显示设置</div>
-            <div class="settings-tab" data-tab="theme">主题风格</div>
-            <div class="settings-tab" data-tab="developer" style="display:none">开发者选项</div>
+    <div class="controls">
+        <div class="control-group">
+            <h3>游戏控制</h3>
+            <button id="newGame">新游戏</button>
+            <button id="undoMove" class="warning" title="撤销上一步">悔棋</button>
+            <select id="firstPlayer">
+                <option value="human">玩家先手</option>
+                <option value="ai">AI先手</option>
+            </select>
         </div>
         
-        <div class="settings-tab-content active" id="displayTab">
-            <div class="settings-category">
-                <h3>板块开关</h3>
-                <div class="settings-subcategory">
-                    <h4>遮罩层</h4>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showPoetry" checked>
-                        <label for="showPoetry">诗句</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showImage" checked>
-                        <label for="showImage">背景图片</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showDailyImage" checked>
-                        <label for="showDailyImage">每日一图</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showPlatforms" checked>
-                        <label for="showPlatforms">平台显示</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showLogin" checked>
-                        <label for="showLogin">登录</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showEasterEgg" checked>
-                        <label for="showEasterEgg">彩蛋</label>
-                    </div>
-                    <div class="settings-item">
-                        <input type="checkbox" id="showAnimation" checked>
-                        <label for="showAnimation">搜索动画</label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-category">
-                <h3>显示设置</h3>
-                <div class="settings-subcategory">
-                    <h4>透明度调整</h4>
-                    <div class="settings-item">
-                        <label for="bgBlur">背景模糊度</label>
-                        <input type="range" id="bgBlur" min="0" max="50" value="12" step="1">
-                        <span id="bgBlurValue">12px</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="searchFocusOpacity">搜索框聚焦度</label>
-                        <input type="range" id="searchFocusOpacity" min="0" max="100" value="80" step="1">
-                        <span id="searchFocusOpacityValue">80%</span>
-                    </div>
-                </div>
-                
-                <div class="settings-subcategory">
-                    <h4>板块透明度</h4>
-                    <div class="settings-item">
-                        <label for="searchAreaOpacity">搜索区域</label>
-                        <input type="range" id="searchAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="platformAreaOpacity">平台区域</label>
-                        <input type="range" id="platformAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="poetryAreaOpacity">诗词区域</label>
-                        <input type="range" id="poetryAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="favoritesAreaOpacity">收藏夹区域</label>
-                        <input type="range" id="favoritesAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="footerAreaOpacity">页脚区域</label>
-                        <input type="range" id="footerAreaOpacity" min="0" max="100" value="12" step="1">
-                        <span class="opacity-value">12%</span>
-                    </div>
-                    <div class="settings-item">
-                        <label for="overlayOpacity">遮罩层</label>
-                        <input type="range" id="overlayOpacity" min="0" max="100" value="50" step="1">
-                        <span class="opacity-value">50%</span>
-                    </div>
-                </div>
-                
-                <div class="settings-subcategory">
-                    <h4>动画设置</h4>
-                    <div class="settings-item">
-                        <label for="animationSpeed">动画速度</label>
-                        <input type="range" id="animationSpeed" min="0" max="5" value="3" step="1">
-                        <span id="animationSpeedValue">中速</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-category">
-                <h3>卡片设置</h3>
-                <div class="settings-subcategory">
-                    <h4>透明度设置</h4>
-                    <div class="card-opacity-control">
-                        <div class="card-opacity-item">
-                            <label for="platformCardOpacity">平台卡片</label>
-                            <input type="range" id="platformCardOpacity" min="0" max="100" value="80" step="1">
-                            <span class="opacity-value">80%</span>
-                        </div>
-                        <div class="card-opacity-item">
-                            <label for="favoriteCardOpacity">收藏夹卡片</label>
-                            <input type="range" id="favoriteCardOpacity" min="0" max="100" value="80" step="1">
-                            <span class="opacity-value">80%</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-subcategory">
-                    <h4>卡片尺寸</h4>
-                    <div class="card-size-control">
-                        <div class="card-size-item">
-                            <label for="platformCardWidth">平台卡片宽度</label>
-                            <input type="range" id="platformCardWidth" min="60" max="120" value="80" step="5">
-                            <span id="platformCardWidthValue">80px</span>
-                        </div>
-                        <div class="card-size-item">
-                            <label for="platformCardHeight">平台卡片高度</label>
-                            <input type="range" id="platformCardHeight" min="60" max="120" value="80" step="5">
-                            <span id="platformCardHeightValue">80px</span>
-                        </div>
-                        <div class="card-size-item">
-                            <label for="favoritesCardWidth">收藏夹卡片宽度</label>
-                            <input type="range" id="favoritesCardWidth" min="60" max="120" value="80" step="5">
-                            <span id="favoritesCardWidthValue">80px</span>
-                        </div>
-                        <div class="card-size-item">
-                            <label for="favoritesCardHeight">收藏夹卡片高度</label>
-                            <input type="range" id="favoritesCardHeight" min="60" max="120" value="80" step="5">
-                            <span id="favoritesCardHeightValue">80px</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="settings-category">
-                <h3>搜索设置</h3>
-                <div class="settings-item">
-                    <label for="defaultPlatform">默认搜索平台</label>
-                    <select id="defaultPlatform" class="setting-control">
-                        <option value="bing">必应搜索</option>
-                        <option value="google">谷歌搜索</option>
-                        <option value="baidu">百度搜索</option>
-                        <option value="github">GitHub</option>
-                        <option value="youtube">YouTube</option>
-                        <option value="bilibili">哔哩哔哩</option>
-                        <option value="zhihu">知乎</option>
-                        <option value="douyin">抖音</option>
-                        <option value="weibo">微博</option>
-                        <option value="stackoverflow">StackOverflow</option>
-                    </select>
-                </div>
+        <div class="control-group">
+            <h3>AI设置</h3>
+            <select id="aiLevel">
+                <option value="1">初级AI</option>
+                <option value="2" selected>中级AI</option>
+                <option value="3">高级AI</option>
+                <option value="4">专家AI</option>
+            </select>
+            <button id="toggleDebug">隐藏AI思考</button>
+        </div>
+        
+        <div class="control-group">
+            <h3>游戏规则</h3>
+            <select id="gameRule">
+                <option value="standard">标准规则</option>
+                <option value="rif">RIF规则</option>
+                <option value="yamaguchi">山口规则</option>
+                <option value="swap1">一手交换</option>
+                <option value="custom">自定义规则</option>
+            </select>
+            <div id="customRuleContainer" class="hidden">
+                <textarea id="customRuleEditor" class="rule-editor" placeholder="输入自定义规则..."></textarea>
             </div>
         </div>
         
-        <div class="settings-tab-content" id="themeTab">
-            <div class="settings-category">
-                <h3>主题设置</h3>
-                <div class="settings-item">
-                    <label for="themeColor">主题颜色</label>
-                    <select id="themeColor" class="setting-control">
-                        <option value="light">浅色</option>
-                        <option value="dark">深色</option>
-                    </select>
-                </div>
-                
-                <div class="settings-item">
-                    <label for="themeStyle">主题风格</label>
-                    <select id="themeStyle" class="setting-control">
-                        <option value="poetic">诗意与远方</option>
-                        <option value="tech">现代科技</option>
-                        <option value="retro">复古文化</option>
-                    </select>
-                </div>
+        <div class="control-group">
+            <h3>AI训练</h3>
+            <div style="display: flex; gap: 5px;">
+                <input id="trainGames" type="number" min="1" max="1000" value="10" style="width: 60px;">
+                <button id="startTraining">开始训练</button>
             </div>
+            <button id="clearData" class="secondary">清除学习数据</button>
         </div>
         
-        <div class="settings-tab-content" id="developerTab">
-            <div class="developer-options">
-                <h3>开发者选项</h3>
-                <div class="settings-item">
-                    <label for="enableDevOptions">启用开发者选项</label>
-                    <input type="checkbox" id="enableDevOptions">
-                </div>
-                
-                <div class="settings-item">
-                    <label for="modeSelection">模式选择</label>
-                    <select id="modeSelection" class="setting-control">
-                        <option value="normal">普通模式</option>
-                        <option value="cmd">CMD模式</option>
-                        <option value="network">网络技术引擎</option>
-                    </select>
-                </div>
-                
-                <div class="settings-item">
-                    <label for="customPlatforms">自定义平台</label>
-                    <textarea id="customPlatforms" class="setting-control" rows="5" placeholder='[{"id":"example","name":"示例","icon":"fa-example","search":"https://example.com/search?q="}]'></textarea>
-                </div>
-                
-                <div class="settings-item">
-                    <button class="settings-btn-panel secondary" id="disableDevOptions">关闭开发者选项</button>
-                </div>
+        <div class="control-group">
+            <h3>AI对战</h3>
+            <div style="display: flex; gap: 5px;">
+                <input id="aiBattleGames" type="number" min="1" max="1000" value="10" style="width: 60px;">
+                <button id="startAIBattle">AI对战</button>
+            </div>
+            <div style="font-size: 12px; margin-top: 5px;">
+                <span id="ai1Wins">AI1: 0</span> | 
+                <span id="ai2Wins">AI2: 0</span> | 
+                <span id="aiDraws">平局: 0</span>
             </div>
         </div>
+    </div>
+    
+    <div id="status">游戏准备中...</div>
+    <div id="board-container">
+        <div id="board"></div>
+        <div id="cursor" class="cursor hidden"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <div id="debugInfo" class="debug-info">
+            <h3>AI思考过程</h3>
+            <div id="aiThinking"></div>
+            <table class="score-table">
+                <thead>
+                    <tr>
+                        <th>位置</th>
+                        <th>进攻分</th>
+                        <th>防守分</th>
+                        <th>总分</th>
+                        <th>模式</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreDetails">
+                </tbody>
+            </table>
+        </div>
         
-        <div class="settings-actions">
-            <button class="settings-btn-panel secondary" id="cancelSettings">取消</button>
-            <button class="settings-btn-panel" id="saveSettings">保存设置</button>
+        <div class="command-interface">
+            <h3>命令行</h3>
+            <div id="commandOutput"></div>
+            <input id="commandInput" type="text" placeholder="输入命令 (如: goto A1, chess B2)" />
+        </div>
+        
+        <div id="trainingLog" class="training-log">
+            <h3>训练日志</h3>
+            <div id="logEntries"></div>
+            <div class="move-history" id="moveHistory"></div>
         </div>
     </div>
 
     <script>
-        // 配置数据
-        const config = {
-            platforms: [
-                {
-                    id: 'bing',
-                    name: '必应搜索',
-                    icon: 'fa-microsoft',
-                    search: 'https://www.bing.com/search?q=',
-                    login: 'https://login.live.com/'
+        // 游戏状态
+        const gameState = {
+            board: Array(15).fill().map(() => Array(15).fill(0)), // 0=空, 1=黑, 2=白
+            currentPlayer: 1, // 1=黑, 2=白
+            gameOver: false,
+            lastMove: null,
+            moveHistory: [], // 走棋历史记录
+            boardHistory: [], // 棋盘历史记录
+            learningData: JSON.parse(localStorage.getItem('gomokuLearningData')) || {
+                wins: [],
+                losses: [],
+                aiBattleStats: { ai1Wins: 0, ai2Wins: 0, draws: 0 },
+                patternWeights: { // 模式权重学习
+                    OPEN_FOUR: 10000,
+                    HALF_OPEN_FOUR: 5000,
+                    OPEN_THREE: 2000,
+                    HALF_OPEN_THREE: 500,
+                    OPEN_TWO: 200,
+                    HALF_OPEN_TWO: 50,
+                    OPEN_ONE: 10,
+                    HALF_OPEN_ONE: 1
                 },
-                {
-                    id: 'google',
-                    name: '谷歌搜索',
-                    icon: 'fa-google',
-                    search: 'https://www.google.com/search?q=',
-                    login: 'https://accounts.google.com/'
-                },
-                {
-                    id: 'github',
-                    name: '代码星辰',
-                    icon: 'fa-github',
-                    search: 'https://github.com/search?q=',
-                    login: 'https://github.com/login'
-                },
-                {
-                    id: 'youtube',
-                    name: '视频星河',
-                    icon: 'fa-youtube',
-                    search: 'https://www.youtube.com/results?search_query=',
-                    login: 'https://accounts.google.com/'
-                },
-                {
-                    id: 'bilibili',
-                    name: '哔哩星海',
-                    icon: 'fa-bilibili',
-                    search: 'https://search.bilibili.com/all?keyword=',
-                    login: 'https://passport.bilibili.com/login'
-                },
-                {
-                    id: 'zhihu',
-                    name: '知乎星云',
-                    icon: 'fa-zhihu',
-                    search: 'https://www.zhihu.com/search?q=',
-                    login: 'https://www.zhihu.com/signin'
-                },
-                {
-                    id: 'baidu',
-                    name: '百度瀚海',
-                    icon: 'fa-baidu',
-                    search: 'https://www.baidu.com/s?wd=',
-                    login: 'https://passport.baidu.com/v2/?login'
-                },
-                {
-                    id: 'douyin',
-                    name: '抖音幻域',
-                    icon: 'fa-tiktok',
-                    search: 'https://www.douyin.com/search/',
-                    login: 'https://www.douyin.com/login'
-                },
-                {
-                    id: 'weibo',
-                    name: '微博星澜',
-                    icon: 'fa-weibo',
-                    search: 'https://s.weibo.com/weibo/',
-                    login: 'https://weibo.com/login.php'
-                },
-                {
-                    id:'stackoverflow',
-                    name: '技术星河',
-                    icon: 'fa-stack-overflow',
-                    search: 'https://stackoverflow.com/search?q=',
-                    login: 'https://stackoverflow.com/users/login'
-                }
-            ],
-            favorites: [
-                {
-                    id: 'favorite1',
-                    name: 'GitHub',
-                    url: 'https://github.com',
-                    icon: 'https://github.githubassets.com/favicons/favicon.png'
-                },
-                {
-                    id: 'favorite2',
-                    name: '知乎',
-                    url: 'https://www.zhihu.com',
-                    icon: 'https://static.zhihu.com/heifetz/favicon.ico'
-                },
-                {
-                    id: 'favorite3',
-                    name: '哔哩哔哩',
-                    url: 'https://www.bilibili.com',
-                    icon: 'https://www.bilibili.com/favicon.ico'
-                },
-                {
-                    id: 'favorite4',
-                    name: 'YouTube',
-                    url: 'https://www.youtube.com',
-                    icon: 'https://www.youtube.com/favicon.ico'
-                },
-                {
-                    id: 'favorite5',
-                    name: '微博',
-                    url: 'https://weibo.com',
-                    icon: 'https://weibo.com/favicon.ico'
-                },
-                {
-                    id: 'favorite6',
-                    name: '豆瓣',
-                    url: 'https://www.douban.com',
-                    icon: 'https://www.douban.com/favicon.ico'
-                },
-                {
-                    id: 'favorite7',
-                    name: '掘金',
-                    url: 'https://juejin.cn',
-                    icon: 'https://juejin.cn/favicon.ico'
-                },
-                {
-                    id: 'favorite8',
-                    name: 'V2EX',
-                    url: 'https://www.v2ex.com',
-                    icon: 'https://www.v2ex.com/favicon.ico'
-                },
-                {
-                    id: 'favorite9',
-                    name: '少数派',
-                    url: 'https://sspai.com',
-                    icon: 'https://sspai.com/favicon.ico'
-                },
-                {
-                    id: 'favorite10',
-                    name: 'CSDN',
-                    url: 'https://www.csdn.net',
-                    icon: 'https://www.csdn.net/favicon.ico'
-                }
-            ],
-            settings: {
-                showDailyImage: true,
-                bgBlur: 12,
-                searchAreaOpacity: 12,
-                platformAreaOpacity: 12,
-                poetryAreaOpacity: 12,
-                favoritesAreaOpacity: 12,
-                footerAreaOpacity: 12,
-                overlayOpacity: 50,
-                animationSpeed: 3,
-                platformCardOpacity: 80,
-                favoriteCardOpacity: 80,
-                platformCardWidth: 80,
-                platformCardHeight: 80,
-                favoritesCardWidth: 80,
-                favoritesCardHeight: 80,
-                defaultPlatform: 'bing',
-                themeColor: 'light',
-                themeStyle: 'poetic',
-                searchFocusOpacity: 80,
-                showSections: {
-                    poetry: true,
-                    image: true,
-                    dailyImage: true,
-                    platforms: true,
-                    login: true,
-                    easterEgg: true,
-                    animation: true
-                },
-                enableDevOptions: false,
-                mode: 'normal',
-                customPlatforms: [],
-                customCSS: '',
-                sectionPositions: {
-                    search: 'top',
-                    platform: 'left',
-                    poetry: 'center',
-                    favorites: 'right'
-                }
+                deepLearning: {} // 深度学习模型数据
             },
-            
-            holidays: {
-                'spring-festival': {
-                    name: '春节',
-                    dateRange: [
-                        { month: 1, day: 21 }, { month: 1, day: 22 }, { month: 1, day: 23 }, 
-                        { month: 1, day: 24 }, { month: 1, day: 25 }, { month: 1, day: 26 }, 
-                        { month: 1, day: 27 }
-                    ],
-                    activator: 'activateSpringFestival'
-                },
-                'lantern-festival': {
-                    name: '元宵节',
-                    dateRange: [
-                        { month: 2, day: 4 }, { month: 2, day: 24 }
-                    ],
-                    activator: 'activateLanternFestival'
-                },
-                'qingming-festival': {
-                    name: '清明节',
-                    dateRange: [
-                        { month: 4, day: 4 }, { month: 4, day: 5 }
-                    ],
-                    activator: 'activateQingmingFestival'
-                },
-                'dragon-boat-festival': {
-                    name: '端午节',
-                    dateRange: [
-                        { month: 6, day: 22 }
-                    ],
-                    activator: 'activateDragonBoatFestival'
-                },
-                'mid-autumn-festival': {
-                    name: '中秋节',
-                    dateRange: [
-                        { month: 9, day: 29 }
-                    ],
-                    activator: 'activateMidAutumnFestival'
-                },
-                'national-day': {
-                    name: '国庆节',
-                    dateRange: [
-                        { month: 10, day: 1 }, { month: 10, day: 2 }, { month: 10, day: 3 },
-                        { month: 10, day: 4 }, { month: 10, day: 5 }, { month: 10, day: 6 },
-                        { month: 10, day: 7 }
-                    ],
-                    activator: 'activateNationalDay'
-                }
+            debugMode: true, // 默认显示思考过程
+            isTraining: false,
+            isAIBattle: false,
+            trainingQueue: 0,
+            aiBattlePlayers: [], // 记录对战AI的玩家
+            cursorPosition: { row: 7, col: 7 }, // 命令行光标位置
+            currentRule: 'standard', // 当前规则
+            ruleSteps: [], // 规则步骤
+            restrictedMoves: [], // 限制走棋位置
+            swapAvailable: false, // 一手交换是否可用
+            swapRequested: false // 是否请求交换
+        };
+
+        // 模式定义（使用学习到的权重）
+        const PATTERNS = {
+            FIVE: { score: 100000, name: '五连' },
+            OPEN_FOUR: { 
+                score: gameState.learningData.patternWeights.OPEN_FOUR, 
+                name: '活四',
+                type: 'OPEN_FOUR'
             },
-            
-            chineseKeywords: {
-                '春节': 'activateSpringFestival',
-                '中秋节': 'activateMidAutumnFestival',
-                '端午节': 'activateDragonBoatFestival',
-                '龙': 'activateDragon',
-                '长城': 'activateGreatWall',
-                '十二生肖': 'activateZodiac',
-                '福': 'activateFuCharacter',
-                '中国结': 'activateChineseKnot'
+            HALF_OPEN_FOUR: { 
+                score: gameState.learningData.patternWeights.HALF_OPEN_FOUR, 
+                name: '冲四',
+                type: 'HALF_OPEN_FOUR'
+            },
+            OPEN_THREE: { 
+                score: gameState.learningData.patternWeights.OPEN_THREE, 
+                name: '活三',
+                type: 'OPEN_THREE'
+            },
+            HALF_OPEN_THREE: { 
+                score: gameState.learningData.patternWeights.HALF_OPEN_THREE, 
+                name: '眠三',
+                type: 'HALF_OPEN_THREE'
+            },
+            OPEN_TWO: { 
+                score: gameState.learningData.patternWeights.OPEN_TWO, 
+                name: '活二',
+                type: 'OPEN_TWO'
+            },
+            HALF_OPEN_TWO: { 
+                score: gameState.learningData.patternWeights.HALF_OPEN_TWO, 
+                name: '眠二',
+                type: 'HALF_OPEN_TWO'
+            },
+            OPEN_ONE: { 
+                score: gameState.learningData.patternWeights.OPEN_ONE, 
+                name: '活一',
+                type: 'OPEN_ONE'
+            },
+            HALF_OPEN_ONE: { 
+                score: gameState.learningData.patternWeights.HALF_OPEN_ONE, 
+                name: '眠一',
+                type: 'HALF_OPEN_ONE'
             }
         };
 
-        // DOM元素
-        const elements = {
-            loading: document.getElementById('loading'),
-            poetry: document.getElementById('poetry'),
-            searchInput: document.getElementById('searchInput'),
-            suggestions: document.getElementById('suggestions'),
-            platformGrid: document.getElementById('platformGrid'),
-            favoritesGrid: document.getElementById('favoritesGrid'),
-            platformSelection: document.getElementById('platformSelection'),
-            platformSelectionGrid: document.getElementById('platformSelectionGrid'),
-            searchBtn: document.getElementById('searchBtn'),
-            loginBtn: document.getElementById('loginBtn'),
-            copyright: document.getElementById('copyright'),
-            settingsBtn: document.getElementById('settingsBtn'),
-            settingsOverlay: document.getElementById('settingsOverlay'),
-            settingsPanel: document.getElementById('settingsPanel'),
-            showPoetry: document.getElementById('showPoetry'),
-            showImage: document.getElementById('showImage'),
-            showDailyImage: document.getElementById('showDailyImage'),
-            showPlatforms: document.getElementById('showPlatforms'),
-            showLogin: document.getElementById('showLogin'),
-            showEasterEgg: document.getElementById('showEasterEgg'),
-            showAnimation: document.getElementById('showAnimation'),
-            defaultPlatform: document.getElementById('defaultPlatform'),
-            bgBlur: document.getElementById('bgBlur'),
-            bgBlurValue: document.getElementById('bgBlurValue'),
-            searchFocusOpacity: document.getElementById('searchFocusOpacity'),
-            searchFocusOpacityValue: document.getElementById('searchFocusOpacityValue'),
-            searchAreaOpacity: document.getElementById('searchAreaOpacity'),
-            platformAreaOpacity: document.getElementById('platformAreaOpacity'),
-            poetryAreaOpacity: document.getElementById('poetryAreaOpacity'),
-            favoritesAreaOpacity: document.getElementById('favoritesAreaOpacity'),
-            footerAreaOpacity: document.getElementById('footerAreaOpacity'),
-            overlayOpacity: document.getElementById('overlayOpacity'),
-            animationSpeed: document.getElementById('animationSpeed'),
-            animationSpeedValue: document.getElementById('animationSpeedValue'),
-            platformCardOpacity: document.getElementById('platformCardOpacity'),
-            favoriteCardOpacity: document.getElementById('favoriteCardOpacity'),
-            platformCardWidth: document.getElementById('platformCardWidth'),
-            platformCardHeight: document.getElementById('platformCardHeight'),
-            favoritesCardWidth: document.getElementById('favoritesCardWidth'),
-            favoritesCardHeight: document.getElementById('favoritesCardHeight'),
-            platformCardWidthValue: document.getElementById('platformCardWidthValue'),
-            platformCardHeightValue: document.getElementById('platformCardHeightValue'),
-            favoritesCardWidthValue: document.getElementById('favoritesCardWidthValue'),
-            favoritesCardHeightValue: document.getElementById('favoritesCardHeightValue'),
-            themeColor: document.getElementById('themeColor'),
-            themeStyle: document.getElementById('themeStyle'),
-            cancelSettings: document.getElementById('cancelSettings'),
-            saveSettings: document.getElementById('saveSettings'),
-            searchAnimation: document.getElementById('searchAnimation'),
-            enableDevOptions: document.getElementById('enableDevOptions'),
-            disableDevOptions: document.getElementById('disableDevOptions'),
-            modeSelection: document.getElementById('modeSelection'),
-            customPlatforms: document.getElementById('customPlatforms'),
-            displayTab: document.getElementById('displayTab'),
-            themeTab: document.getElementById('themeTab'),
-            developerTab: document.getElementById('developerTab')
-        };
+        // 方向向量
+        const DIRECTIONS = [
+            { dr: 1, dc: 0 },  // 垂直
+            { dr: 0, dc: 1 },   // 水平
+            { dr: 1, dc: 1 },   // 对角线
+            { dr: 1, dc: -1 }   // 反对角线
+        ];
 
-        // 状态变量
-        let hitokotoCache = null;
-        let clickCount = 0;
-        let lastClickTime = 0;
-        const CLICK_THRESHOLD = 7;
-        const CLICK_TIMEOUT = 1000;
-        let selectedPlatform = 'bing';
-        let isSuggestionsOpen = false;
-        let konamiCode = [];
-        const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-        let originalSettings = null;
-
-        // 初始化函数
-        async function init() {
-            // 加载设置
-            loadSettings();
+        // 初始化棋盘
+        function initBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
             
-            // 保存原始设置
-            originalSettings = JSON.parse(JSON.stringify(config.settings));
+            // 添加中心点标记
+            const centerPoint = document.createElement('div');
+            centerPoint.className = 'center-point';
+            centerPoint.style.left = '222px'; // 15*30/2 - 3
+            centerPoint.style.top = '222px';
+            boardElement.appendChild(centerPoint);
             
-            // 等待字体加载
-            await document.fonts.ready;
+            // 添加星位标记（天元和四个角星）
+            const starPoints = [
+                {row: 3, col: 3}, {row: 3, col: 11}, 
+                {row: 7, col: 7}, 
+                {row: 11, col: 3}, {row: 11, col: 11}
+            ];
             
-            // 检查屏幕尺寸
-            checkScreenSize();
-            window.addEventListener('resize', checkScreenSize);
-            window.addEventListener('orientationchange', handleOrientationChange);
+            starPoints.forEach(point => {
+                const star = document.createElement('div');
+                star.className = 'center-point';
+                star.style.left = `${point.col * 30 - 3}px`;
+                star.style.top = `${point.row * 30 - 3}px`;
+                boardElement.appendChild(star);
+            });
             
-            // 加载壁纸
-            const imageUrl = await getWallpaper();
-            const img = new Image();
-            img.src = imageUrl;
-            img.onload = function() {
-                document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? `url(${imageUrl})` : 'none';
-                elements.loading.style.display = 'none';
-                document.body.classList.add('fade-in');
-                setTimeout(() => {
-                    document.body.classList.add('loaded');
-                }, 100);
-            };
-            img.onerror = function() {
-                elements.loading.style.display = 'none';
-                console.error('图片加载失败');
-                document.body.classList.add('fade-in');
-                setTimeout(() => {
-                    document.body.classList.add('loaded');
-                }, 100);
-            };
-            
-            // 渲染内容
-            showRandomHitokoto();
-            renderPlatforms();
-            renderFavorites();
-            renderPlatformSelection();
-            
-            // 应用板块显示设置
-            applySectionSettings();
-            
-            // 应用板块位置设置
-            applySectionPositions();
-            
-            // 聚焦搜索框
-            elements.searchInput.focus();
-            
-            // 添加事件监听
-            addEventListeners();
-
-            // 初始化彩蛋
-            initEasterEggs();
-
-            // 检查节日
-            checkTodayHoliday();
-
-            // 应用模式设置
-            applyModeSettings();
-            
-            // 应用卡片设置
-            applyCardSettings();
-            
-            // 注册Service Worker
-            registerServiceWorker();
-        }
-
-        // 注册Service Worker
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker 注册成功:', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker 注册失败:', error);
-                    });
-            }
-        }
-
-        // 应用模式设置
-        function applyModeSettings() {
-            switch(config.settings.mode) {
-                case 'cmd':
-                    document.body.classList.add('cmd-mode');
-                    elements.searchInput.placeholder = "> 输入搜索内容...";
-                    elements.poetry.innerHTML = `
-                        <span class="verse">欢迎使用CMD模式</span>
-                        <span class="author">命令列表: 直接输入内容搜索 | 输入"设置"打开设置</span>
-                    `;
-                    break;
-                case 'network':
-                    initNetworkDetection();
-                    break;
-                default: // normal
-                    document.body.classList.remove('cmd-mode');
-                    elements.searchInput.placeholder = "众里寻他千百度，蓦然回首，答案却在星河处...";
-            }
-        }
-
-        // 网络探测引擎
-        function initNetworkDetection() {
-            console.log("网络技术探测引擎已启用");
-            
-            // 检测WebRTC支持
-            const webrtcSupported = !!window.RTCPeerConnection;
-            console.log(`WebRTC支持: ${webrtcSupported}`);
-            
-            // 检测WebSocket支持
-            const websocketSupported = !!window.WebSocket;
-            console.log(`WebSocket支持: ${websocketSupported}`);
-            
-            // 检测Service Worker支持
-            const serviceWorkerSupported = 'serviceWorker' in navigator;
-            console.log(`Service Worker支持: ${serviceWorkerSupported}`);
-            
-            // 检测网络状态
-            const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            if (connection) {
-                console.log('网络连接信息:', {
-                    type: connection.type,
-                    effectiveType: connection.effectiveType,
-                    downlink: connection.downlink,
-                    rtt: connection.rtt
-                });
-            }
-            
-            // 定期检测网络质量
-            if (connection && connection.addEventListener) {
-                connection.addEventListener('change', () => {
-                    console.log('网络状态变化:', {
-                        effectiveType: connection.effectiveType,
-                        downlink: connection.downlink
-                    });
-                });
-            }
-        }
-
-        // 应用卡片设置
-        function applyCardSettings() {
-            document.documentElement.style.setProperty('--platform-card-width', `${config.settings.platformCardWidth}px`);
-            document.documentElement.style.setProperty('--platform-card-height', `${config.settings.platformCardHeight}px`);
-            document.documentElement.style.setProperty('--favorites-card-width', `${config.settings.favoritesCardWidth}px`);
-            document.documentElement.style.setProperty('--favorites-card-height', `${config.settings.favoritesCardHeight}px`);
-            document.documentElement.style.setProperty('--platform-card-opacity', `${config.settings.platformCardOpacity/100}`);
-            document.documentElement.style.setProperty('--favorite-card-opacity', `${config.settings.favoriteCardOpacity/100}`);
-        }
-
-        // 应用板块显示设置
-        function applySectionSettings() {
-            // 诗句
-            elements.poetry.style.display = config.settings.showSections.poetry ? 'block' : 'none';
-            
-            // 背景图片
-            document.body.style.backgroundImage = config.settings.showSections.image && config.settings.showSections.dailyImage ? 
-                document.body.style.backgroundImage : 'none';
-            
-            // 平台
-            elements.platformGrid.style.display = config.settings.showSections.platforms ? 'grid' : 'none';
-            
-            // 登录按钮
-            elements.loginBtn.style.display = config.settings.showSections.login ? 'block' : 'none';
-        }
-        
-        // 应用板块位置设置
-        function applySectionPositions() {
-            const positions = config.settings.sectionPositions;
-            
-            // 更新网格模板
-            document.body.style.gridTemplateAreas = `
-                "${positions.search === 'top' ? 'search search search' : 'platform poetry favorites'}"
-                "${positions.search === 'top' ? 'platform poetry favorites' : 'search search search'}"
-                "footer footer footer"
-            `;
-            
-            // 更新各个区域的位置
-            document.querySelector('.search-area').style.gridArea = 'search';
-            document.querySelector('.platform-area').style.gridArea = 'platform';
-            document.querySelector('.poetry-area').style.gridArea = 'poetry';
-            document.querySelector('.favorites-area').style.gridArea = 'favorites';
-            document.querySelector('.footer-area').style.gridArea = 'footer';
-            
-            // 更新网格列布局
-            if (positions.platform === 'left' && positions.favorites === 'right') {
-                document.body.style.gridTemplateColumns = '1fr 2fr 1fr';
-            } else if (positions.platform === 'right' && positions.favorites === 'left') {
-                document.body.style.gridTemplateColumns = '1fr 2fr 1fr';
-            } else {
-                // 其他组合的布局
-                document.body.style.gridTemplateColumns = '1fr 1fr';
-            }
-        }
-
-        // 应用主题设置
-        function applyThemeSettings() {
-            if (config.settings.themeColor === 'dark') {
-                document.body.classList.add('dark-mode');
-            } else {
-                document.body.classList.remove('dark-mode');
-            }
-            
-            // 应用主题风格
-            switch(config.settings.themeStyle) {
-                case 'tech':
-                    document.documentElement.style.setProperty('--primary-color', '#4f46e5');
-                    document.body.style.fontFamily = '"Segoe UI", Roboto, sans-serif';
-                    break;
-                case 'retro':
-                    document.documentElement.style.setProperty('--primary-color', '#b45309');
-                    document.body.style.fontFamily = '"Times New Roman", "SimSun", serif';
-                    break;
-                default: // poetic
-                    document.documentElement.style.setProperty('--primary-color', '#89c7b6');
-                    document.body.style.fontFamily = 'var(--禅意-font)';
-            }
-            
-            // 应用自定义CSS
-            if (config.settings.customCSS) {
-                let styleElement = document.getElementById('custom-css');
-                if (!styleElement) {
-                    styleElement = document.createElement('style');
-                    styleElement.id = 'custom-css';
-                    document.head.appendChild(styleElement);
-                }
-                styleElement.textContent = config.settings.customCSS;
-            }
-        }
-
-        // 加载设置
-        function loadSettings() {
-            const savedSettings = localStorage.getItem('searchPortalSettings');
-            if (savedSettings) {
-                try {
-                    const parsed = JSON.parse(savedSettings);
-                    config.settings = {...config.settings, ...parsed};
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
                     
-                    // 更新UI控件
-                    if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
-                    if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
-                    if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
-                    if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-                    if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
-                    if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
-                    if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
-                    if (elements.defaultPlatform) {
-                        elements.defaultPlatform.value = config.settings.defaultPlatform || 'bing';
-                        selectedPlatform = config.settings.defaultPlatform || 'bing';
+                    cell.addEventListener('click', () => handleCellClick(r, c));
+                    
+                    boardElement.appendChild(cell);
+                }
+            }
+            
+            updateBoardDisplay();
+            updateCursorPosition();
+        }
+
+        // 更新光标位置
+        function updateCursorPosition() {
+            const cursor = document.getElementById('cursor');
+            cursor.style.left = `${gameState.cursorPosition.col * 30}px`;
+            cursor.style.top = `${gameState.cursorPosition.row * 30}px`;
+            cursor.classList.remove('hidden');
+        }
+
+        // 处理点击事件
+        function handleCellClick(row, col) {
+            if (gameState.isTraining || gameState.isAIBattle || 
+                gameState.gameOver || 
+                (gameState.currentPlayer !== 1 && document.getElementById('firstPlayer').value === 'human') || 
+                gameState.board[row][col] !== 0) {
+                return;
+            }
+            
+            // 检查是否是限制走棋位置
+            if (isMoveRestricted(row, col)) {
+                addCommandOutput(`位置 ${String.fromCharCode(65 + col)}${15 - row} 被规则限制`);
+                return;
+            }
+            
+            makeMove(row, col, gameState.currentPlayer);
+            
+            if (!gameState.gameOver) {
+                if (gameState.swapAvailable && gameState.moveHistory.length === 1) {
+                    // 一手交换规则下，玩家可以请求交换
+                    gameState.swapRequested = confirm("你想要交换棋子颜色吗?");
+                    if (gameState.swapRequested) {
+                        swapPlayers();
                     }
-                    
-                    if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
-                    if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
-                    if (elements.searchFocusOpacity) elements.searchFocusOpacity.value = config.settings.searchFocusOpacity;
-                    if (elements.searchFocusOpacityValue) elements.searchFocusOpacityValue.textContent = `${config.settings.searchFocusOpacity}%`;
-                    if (elements.searchAreaOpacity) elements.searchAreaOpacity.value = config.settings.searchAreaOpacity;
-                    if (elements.platformAreaOpacity) elements.platformAreaOpacity.value = config.settings.platformAreaOpacity;
-                    if (elements.poetryAreaOpacity) elements.poetryAreaOpacity.value = config.settings.poetryAreaOpacity;
-                    if (elements.favoritesAreaOpacity) elements.favoritesAreaOpacity.value = config.settings.favoritesAreaOpacity;
-                    if (elements.footerAreaOpacity) elements.footerAreaOpacity.value = config.settings.footerAreaOpacity;
-                    if (elements.overlayOpacity) elements.overlayOpacity.value = config.settings.overlayOpacity;
-                    if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
-                    if (elements.platformCardOpacity) elements.platformCardOpacity.value = config.settings.platformCardOpacity;
-                    if (elements.favoriteCardOpacity) elements.favoriteCardOpacity.value = config.settings.favoriteCardOpacity;
-                    if (elements.platformCardWidth) elements.platformCardWidth.value = config.settings.platformCardWidth;
-                    if (elements.platformCardHeight) elements.platformCardHeight.value = config.settings.platformCardHeight;
-                    if (elements.favoritesCardWidth) elements.favoritesCardWidth.value = config.settings.favoritesCardWidth;
-                    if (elements.favoritesCardHeight) elements.favoritesCardHeight.value = config.settings.favoritesCardHeight;
-                    if (elements.platformCardWidthValue) elements.platformCardWidthValue.textContent = `${config.settings.platformCardWidth}px`;
-                    if (elements.platformCardHeightValue) elements.platformCardHeightValue.textContent = `${config.settings.platformCardHeight}px`;
-                    if (elements.favoritesCardWidthValue) elements.favoritesCardWidthValue.textContent = `${config.settings.favoritesCardWidth}px`;
-                    if (elements.favoritesCardHeightValue) elements.favoritesCardHeightValue.textContent = `${config.settings.favoritesCardHeight}px`;
-                    if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
-                    if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
-                    if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
-                    if (elements.modeSelection) elements.modeSelection.value = config.settings.mode || 'normal';
-                    if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
-                    
-                    // 更新开发者选项显示
-                    updateDevOptionsDisplay();
-                    
-                    updateAnimationSpeedText();
-                    applyThemeSettings();
-                    
-                    // 应用透明度设置
-                    applyOpacitySettings();
-                    applySearchFocusOpacity();
-                } catch (e) {
-                    console.error('加载设置失败:', e);
-                }
-            }
-        }
-
-        // 应用透明度设置
-        function applyOpacitySettings() {
-            document.documentElement.style.setProperty('--search-area-opacity', `${config.settings.searchAreaOpacity/100}`);
-            document.documentElement.style.setProperty('--platform-area-opacity', `${config.settings.platformAreaOpacity/100}`);
-            document.documentElement.style.setProperty('--poetry-area-opacity', `${config.settings.poetryAreaOpacity/100}`);
-            document.documentElement.style.setProperty('--favorites-area-opacity', `${config.settings.favoritesAreaOpacity/100}`);
-            document.documentElement.style.setProperty('--footer-area-opacity', `${config.settings.footerAreaOpacity/100}`);
-            document.documentElement.style.setProperty('--overlay-opacity', `${config.settings.overlayOpacity/100}`);
-        }
-
-        // 应用搜索框聚焦度
-        function applySearchFocusOpacity() {
-            document.documentElement.style.setProperty('--search-focus-opacity', `${config.settings.searchFocusOpacity/100}`);
-        }
-
-        // 更新开发者选项显示
-        function updateDevOptionsDisplay() {
-            if (config.settings.enableDevOptions) {
-                document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'block';
-            } else {
-                document.querySelector('.settings-tab[data-tab="developer"]').style.display = 'none';
-            }
-        }
-
-        // 更新动画速度文本
-        function updateAnimationSpeedText() {
-            if (!elements.animationSpeedValue) return;
-            const speeds = ['关闭', '极慢', '慢速', '中速', '快速', '极快'];
-            const speedIndex = parseInt(config.settings.animationSpeed) || 3;
-            elements.animationSpeedValue.textContent = speeds[speedIndex];
-        }
-
-        // 更新动画速度
-        function updateAnimationSpeed() {
-            let speed = 0.3;
-            switch (parseInt(config.settings.animationSpeed)) {
-                case 0: speed = 0; break;
-                case 1: speed = 0.8; break;
-                case 2: speed = 0.5; break;
-                case 3: speed = 0.3; break;
-                case 4: speed = 0.15; break;
-                case 5: speed = 0.1; break;
-            }
-            document.documentElement.style.setProperty('--animation-speed', `${speed}s`);
-        }
-
-        // 保存设置
-        function saveSettings() {
-            config.settings = {
-                showDailyImage: elements.showDailyImage.checked,
-                bgBlur: parseInt(elements.bgBlur.value),
-                searchFocusOpacity: parseInt(elements.searchFocusOpacity.value),
-                searchAreaOpacity: parseInt(elements.searchAreaOpacity.value),
-                platformAreaOpacity: parseInt(elements.platformAreaOpacity.value),
-                poetryAreaOpacity: parseInt(elements.poetryAreaOpacity.value),
-                favoritesAreaOpacity: parseInt(elements.favoritesAreaOpacity.value),
-                footerAreaOpacity: parseInt(elements.footerAreaOpacity.value),
-                overlayOpacity: parseInt(elements.overlayOpacity.value),
-                animationSpeed: parseInt(elements.animationSpeed.value),
-                platformCardOpacity: parseInt(elements.platformCardOpacity.value),
-                favoriteCardOpacity: parseInt(elements.favoriteCardOpacity.value),
-                platformCardWidth: parseInt(elements.platformCardWidth.value),
-                platformCardHeight: parseInt(elements.platformCardHeight.value),
-                favoritesCardWidth: parseInt(elements.favoritesCardWidth.value),
-                favoritesCardHeight: parseInt(elements.favoritesCardHeight.value),
-                defaultPlatform: elements.defaultPlatform.value,
-                themeColor: elements.themeColor.value,
-                themeStyle: elements.themeStyle.value,
-                showSections: {
-                    poetry: elements.showPoetry.checked,
-                    image: elements.showImage.checked,
-                    dailyImage: elements.showDailyImage.checked,
-                    platforms: elements.showPlatforms.checked,
-                    login: elements.showLogin.checked,
-                    easterEgg: elements.showEasterEgg.checked,
-                    animation: elements.showAnimation.checked
-                },
-                enableDevOptions: elements.enableDevOptions.checked,
-                mode: elements.modeSelection.value,
-                customPlatforms: tryParseJSON(elements.customPlatforms.value) || [],
-                customCSS: config.settings.customCSS,
-                sectionPositions: config.settings.sectionPositions
-            };
-            
-            localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-            
-            // 应用新设置
-            document.documentElement.style.setProperty('--bg-blur', `${config.settings.bgBlur}px`);
-            applyOpacitySettings();
-            applySearchFocusOpacity();
-            updateAnimationSpeed();
-            applyCardSettings();
-            applyThemeSettings();
-            applySectionPositions();
-            
-            // 应用板块显示设置
-            applySectionSettings();
-            
-            // 应用模式设置
-            applyModeSettings();
-            
-            // 更新开发者选项显示
-            updateDevOptionsDisplay();
-            
-            closeSettings();
-            
-            // 重新渲染平台
-            renderPlatforms();
-            renderFavorites();
-        }
-
-        // 取消设置
-        function cancelSettings() {
-            // 恢复原始设置
-            config.settings = JSON.parse(JSON.stringify(originalSettings));
-            
-            // 更新UI控件
-            updateUIControls();
-            
-            closeSettings();
-        }
-
-        // 更新UI控件
-        function updateUIControls() {
-            if (elements.showPoetry) elements.showPoetry.checked = config.settings.showSections.poetry;
-            if (elements.showImage) elements.showImage.checked = config.settings.showSections.image;
-            if (elements.showDailyImage) elements.showDailyImage.checked = config.settings.showSections.dailyImage;
-            if (elements.showPlatforms) elements.showPlatforms.checked = config.settings.showSections.platforms;
-            if (elements.showLogin) elements.showLogin.checked = config.settings.showSections.login;
-            if (elements.showEasterEgg) elements.showEasterEgg.checked = config.settings.showSections.easterEgg;
-            if (elements.showAnimation) elements.showAnimation.checked = config.settings.showSections.animation;
-            if (elements.defaultPlatform) {
-                elements.defaultPlatform.value = config.settings.defaultPlatform || 'bing';
-                selectedPlatform = config.settings.defaultPlatform || 'bing';
-            }
-            
-            if (elements.bgBlur) elements.bgBlur.value = config.settings.bgBlur;
-            if (elements.bgBlurValue) elements.bgBlurValue.textContent = `${config.settings.bgBlur}px`;
-            if (elements.searchFocusOpacity) elements.searchFocusOpacity.value = config.settings.searchFocusOpacity;
-            if (elements.searchFocusOpacityValue) elements.searchFocusOpacityValue.textContent = `${config.settings.searchFocusOpacity}%`;
-            if (elements.searchAreaOpacity) elements.searchAreaOpacity.value = config.settings.searchAreaOpacity;
-            if (elements.platformAreaOpacity) elements.platformAreaOpacity.value = config.settings.platformAreaOpacity;
-            if (elements.poetryAreaOpacity) elements.poetryAreaOpacity.value = config.settings.poetryAreaOpacity;
-            if (elements.favoritesAreaOpacity) elements.favoritesAreaOpacity.value = config.settings.favoritesAreaOpacity;
-            if (elements.footerAreaOpacity) elements.footerAreaOpacity.value = config.settings.footerAreaOpacity;
-            if (elements.overlayOpacity) elements.overlayOpacity.value = config.settings.overlayOpacity;
-            if (elements.animationSpeed) elements.animationSpeed.value = config.settings.animationSpeed;
-            if (elements.platformCardOpacity) elements.platformCardOpacity.value = config.settings.platformCardOpacity;
-            if (elements.favoriteCardOpacity) elements.favoriteCardOpacity.value = config.settings.favoriteCardOpacity;
-            if (elements.platformCardWidth) elements.platformCardWidth.value = config.settings.platformCardWidth;
-            if (elements.platformCardHeight) elements.platformCardHeight.value = config.settings.platformCardHeight;
-            if (elements.favoritesCardWidth) elements.favoritesCardWidth.value = config.settings.favoritesCardWidth;
-            if (elements.favoritesCardHeight) elements.favoritesCardHeight.value = config.settings.favoritesCardHeight;
-            if (elements.platformCardWidthValue) elements.platformCardWidthValue.textContent = `${config.settings.platformCardWidth}px`;
-            if (elements.platformCardHeightValue) elements.platformCardHeightValue.textContent = `${config.settings.platformCardHeight}px`;
-            if (elements.favoritesCardWidthValue) elements.favoritesCardWidthValue.textContent = `${config.settings.favoritesCardWidth}px`;
-            if (elements.favoritesCardHeightValue) elements.favoritesCardHeightValue.textContent = `${config.settings.favoritesCardHeight}px`;
-            if (elements.themeColor) elements.themeColor.value = config.settings.themeColor;
-            if (elements.themeStyle) elements.themeStyle.value = config.settings.themeStyle;
-            if (elements.enableDevOptions) elements.enableDevOptions.checked = config.settings.enableDevOptions;
-            if (elements.modeSelection) elements.modeSelection.value = config.settings.mode || 'normal';
-            if (elements.customPlatforms) elements.customPlatforms.value = JSON.stringify(config.settings.customPlatforms, null, 2);
-            
-            // 更新开发者选项显示
-            updateDevOptionsDisplay();
-            
-            updateAnimationSpeedText();
-            applyThemeSettings();
-            
-            // 应用透明度设置
-            applyOpacitySettings();
-            applySearchFocusOpacity();
-            applyCardSettings();
-        }
-
-        // 禁用开发者选项
-        function disableDevOptions() {
-            if (confirm('确定要禁用开发者选项吗？此操作将重置开发者设置。')) {
-                config.settings.enableDevOptions = false;
-                config.settings.customPlatforms = [];
-                config.settings.customCSS = '';
-                config.settings.mode = 'normal';
-                
-                localStorage.setItem('searchPortalSettings', JSON.stringify(config.settings));
-                location.reload();
-            }
-        }
-
-        // 尝试解析JSON
-        function tryParseJSON(jsonString) {
-            try {
-                return JSON.parse(jsonString);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        // 重置所有设置
-        function resetSettings() {
-            if (confirm('确定要重置所有设置吗？此操作不可撤销。')) {
-                localStorage.removeItem('searchPortalSettings');
-                location.reload();
-            }
-        }
-
-        // 获取壁纸
-        async function getWallpaper() {
-            if (!config.settings.showSections.dailyImage) {
-                return '';
-            }
-            
-            const width = window.screen.width * window.devicePixelRatio;
-            const height = window.screen.height * window.devicePixelRatio;
-            
-            try {
-                // 使用新的必应每日一图API
-                const response = await fetch('https://bing.ee123.net/img/?type=json');
-                const data = await response.json();
-                
-                // 根据分辨率选择不同尺寸的壁纸
-                if (width >= 3840 && height >= 2160) {
-                    return data.image.url.replace('1920x1080', 'UHD');
-                } else if (width >= 1920 && height >= 1080) {
-                    return data.image.url;
-                } else if (width >= 1280 && height >= 720) {
-                    return data.image.url.replace('1920x1080', '1280x720');
-                } else if (width >= 1024 && height >= 768) {
-                    return data.image.url.replace('1920x1080', '1024x768');
-                } else {
-                    // 默认返回适合移动设备的壁纸
-                    return data.image.url.replace('1920x1080', '800x480');
-                }
-            } catch (error) {
-                console.error('获取必应每日一图失败:', error);
-                // 备用图片
-                return 'https://bing.ee123.net/img/';
-            }
-        }
-
-        // 显示随机一言
-        async function showRandomHitokoto() {
-            if (!config.settings.showSections.poetry || config.settings.mode === 'cmd') {
-                elements.poetry.style.display = 'none';
-                return;
-            }
-
-            if (hitokotoCache) {
-                updatePoetryDisplay(hitokotoCache);
-                return;
-            }
-
-            try {
-                // 使用缓存API提高性能
-                const cache = await caches.open('hitokoto-cache');
-                const cachedResponse = await cache.match('https://v1.hitokoto.cn/?c=i');
-                
-                if (cachedResponse) {
-                    const data = await cachedResponse.json();
-                    hitokotoCache = data;
-                    updatePoetryDisplay(data);
+                    gameState.swapAvailable = false;
                 }
                 
-                // 无论是否有缓存都获取最新数据
-                const response = await fetch('https://v1.hitokoto.cn/?c=i');
-                const data = await response.json();
-                hitokotoCache = data;
-                updatePoetryDisplay(data);
-                
-                // 更新缓存
-                cache.put('https://v1.hitokoto.cn/?c=i', new Response(JSON.stringify(data)));
-            } catch (error) {
-                console.error('获取一言语句时出错:', error);
-                updatePoetryDisplay({
-                    hitokoto: '书山有路勤为径，学海无涯苦作舟',
-                    from: '《增广贤文》'
-                });
+                setTimeout(() => aiMove(), 100);
             }
         }
 
-        // 更新诗词显示
-        function updatePoetryDisplay(data) {
-            const formatted = `<span class="verse">${data.hitokoto}</span><span class="author">—— ${data.from}</span>`;
-            elements.poetry.innerHTML = formatted;
-            elements.poetry.style.display = 'block';
+        // 检查走棋是否被限制
+        function isMoveRestricted(row, col) {
+            return gameState.restrictedMoves.some(move => 
+                (move.from && move.from.row === row && move.from.col === col) ||
+                (move.to && row >= Math.min(move.from.row, move.to.row) && 
+                          row <= Math.max(move.from.row, move.to.row) && 
+                          col >= Math.min(move.from.col, move.to.col) && 
+                          col <= Math.max(move.from.col, move.to.col))
+            );
         }
 
-        // 渲染平台选择面板
-        function renderPlatformSelection() {
-            elements.platformSelectionGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-selection-item" data-id="${platform.id}">
-                    <div class="platform-selection-icon"><i class="fab ${platform.icon}"></i></div>
-                    <div>${platform.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.platform-selection-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    selectedPlatform = this.dataset.id;
-                    elements.platformSelection.classList.remove('show');
-                    performSearch(elements.searchInput.value.trim());
-                });
-            });
-        }
-
-        // 渲染平台网格
-        function renderPlatforms() {
-            if (!config.settings.showSections.platforms || config.settings.mode === 'cmd') {
-                elements.platformGrid.style.display = 'none';
-                return;
-            }
-
-            elements.platformGrid.innerHTML = config.platforms.map(platform => `
-                <div class="platform-card ${platform.id === selectedPlatform ? 'active' : ''}" 
-                     data-id="${platform.id}"
-                     data-login="${platform.login || ''}">
-                    <div class="platform-icon"><i class="fab ${platform.icon}"></i></div>
-                    <div>${platform.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.platform-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    document.querySelectorAll('.platform-card').forEach(c =>
-                        c.classList.remove('active'));
-                    card.classList.add('active');
-
-                    selectedPlatform = card.dataset.id;
-                    const showLogin = card.dataset.login && config.settings.showSections.login;
-                    elements.loginBtn.style.display = showLogin ? 'block' : 'none';
-                });
-            });
-
-            // 默认显示登录按钮（如果必应需要）
-            const bingPlatform = config.platforms.find(p => p.id === 'bing');
-            if (bingPlatform && bingPlatform.login && config.settings.showSections.login) {
-                elements.loginBtn.style.display = 'block';
-            }
-        }
-
-        // 渲染收藏夹
-        function renderFavorites() {
-            elements.favoritesGrid.innerHTML = config.favorites.map(favorite => `
-                <div class="favorite-card" data-id="${favorite.id}" data-url="${favorite.url}">
-                    <div class="favorite-icon">
-                        <img src="${favorite.icon}" alt="${favorite.name}" onerror="this.src='https://www.google.com/favicon.ico'">
-                    </div>
-                    <div>${favorite.name}</div>
-                </div>
-            `).join('');
-
-            document.querySelectorAll('.favorite-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const url = card.dataset.url;
-                    if (url) {
-                        window.open(url, '_blank');
+        // 交换玩家
+        function swapPlayers() {
+            // 交换棋盘上的棋子
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    if (gameState.board[r][c] === 1) {
+                        gameState.board[r][c] = 2;
+                    } else if (gameState.board[r][c] === 2) {
+                        gameState.board[r][c] = 1;
                     }
-                });
+                }
+            }
+            
+            // 更新历史记录
+            gameState.moveHistory.forEach(move => {
+                move.player = move.player === 1 ? 2 : 1;
             });
+            
+            // 更新当前玩家
+            gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+            
+            addCommandOutput("玩家已交换棋子颜色");
+            updateBoardDisplay();
         }
 
-        // 显示搜索建议
-        function showSuggestions(input) {
-            if (!input || input.length === 0 || config.settings.mode === 'cmd') {
-                hideSuggestions();
-                return;
-            }
-
-            const callbackName = `bingSuggestionCallback_${Date.now()}`;
-            const script = document.createElement('script');
-            script.src = `https://api.bing.com/qsonhs.aspx?type=cb&q=${encodeURIComponent(input)}&cb=${callbackName}&PC=EMMX01`;
-
-            window[callbackName] = function(data) {
-                if (data?.AS?.Results?.[0]?.Suggests) {
-                    elements.suggestions.innerHTML = data.AS.Results[0].Suggests.map(suggestion => `
-                        <div class="suggestion">${suggestion.Txt}</div>
-                    `).join('');
-
-                    // 根据建议内容调整宽度
-                    adjustSuggestionWidth(data.AS.Results[0].Suggests);
-
-                    // 添加建议点击事件
-                    document.querySelectorAll('.suggestion').forEach(item => {
-                        item.addEventListener('click', function() {
-                            elements.searchInput.value = this.textContent;
-                            hideSuggestions();
-                            performSearch(this.textContent);
+        // 执行落子
+        function makeMove(row, col, player) {
+            // 保存当前棋盘状态到历史记录
+            gameState.boardHistory.push(JSON.parse(JSON.stringify(gameState.board)));
+            gameState.moveHistory.push({ row, col, player });
+            updateMoveHistoryDisplay();
+            
+            gameState.board[row][col] = player;
+            gameState.lastMove = { row, col, player };
+            gameState.currentPlayer = player === 1 ? 2 : 1;
+            
+            // 应用规则限制
+            applyRuleRestrictions(row, col);
+            
+            updateBoardDisplay();
+            
+            if (checkWin(row, col, player)) {
+                gameState.gameOver = true;
+                const winner = player === 1 ? '黑棋' : '白棋';
+                const winnerName = (player === 1 && document.getElementById('firstPlayer').value === 'human') || 
+                                 (player === 2 && document.getElementById('firstPlayer').value === 'ai') ? 
+                                 '玩家' : 'AI';
+                document.getElementById('status').textContent = `${winnerName}(${winner}) 获胜!`;
+                
+                // 记录学习数据
+                if (!gameState.isTraining && !gameState.isAIBattle) {
+                    if ((player === 2 && document.getElementById('firstPlayer').value === 'human') || 
+                        (player === 1 && document.getElementById('firstPlayer').value === 'ai')) {
+                        // AI赢了
+                        gameState.learningData.wins.push({
+                            board: JSON.parse(JSON.stringify(gameState.board)),
+                            moves: [...gameState.moveHistory]
                         });
-                    });
-
-                    showSuggestionsUI();
-                } else {
-                    hideSuggestions();
-                }
-                document.body.removeChild(script);
-                delete window[callbackName];
-            };
-
-            document.body.appendChild(script);
-        }
-
-        // 根据建议内容调整宽度
-        function adjustSuggestionWidth(suggestions) {
-            if (!suggestions || suggestions.length === 0) return;
-            
-            // 找到最长的建议
-            const maxLength = Math.max(...suggestions.map(s => s.Txt.length));
-            // 设置最小宽度为搜索框宽度
-            const minWidth = elements.searchInput.offsetWidth;
-            // 根据字符数计算宽度
-            const charWidth = 10; // 每个字符大约10px
-            const calculatedWidth = Math.max(minWidth, maxLength * charWidth + 40); // 40px为padding
-            
-            elements.suggestions.style.width = `${calculatedWidth}px`;
-        }
-
-        // 显示建议框
-        function showSuggestionsUI() {
-            elements.suggestions.style.display = 'block';
-            setTimeout(() => {
-                elements.suggestions.classList.add('show');
-                isSuggestionsOpen = true;
-            }, 10);
-        }
-
-        // 隐藏建议框
-        function hideSuggestions() {
-            elements.suggestions.classList.remove('show');
-            setTimeout(() => {
-                elements.suggestions.style.display = 'none';
-                isSuggestionsOpen = false;
-            }, 200);
-        }
-
-        // 执行搜索
-        function performSearch(query) {
-            if (!query) return;
-            
-            // 检查是否是设置命令
-            if (query.toLowerCase() === '设置') {
-                openSettings();
-                return;
-            }
-            
-            // 严格检查URL
-            if (isPotentialUrl(query) && isValidUrl(query)) {
-                navigateToUrl(query);
-                return;
-            }
-            
-            // 在CMD模式下使用默认平台
-            if (config.settings.mode === 'cmd' || !config.settings.showSections.platforms) {
-                const platform = config.platforms.find(p => p.id === config.settings.defaultPlatform);
-                if (platform) {
-                    window.open(platform.search + encodeURIComponent(query), '_blank');
-                }
-                return;
-            }
-            
-            // 显示平台选择面板
-            elements.platformSelection.classList.add('show');
-        }
-
-        // 改进的URL检测逻辑
-        function isPotentialUrl(string) {
-            // 排除纯中文和空格的情况
-            if (/[\u4e00-\u9fa5]/.test(string) || /\s/.test(string)) return false;
-            
-            // 包含协议头或常见顶级域名
-            const tlds = ['.com', '.cn', '.net', '.org', '.gov', '.edu', '.io', '.dev'];
-            const hasValidTLD = tlds.some(tld => string.includes(tld));
-            const hasProtocol = /^https?:\/\//i.test(string);
-            
-            return hasProtocol || (hasValidTLD && string.includes('.'));
-        }
-
-        // 检查是否是有效的URL
-        function isValidUrl(string) {
-            try {
-                // 更严格的协议检查
-                if (!/^https?:\/\//i.test(string)) {
-                    // 如果没有协议头但包含顶级域名
-                    if (!/[a-z0-9-]+\.[a-z]{2,}/i.test(string)) return false;
-                    string = 'http://' + string;
-                }
-                
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        }
-
-        // 导航到URL
-        function navigateToUrl(url) {
-            // 确保URL有协议
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'http://' + url;
-            }
-            
-            // 显示搜索动画
-            if (config.settings.showSections.animation) {
-                showSearchAnimation();
-            }
-            
-            // 延迟打开链接，让动画有足够时间显示
-            setTimeout(() => {
-                window.open(url, '_blank');
-                
-                // 隐藏动画
-                if (config.settings.showSections.animation) {
-                    setTimeout(() => {
-                        hideSearchAnimation();
-                    }, 500);
-                }
-            }, 300);
-        }
-
-        // 显示搜索动画
-        function showSearchAnimation() {
-            elements.searchAnimation.classList.add('active');
-        }
-
-        // 隐藏搜索动画
-        function hideSearchAnimation() {
-            elements.searchAnimation.classList.remove('active');
-        }
-
-        // 检查屏幕尺寸
-        function checkScreenSize() {
-            // 根据屏幕尺寸调整缩放比例
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            
-            // 小屏幕设备进一步缩小
-            if (width <= 400 || height <= 400) {
-                document.documentElement.style.setProperty('--platform-scale', '0.9');
-                document.documentElement.style.setProperty('--favorites-scale', '0.9');
-            }
-        }
-
-        // 处理方向变化
-        function handleOrientationChange() {
-            // 强制重绘
-            elements.platformGrid.style.display = 'none';
-            elements.favoritesGrid.style.display = 'none';
-            setTimeout(() => {
-                elements.platformGrid.style.display = 'grid';
-                elements.favoritesGrid.style.display = 'grid';
-            }, 100);
-        }
-
-        // 打开设置
-        function openSettings() {
-            elements.settingsOverlay.style.display = 'block';
-            elements.settingsPanel.style.display = 'block';
-            
-            setTimeout(() => {
-                elements.settingsOverlay.classList.add('show');
-                elements.settingsPanel.classList.add('show');
-            }, 10);
-        }
-
-        // 关闭设置
-        function closeSettings() {
-            elements.settingsOverlay.classList.remove('show');
-            elements.settingsPanel.classList.remove('show');
-            
-            setTimeout(() => {
-                elements.settingsOverlay.style.display = 'none';
-                elements.settingsPanel.style.display = 'none';
-            }, 300);
-        }
-
-        // 初始化彩蛋
-        function initEasterEggs() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            // 中国传统文化关键词监听
-            elements.searchInput.addEventListener('input', function() {
-                const query = this.value.trim().toLowerCase();
-                
-                // 检查是否匹配任何中国传统文化关键词
-                for (const [keyword, activator] of Object.entries(config.chineseKeywords)) {
-                    if (query.includes(keyword.toLowerCase())) {
-                        if (typeof this[activator] === 'function') {
-                            this[activator]();
+                        if (gameState.learningData.wins.length > 100) {
+                            gameState.learningData.wins.shift();
                         }
-                        break;
+                        adjustPatternWeights(true); // 根据胜利调整权重
+                    } else { // 玩家赢了
+                        gameState.learningData.losses.push({
+                            board: JSON.parse(JSON.stringify(gameState.board)),
+                            moves: [...gameState.moveHistory]
+                        });
+                        if (gameState.learningData.losses.length > 100) {
+                            gameState.learningData.losses.shift();
+                        }
+                        adjustPatternWeights(false); // 根据失败调整权重
                     }
+                    saveLearningData();
                 }
-            });
-
-            // 版权信息点击 - 连点7次打开开发者设置
-            elements.copyright.addEventListener('click', handleCopyrightClick);
-
-            // 科乐美秘技监听
-            document.addEventListener('keydown', function(e) {
-                konamiCode.push(e.key);
-                if (konamiCode.length > KONAMI_CODE.length) {
-                    konamiCode.shift();
-                }
+            } else if (isBoardFull()) {
+                gameState.gameOver = true;
+                document.getElementById('status').textContent = '平局!';
                 
-                if (konamiCode.join(',') === KONAMI_CODE.join(',')) {
-                    showSourceCode();
-                    konamiCode = [];
-                }
-            });
-        }
-
-        // 检查今天是否是节日
-        function checkTodayHoliday() {
-            if (!config.settings.showSections.easterEgg) return;
-            
-            const today = new Date();
-            const holiday = checkHoliday(today);
-            if (holiday) {
-                // 触发节日彩蛋
-                if (typeof this[holiday.activator] === 'function') {
-                    this[holiday.activator]();
+                if (gameState.isAIBattle) {
+                    gameState.learningData.aiBattleStats.draws++;
+                    updateAIBattleStats();
                 }
             }
         }
 
-        // 检查日期是否是节日
-        function checkHoliday(date) {
-            const month = date.getMonth() + 1; // 0-11 → 1-12
-            const day = date.getDate();
+        // 应用规则限制
+        function applyRuleRestrictions(row, col) {
+            if (gameState.currentRule === 'rif') {
+                // RIF规则：黑棋第一手必须下在天元，第二手必须下在周围3x3区域
+                if (gameState.moveHistory.length === 1 && gameState.currentPlayer === 2) {
+                    // 白棋第二手限制在3x3区域
+                    const center = {row: 7, col: 7};
+                    gameState.restrictedMoves = [{
+                        from: {row: center.row - 1, col: center.col - 1},
+                        to: {row: center.row + 1, col: center.col + 1}
+                    }];
+                } else if (gameState.moveHistory.length === 2 && gameState.currentPlayer === 1) {
+                    // 黑棋第三手限制不在对称位置
+                    const firstBlack = gameState.moveHistory[0];
+                    const firstWhite = gameState.moveHistory[1];
+                    
+                    // 计算对称位置
+                    const symmetricRow = 2 * firstWhite.row - firstBlack.row;
+                    const symmetricCol = 2 * firstWhite.col - firstBlack.col;
+                    
+                    if (symmetricRow >= 0 && symmetricRow < 15 && symmetricCol >= 0 && symmetricCol < 15) {
+                        gameState.restrictedMoves = [{
+                            from: {row: symmetricRow, col: symmetricCol},
+                            to: {row: symmetricRow, col: symmetricCol}
+                        }];
+                    }
+                } else {
+                    gameState.restrictedMoves = [];
+                }
+            } else if (gameState.currentRule === 'yamaguchi') {
+                // 山口规则：类似RIF但有更多限制
+                if (gameState.moveHistory.length === 0 && gameState.currentPlayer === 1) {
+                    // 黑棋第一手必须下在天元
+                    gameState.restrictedMoves = [{
+                        from: {row: 0, col: 0},
+                        to: {row: 14, col: 14},
+                        without: {row: 7, col: 7}
+                    }];
+                }
+                // 其他限制类似RIF...
+            } else if (gameState.currentRule === 'swap1') {
+                // 一手交换规则
+                if (gameState.moveHistory.length === 0 && gameState.currentPlayer === 1) {
+                    // 黑棋第一手限制
+                    gameState.restrictedMoves = [{
+                        from: {row: 4, col: 4},
+                        to: {row: 10, col: 10}
+                    }];
+                    gameState.swapAvailable = true;
+                } else {
+                    gameState.restrictedMoves = [];
+                }
+            } else if (gameState.currentRule === 'custom') {
+                // 自定义规则
+                applyCustomRules();
+            } else {
+                // 标准规则无限制
+                gameState.restrictedMoves = [];
+            }
+        }
+
+        // 应用自定义规则
+        function applyCustomRules() {
+            const customRules = document.getElementById('customRuleEditor').value.split('\n');
+            gameState.restrictedMoves = [];
             
-            for (const [id, holiday] of Object.entries(config.holidays)) {
-                for (const d of holiday.dateRange) {
-                    if (d.month === month && d.day === day) {
-                        return { id, ...holiday };
+            for (let i = 0; i < Math.min(customRules.length, gameState.moveHistory.length + 1); i++) {
+                const rule = customRules[i].trim();
+                if (!rule) continue;
+                
+                // 解析规则
+                if (rule.startsWith('without')) {
+                    const parts = rule.split(' ');
+                    if (parts.length >= 2) {
+                        const pos = parsePosition(parts[1]);
+                        if (pos) {
+                            gameState.restrictedMoves.push({
+                                from: pos,
+                                to: pos
+                            });
+                        }
+                    }
+                } else if (rule.includes('to')) {
+                    const [fromPart, toPart] = rule.split('to');
+                    const fromPos = parsePosition(fromPart.trim());
+                    const toPos = parsePosition(toPart.trim());
+                    if (fromPos && toPos) {
+                        gameState.restrictedMoves.push({
+                            from: fromPos,
+                            to: toPos
+                        });
+                    }
+                } else {
+                    const pos = parsePosition(rule);
+                    if (pos) {
+                        gameState.restrictedMoves.push({
+                            from: pos,
+                            to: pos
+                        });
                     }
                 }
+            }
+        }
+
+        // 解析位置字符串 (如 "A1" 或 "H8")
+        function parsePosition(posStr) {
+            if (!posStr || posStr.length < 2) return null;
+            
+            const colChar = posStr[0].toUpperCase();
+            const col = colChar.charCodeAt(0) - 'A'.charCodeAt(0);
+            const row = 15 - parseInt(posStr.slice(1));
+            
+            if (col >= 0 && col < 15 && row >= 0 && row < 15) {
+                return {row, col};
             }
             return null;
         }
 
-        // 显示源代码
-        function showSourceCode() {
-            const sourceViewer = document.createElement('div');
-            sourceViewer.className = 'source-viewer';
-            sourceViewer.innerHTML = `
-                <div class="source-header">
-                    <h3>星汉搜索 - 源代码</h3>
-                    <span class="source-close">×</span>
-                </div>
-                <pre>${document.documentElement.outerHTML}</pre>
+        // 悔棋功能
+        function undoMove() {
+            if (gameState.isTraining || gameState.isAIBattle || 
+                gameState.moveHistory.length === 0 || 
+                (gameState.moveHistory.length === 1 && document.getElementById('firstPlayer').value === 'ai')) {
+                return;
+            }
+            
+            // 至少保留一步棋（如果是AI先手）
+            const minMoves = document.getElementById('firstPlayer').value === 'ai' ? 1 : 0;
+            if (gameState.moveHistory.length <= minMoves) return;
+            
+            // 移除最后一步
+            gameState.moveHistory.pop();
+            gameState.boardHistory.pop();
+            
+            // 恢复棋盘状态
+            if (gameState.boardHistory.length > 0) {
+                gameState.board = JSON.parse(JSON.stringify(gameState.boardHistory[gameState.boardHistory.length - 1]));
+            } else {
+                gameState.board = Array(15).fill().map(() => Array(15).fill(0));
+            }
+            
+            // 更新游戏状态
+            gameState.gameOver = false;
+            gameState.currentPlayer = gameState.moveHistory.length % 2 === 0 ? 1 : 2;
+            gameState.lastMove = gameState.moveHistory.length > 0 ? 
+                gameState.moveHistory[gameState.moveHistory.length - 1] : null;
+            
+            // 重新应用规则限制
+            applyRuleRestrictions(gameState.lastMove?.row || 7, gameState.lastMove?.col || 7);
+            
+            document.getElementById('status').textContent = gameState.currentPlayer === 1 ? 
+                '你的回合(黑棋)' : 'AI思考中...';
+            
+            updateBoardDisplay();
+            updateMoveHistoryDisplay();
+        }
+
+        // 更新走棋历史显示
+        function updateMoveHistoryDisplay() {
+            const moveHistoryElement = document.getElementById('moveHistory');
+            moveHistoryElement.innerHTML = '';
+            
+            gameState.moveHistory.forEach((move, index) => {
+                const moveBtn = document.createElement('button');
+                moveBtn.className = 'secondary';
+                moveBtn.textContent = `${index + 1}. ${String.fromCharCode(65 + move.col)}${15 - move.row}`;
+                moveBtn.title = `${move.player === 1 ? '黑棋' : '白棋'}走这里`;
+                moveBtn.addEventListener('click', () => revertToMove(index));
+                moveHistoryElement.appendChild(moveBtn);
+            });
+        }
+
+        // 回退到指定步数
+        function revertToMove(moveIndex) {
+            if (gameState.isTraining || gameState.isAIBattle) return;
+            
+            // 更新历史记录
+            gameState.moveHistory = gameState.moveHistory.slice(0, moveIndex + 1);
+            gameState.boardHistory = gameState.boardHistory.slice(0, moveIndex + 1);
+            
+            // 恢复棋盘状态
+            gameState.board = JSON.parse(JSON.stringify(gameState.boardHistory[moveIndex]));
+            
+            // 更新游戏状态
+            gameState.gameOver = false;
+            gameState.currentPlayer = (moveIndex + 1) % 2 === 0 ? 1 : 2;
+            gameState.lastMove = gameState.moveHistory[moveIndex];
+            
+            // 重新应用规则限制
+            applyRuleRestrictions(gameState.lastMove.row, gameState.lastMove.col);
+            
+            document.getElementById('status').textContent = gameState.currentPlayer === 1 ? 
+                '你的回合(黑棋)' : 'AI思考中...';
+            
+            updateBoardDisplay();
+            updateMoveHistoryDisplay();
+        }
+
+        // 调整模式权重（学习功能）
+        function adjustPatternWeights(isWin) {
+            const learningRate = 0.1; // 学习率
+            const gamesToAnalyze = isWin ? 
+                gameState.learningData.wins.slice(-10) : 
+                gameState.learningData.losses.slice(-10);
+            
+            gamesToAnalyze.forEach(game => {
+                // 分析获胜/失败方的模式出现频率
+                const patternCounts = {
+                    OPEN_FOUR: 0,
+                    HALF_OPEN_FOUR: 0,
+                    OPEN_THREE: 0,
+                    HALF_OPEN_THREE: 0,
+                    OPEN_TWO: 0,
+                    HALF_OPEN_TWO: 0,
+                    OPEN_ONE: 0,
+                    HALF_OPEN_ONE: 0
+                };
+                
+                // 统计获胜/失败方的模式
+                const player = isWin ? 2 : 1; // 获胜方是AI(2)，失败方是玩家(1)
+                game.moves.forEach(move => {
+                    if (move.player === player) {
+                        const patterns = getPatternsAt(move.row, move.col, player, true);
+                        patterns.forEach(pattern => {
+                            if (patternCounts.hasOwnProperty(pattern.type)) {
+                                patternCounts[pattern.type]++;
+                            }
+                        });
+                    }
+                });
+                
+                // 调整权重
+                Object.keys(patternCounts).forEach(type => {
+                    const change = patternCounts[type] * learningRate * (isWin ? 1 : -1);
+                    gameState.learningData.patternWeights[type] = Math.max(1, 
+                        gameState.learningData.patternWeights[type] + change);
+                    
+                    // 更新PATTERNS中的权重
+                    if (PATTERNS[type]) {
+                        PATTERNS[type].score = gameState.learningData.patternWeights[type];
+                    }
+                });
+            });
+        }
+
+        // AI走棋（增强版，避免"瞎走"）
+        function aiMove() {
+            if (gameState.gameOver || gameState.currentPlayer !== 2) return;
+            
+            const aiLevel = parseInt(document.getElementById('aiLevel').value);
+            let move;
+            
+            // 确保AI不会在已有棋子的位置落子
+            const isValidMove = (move) => {
+                if (!move) return false;
+                if (gameState.board[move.row][move.col] !== 0) return false;
+                return !isMoveRestricted(move.row, move.col);
+            };
+            
+            // 尝试找到最佳走棋，最多尝试5次
+            let attempts = 0;
+            do {
+                if (aiLevel === 1) {
+                    move = findRandomMove();
+                } else if (aiLevel === 2) {
+                    move = findBestMove(2);
+                } else if (aiLevel === 3) {
+                    move = findBestMove(2, true); // 使用深度搜索
+                } else {
+                    move = findDeepLearningMove(2); // 专家级使用深度学习
+                }
+                attempts++;
+            } while (!isValidMove(move) && attempts < 5);
+            
+            // 如果还是无效，随机找一个有效空位
+            if (!isValidMove(move)) {
+                const emptyCells = getValidMoves();
+                if (emptyCells.length > 0) {
+                    move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                }
+            }
+            
+            if (move && isValidMove(move)) {
+                makeMove(move.row, move.col, 2);
+            }
+            
+            // 如果是AI对战模式，继续下一步
+            if (gameState.isAIBattle && !gameState.gameOver) {
+                setTimeout(() => aiMove(), 100);
+            }
+        }
+
+        // 获取所有有效走棋位置
+        function getValidMoves() {
+            const emptyCells = [];
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    if (gameState.board[r][c] === 0 && !isMoveRestricted(r, c)) {
+                        emptyCells.push({ row: r, col: c });
+                    }
+                }
+            }
+            return emptyCells;
+        }
+
+        // 随机走棋（初级AI，增强版）
+        function findRandomMove() {
+            const emptyCells = getValidMoves();
+            if (emptyCells.length === 0) return null;
+            
+            // 优先选择中心区域
+            const centerCells = emptyCells.filter(cell => {
+                const distToCenter = Math.sqrt(Math.pow(cell.row - 7, 2) + Math.pow(cell.col - 7, 2));
+                return distToCenter < 5;
+            });
+            
+            const candidates = centerCells.length > 0 ? centerCells : emptyCells;
+            return candidates[Math.floor(Math.random() * candidates.length)];
+        }
+
+        // 寻找最佳走棋（中级/高级AI，增强版）
+        function findBestMove(player, advanced = false) {
+            const opponent = player === 1 ? 2 : 1;
+            const emptyCells = getValidMoves();
+            
+            if (emptyCells.length === 0) {
+                return findRandomMove();
+            }
+            
+            let bestScore = -Infinity;
+            let bestMoves = [];
+            const scores = [];
+            
+            // 评估每个空位的分数
+            for (const cell of emptyCells) {
+                const { row, col } = cell;
+                
+                let offensiveScore = 0;
+                let defensiveScore = 0;
+                
+                // 进攻分数（如果AI在此落子）
+                offensiveScore = evaluatePosition(row, col, player);
+                
+                // 防守分数（如果对手在此落子）
+                defensiveScore = evaluatePosition(row, col, opponent);
+                
+                // 总分 = 进攻分 + 防守分 * 0.8 (防守稍弱于进攻)
+                const totalScore = offensiveScore + defensiveScore * 0.8;
+                
+                // 记录评分详情用于调试
+                scores.push({
+                    position: `${String.fromCharCode(65 + col)}${15 - row}`,
+                    row,
+                    col,
+                    offensiveScore,
+                    defensiveScore,
+                    totalScore,
+                    patterns: getPatternsAt(row, col, player, true).map(p => p.name).join(', ')
+                });
+                
+                // 更新最佳走棋
+                if (totalScore > bestScore) {
+                    bestScore = totalScore;
+                    bestMoves = [{ row, col }];
+                } else if (totalScore === bestScore) {
+                    bestMoves.push({ row, col });
+                }
+            }
+            
+            // 显示调试信息
+            displayDebugInfo(scores, bestScore);
+            
+            // 如果有多个最佳选择，优先选择中心附近的
+            if (bestMoves.length > 1) {
+                bestMoves.sort((a, b) => {
+                    const distA = Math.sqrt(Math.pow(a.row - 7, 2) + Math.pow(a.col - 7, 2));
+                    const distB = Math.sqrt(Math.pow(b.row - 7, 2) + Math.pow(b.col - 7, 2));
+                    return distA - distB;
+                });
+            }
+            
+            // 高级AI会考虑更深的搜索
+            if (advanced && bestScore < PATTERNS.FIVE.score / 2) {
+                // 如果没有立即获胜或防守的必要，进行更深的搜索
+                const deepMove = findDeepMove(player, 2); // 搜索深度为2
+                if (deepMove) {
+                    return deepMove;
+                }
+            }
+            
+            return bestMoves.length > 0 ? bestMoves[0] : null;
+        }
+
+        // 深度学习走棋（专家级AI）
+        function findDeepLearningMove(player) {
+            // 如果有学习数据，使用学习到的模式
+            if (gameState.learningData.deepLearning && Object.keys(gameState.learningData.deepLearning).length > 0) {
+                // 这里可以添加更复杂的深度学习模型推理
+                // 简化版：结合学习到的模式和当前棋盘状态
+                return findBestMove(player, true);
+            }
+            
+            // 如果没有学习数据，使用高级搜索
+            return findBestMove(player, true);
+        }
+
+        // 深度搜索（高级AI）
+        function findDeepMove(player, depth) {
+            if (depth === 0) return null;
+            
+            const opponent = player === 1 ? 2 : 1;
+            const emptyCells = getValidMoves();
+            
+            // 限制搜索范围以提高性能
+            const candidates = emptyCells.slice(0, 15);
+            
+            let bestScore = -Infinity;
+            let bestMove = null;
+            
+            for (const cell of candidates) {
+                const { row, col } = cell;
+                
+                // 模拟落子
+                gameState.board[row][col] = player;
+                
+                // 检查是否直接获胜
+                if (checkWin(row, col, player)) {
+                    gameState.board[row][col] = 0; // 撤销模拟
+                    return { row, col };
+                }
+                
+                // 评估对手的最佳回应
+                let opponentBestScore = -Infinity;
+                const opponentEmptyCells = getValidMoves();
+                
+                for (const oppCell of opponentEmptyCells) {
+                    const oppScore = evaluatePosition(oppCell.row, oppCell.col, opponent);
+                    if (oppScore > opponentBestScore) {
+                        opponentBestScore = oppScore;
+                    }
+                }
+                
+                // 计算净得分
+                const currentScore = evaluatePosition(row, col, player) - opponentBestScore * 0.7;
+                
+                // 递归搜索
+                if (depth > 1) {
+                    const deepMove = findDeepMove(player, depth - 1);
+                    if (deepMove) {
+                        const deepScore = evaluatePosition(deepMove.row, deepMove.col, player);
+                        if (deepScore > currentScore) {
+                            gameState.board[row][col] = 0; // 撤销模拟
+                            continue;
+                        }
+                    }
+                }
+                
+                if (currentScore > bestScore) {
+                    bestScore = currentScore;
+                    bestMove = { row, col };
+                }
+                
+                gameState.board[row][col] = 0; // 撤销模拟
+            }
+            
+            return bestMove;
+        }
+
+        // 评估某个位置的分数（增强版）
+        function evaluatePosition(row, col, player) {
+            if (gameState.board[row][col] !== 0) return -Infinity;
+            
+            let totalScore = 0;
+            const patterns = [];
+            
+            // 检查四个方向
+            for (const dir of DIRECTIONS) {
+                const pattern = getPattern(row, col, player, dir.dr, dir.dc);
+                patterns.push(pattern);
+                totalScore += pattern.score;
+            }
+            
+            // 特殊模式加分（如双活三、活四+活三等）
+            if (patterns.filter(p => p.type === 'OPEN_FOUR').length >= 1) {
+                totalScore += PATTERNS.OPEN_FOUR.score * 0.5; // 额外加分
+            }
+            if (patterns.filter(p => p.type === 'OPEN_THREE').length >= 2) {
+                totalScore += PATTERNS.OPEN_THREE.score * 1.5; // 双活三加分
+            }
+            if (patterns.filter(p => p.type === 'HALF_OPEN_FOUR').length >= 2) {
+                totalScore += PATTERNS.HALF_OPEN_FOUR.score * 1.2; // 双冲四加分
+            }
+            
+            // 中心位置加分（开局时更重要）
+            const centerDist = Math.sqrt(Math.pow(row - 7, 2) + Math.pow(col - 7, 2));
+            const centerBonus = 20 / (1 + centerDist);
+            totalScore += centerBonus;
+            
+            // 深度学习调整分数（如果有）
+            if (gameState.learningData.deepLearning) {
+                // 这里可以添加深度学习模型的分数调整
+                // 简化版：根据历史数据调整
+                const positionKey = `${row},${col},${player}`;
+                if (gameState.learningData.deepLearning[positionKey]) {
+                    totalScore *= gameState.learningData.deepLearning[positionKey];
+                }
+            }
+            
+            return totalScore;
+        }
+
+        // 获取某个位置的所有模式（返回完整模式对象）
+        function getPatternsAt(row, col, player, returnObjects = false) {
+            const patterns = [];
+            
+            for (const dir of DIRECTIONS) {
+                const pattern = getPattern(row, col, player, dir.dr, dir.dc);
+                if (returnObjects) {
+                    patterns.push(pattern);
+                } else {
+                    patterns.push(pattern.name);
+                }
+            }
+            
+            return patterns;
+        }
+
+        // 获取特定方向的模式
+        function getPattern(row, col, player, dr, dc) {
+            // 模拟落子
+            gameState.board[row][col] = player;
+            
+            let maxLength = 1;
+            let openEnds = 0;
+            
+            // 检查正方向
+            let length = 1;
+            let r = row + dr;
+            let c = col + dc;
+            let blocked = false;
+            
+            while (length < 5 && r >= 0 && r < 15 && c >= 0 && c < 15) {
+                if (gameState.board[r][c] === player) {
+                    length++;
+                    r += dr;
+                    c += dc;
+                } else {
+                    if (gameState.board[r][c] === 0) openEnds++;
+                    blocked = true;
+                    break;
+                }
+            }
+            
+            if (!blocked && r >= 0 && r < 15 && c >= 0 && c < 15) {
+                if (gameState.board[r][c] === 0) openEnds++;
+            } else if (!blocked) {
+                // 到达棋盘边缘
+            }
+            
+            // 检查反方向
+            r = row - dr;
+            c = col - dc;
+            blocked = false;
+            
+            while (length < 5 && r >= 0 && r < 15 && c >= 0 && c < 15) {
+                if (gameState.board[r][c] === player) {
+                    length++;
+                    r -= dr;
+                    c -= dc;
+                } else {
+                    if (gameState.board[r][c] === 0) openEnds++;
+                    blocked = true;
+                    break;
+                }
+            }
+            
+            if (!blocked && r >= 0 && r < 15 && c >= 0 && c < 15) {
+                if (gameState.board[r][c] === 0) openEnds++;
+            } else if (!blocked) {
+                // 到达棋盘边缘
+            }
+            
+            maxLength = Math.max(maxLength, length);
+            
+            // 撤销模拟落子
+            gameState.board[row][col] = 0;
+            
+            // 确定模式
+            if (maxLength >= 5) {
+                return PATTERNS.FIVE;
+            } else if (maxLength === 4) {
+                if (openEnds >= 2) return PATTERNS.OPEN_FOUR;
+                if (openEnds >= 1) return PATTERNS.HALF_OPEN_FOUR;
+            } else if (maxLength === 3) {
+                if (openEnds >= 2) return PATTERNS.OPEN_THREE;
+                if (openEnds >= 1) return PATTERNS.HALF_OPEN_THREE;
+            } else if (maxLength === 2) {
+                if (openEnds >= 2) return PATTERNS.OPEN_TWO;
+                if (openEnds >= 1) return PATTERNS.HALF_OPEN_TWO;
+            } else if (maxLength === 1) {
+                if (openEnds >= 2) return PATTERNS.OPEN_ONE;
+                if (openEnds >= 1) return PATTERNS.HALF_OPEN_ONE;
+            }
+            
+            return { score: 0, name: '无', type: 'NONE' };
+        }
+
+        // 检查是否获胜
+        function checkWin(row, col, player) {
+            for (const dir of DIRECTIONS) {
+                let count = 1;
+                
+                // 正方向
+                let r = row + dir.dr;
+                let c = col + dir.dc;
+                while (r >= 0 && r < 15 && c >= 0 && c < 15 && gameState.board[r][c] === player) {
+                    count++;
+                    r += dir.dr;
+                    c += dir.dc;
+                }
+                
+                // 反方向
+                r = row - dir.dr;
+                c = col - dir.dc;
+                while (r >= 0 && r < 15 && c >= 0 && c < 15 && gameState.board[r][c] === player) {
+                    count++;
+                    r -= dir.dr;
+                    c -= dir.dc;
+                }
+                
+                if (count >= 5) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // 检查棋盘是否已满
+        function isBoardFull() {
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    if (gameState.board[r][c] === 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        // 更新棋盘显示（增强版，确保棋盘清晰可见）
+        function updateBoardDisplay() {
+            const cells = document.querySelectorAll('#board .cell');
+            
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    const index = r * 15 + c;
+                    const cell = cells[index];
+                    cell.innerHTML = '';
+                    cell.classList.remove('last-move');
+                    
+                    if (gameState.board[r][c] === 1) {
+                        const piece = document.createElement('div');
+                        piece.className = 'black';
+                        cell.appendChild(piece);
+                    } else if (gameState.board[r][c] === 2) {
+                        const piece = document.createElement('div');
+                        piece.className = 'white';
+                        cell.appendChild(piece);
+                    }
+                    
+                    if (gameState.lastMove && gameState.lastMove.row === r && gameState.lastMove.col === c) {
+                        cell.classList.add('last-move');
+                    }
+                }
+            }
+        }
+
+        // 显示调试信息
+        function displayDebugInfo(scores, bestScore) {
+            const debugInfo = document.getElementById('debugInfo');
+            const aiThinking = document.getElementById('aiThinking');
+            const scoreDetails = document.getElementById('scoreDetails');
+            
+            aiThinking.innerHTML = `
+                <p>AI正在思考，评估了 ${scores.length} 个可能的位置</p>
+                <p>最佳分数: ${bestScore.toFixed(1)}</p>
             `;
             
-            document.body.appendChild(sourceViewer);
-            sourceViewer.style.display = 'block';
+            scoreDetails.innerHTML = '';
             
-            // 添加关闭事件
-            sourceViewer.querySelector('.source-close').addEventListener('click', () => {
-                sourceViewer.style.display = 'none';
-            });
-        }
-
-        // 版权信息点击处理
-        function handleCopyrightClick() {
-            const now = Date.now();
-            if (now - lastClickTime > CLICK_TIMEOUT) {
-                clickCount = 0;
-            }
+            // 按总分排序
+            scores.sort((a, b) => b.totalScore - a.totalScore);
             
-            clickCount++;
-            lastClickTime = now;
+            // 只显示前15个位置
+            const displayCount = Math.min(15, scores.length);
             
-            if (clickCount >= CLICK_THRESHOLD) {
-                openDeveloperSettings();
-                clickCount = 0;
+            for (let i = 0; i < displayCount; i++) {
+                const score = scores[i];
+                const row = document.createElement('tr');
                 
-                // 添加点击动画
-                elements.copyright.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    elements.copyright.style.transform = '';
-                }, 300);
+                if (i === 0) {
+                    row.style.backgroundColor = '#e6f7e6';
+                }
+                
+                row.innerHTML = `
+                    <td>${score.position}</td>
+                    <td>${score.offensiveScore.toFixed(1)}</td>
+                    <td>${score.defensiveScore.toFixed(1)}</td>
+                    <td>${score.totalScore.toFixed(1)}</td>
+                    <td>${score.patterns}</td>
+                `;
+                
+                scoreDetails.appendChild(row);
             }
         }
 
-        // 打开开发者设置
-        function openDeveloperSettings() {
-            // 显示开发者选项
-            config.settings.enableDevOptions = true;
-            elements.enableDevOptions.checked = true;
-            updateDevOptionsDisplay();
-            
-            // 切换到开发者选项
-            document.querySelector('.settings-tab[data-tab="developer"]').click();
-            
-            alert('开发者模式已激活');
+        // 添加命令行输出
+        function addCommandOutput(message) {
+            const output = document.getElementById('commandOutput');
+            const entry = document.createElement('div');
+            entry.textContent = message;
+            output.appendChild(entry);
+            output.scrollTop = output.scrollHeight;
         }
 
-        // 添加事件监听
-        function addEventListeners() {
-            // 搜索按钮
-            elements.searchBtn.addEventListener('click', () => {
-                const query = elements.searchInput.value.trim();
-                if (!query) return alert('请输入搜索内容');
-                performSearch(query);
-            });
-
-            // 登录按钮
-            elements.loginBtn.addEventListener('click', () => {
-                if (!selectedPlatform) return;
-                const platform = config.platforms.find(p => p.id === selectedPlatform);
-                if (platform && platform.login) {
-                    window.open(platform.login, '_blank');
+        // 处理命令行输入
+        function handleCommandInput() {
+            const input = document.getElementById('commandInput');
+            const command = input.value.trim();
+            input.value = '';
+            
+            if (!command) return;
+            
+            addCommandOutput(`> ${command}`);
+            
+            const parts = command.split(' ');
+            const cmd = parts[0].toLowerCase();
+            const args = parts.slice(1);
+            
+            try {
+                if (cmd === 'goto' && args.length === 1) {
+                    // 移动光标命令
+                    const pos = parsePosition(args[0]);
+                    if (pos) {
+                        gameState.cursorPosition = pos;
+                        updateCursorPosition();
+                        addCommandOutput(`光标已移动到 ${args[0]}`);
+                    } else {
+                        addCommandOutput(`无效位置: ${args[0]}`);
+                    }
+                } else if (cmd === 'chess' && args.length === 1) {
+                    // 落子命令
+                    const pos = parsePosition(args[0]);
+                    if (pos) {
+                        if (gameState.board[pos.row][pos.col] === 0 || 
+                            (gameState.currentPlayer === 1 && document.getElementById('firstPlayer').value === 'human')) {
+                            // 允许命令行覆盖AI的棋子（如果是玩家回合）
+                            makeMove(pos.row, pos.col, gameState.currentPlayer);
+                            
+                            if (!gameState.gameOver) {
+                                setTimeout(() => aiMove(), 100);
+                            }
+                        } else {
+                            addCommandOutput(`位置 ${args[0]} 已有棋子`);
+                        }
+                    } else {
+                        addCommandOutput(`无效位置: ${args[0]}`);
+                    }
+                } else if (cmd === 'undo') {
+                    // 悔棋命令
+                    undoMove();
+                    addCommandOutput(`已撤销上一步`);
+                } else if (cmd === 'new') {
+                    // 新游戏命令
+                    newGame();
+                    addCommandOutput(`开始新游戏`);
+                } else if (cmd === 'help') {
+                    // 帮助命令
+                    addCommandOutput(`可用命令:
+- goto <位置>: 移动光标到指定位置 (如: goto A1)
+- chess <位置>: 在指定位置落子 (如: chess B2)
+- undo: 撤销上一步
+- new: 开始新游戏
+- help: 显示帮助信息`);
+                } else {
+                    addCommandOutput(`未知命令: ${cmd}。输入 help 查看帮助`);
                 }
-            });
+            } catch (e) {
+                addCommandOutput(`执行命令出错: ${e.message}`);
+            }
+        }
 
-            // 设置按钮
-            elements.settingsBtn.addEventListener('click', openSettings);
+        // 保存学习数据
+        function saveLearningData() {
+            localStorage.setItem('gomokuLearningData', JSON.stringify(gameState.learningData));
+        }
 
-            // 搜索输入
-            elements.searchInput.addEventListener('input', function() {
-                showSuggestions(this.value);
-            });
+        // 清除学习数据
+        function clearLearningData() {
+            gameState.learningData = { 
+                wins: [], 
+                losses: [], 
+                aiBattleStats: { ai1Wins: 0, ai2Wins: 0, draws: 0 },
+                patternWeights: {
+                    OPEN_FOUR: 10000,
+                    HALF_OPEN_FOUR: 5000,
+                    OPEN_THREE: 2000,
+                    HALF_OPEN_THREE: 500,
+                    OPEN_TWO: 200,
+                    HALF_OPEN_TWO: 50,
+                    OPEN_ONE: 10,
+                    HALF_OPEN_ONE: 1
+                },
+                deepLearning: {}
+            };
+            
+            // 更新PATTERNS中的权重
+            PATTERNS.OPEN_FOUR.score = 10000;
+            PATTERNS.HALF_OPEN_FOUR.score = 5000;
+            PATTERNS.OPEN_THREE.score = 2000;
+            PATTERNS.HALF_OPEN_THREE.score = 500;
+            PATTERNS.OPEN_TWO.score = 200;
+            PATTERNS.HALF_OPEN_TWO.score = 50;
+            PATTERNS.OPEN_ONE.score = 10;
+            PATTERNS.HALF_OPEN_ONE.score = 1;
+            
+            saveLearningData();
+            updateAIBattleStats();
+            addLogEntry('学习数据已清除', 'system');
+            addCommandOutput('已清除所有学习数据');
+        }
 
-            // 回车键搜索
-            elements.searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const query = elements.searchInput.value.trim();
-                    if (!query) return alert('请输入搜索内容');
-                    performSearch(query);
-                }
-            });
+        // 新游戏
+        function newGame() {
+            if (gameState.isTraining || gameState.isAIBattle) return;
+            
+            // 应用选择的规则
+            gameState.currentRule = document.getElementById('gameRule').value;
+            gameState.swapAvailable = false;
+            gameState.swapRequested = false;
+            
+            if (gameState.currentRule === 'custom') {
+                document.getElementById('customRuleContainer').classList.remove('hidden');
+            } else {
+                document.getElementById('customRuleContainer').classList.add('hidden');
+            }
+            
+            gameState.board = Array(15).fill().map(() => Array(15).fill(0));
+            gameState.gameOver = false;
+            gameState.lastMove = null;
+            gameState.moveHistory = [];
+            gameState.boardHistory = [];
+            gameState.restrictedMoves = [];
+            
+            const firstPlayer = document.getElementById('firstPlayer').value;
+            gameState.currentPlayer = firstPlayer === 'human' ? 1 : 2;
+            
+            document.getElementById('status').textContent = firstPlayer === 'human' ? '你的回合(黑棋)' : 'AI思考中...';
+            updateBoardDisplay();
+            updateMoveHistoryDisplay();
+            
+            // 应用初始规则限制
+            applyRuleRestrictions(7, 7);
+            
+            if (firstPlayer === 'ai') {
+                setTimeout(() => aiMove(), 300);
+            }
+        }
 
-            // 输入框聚焦/失焦
-            elements.searchInput.addEventListener('focus', function() {
-                if (this.value.trim().length > 0 && config.settings.mode !== 'cmd') {
-                    showSuggestions(this.value);
-                }
-            });
+        // 开始AI训练
+        function startTraining() {
+            if (gameState.isTraining || gameState.isAIBattle) return;
+            
+            const games = parseInt(document.getElementById('trainGames').value);
+            if (games < 1) return;
+            
+            gameState.isTraining = true;
+            gameState.trainingQueue = games;
+            document.getElementById('status').textContent = `AI训练中 (0/${games})`;
+            
+            // 禁用控制按钮
+            document.getElementById('newGame').disabled = true;
+            document.getElementById('startTraining').disabled = true;
+            document.getElementById('startAIBattle').disabled = true;
+            document.getElementById('undoMove').disabled = true;
+            
+            addCommandOutput(`开始AI训练，共 ${games} 局`);
+            
+            // 开始训练
+            trainingStep();
+        }
 
-            elements.searchInput.addEventListener('blur', function() {
-                // 延迟隐藏以确保点击建议时有时间处理
+        // 训练步骤
+        function trainingStep() {
+            if (gameState.trainingQueue <= 0) {
+                gameState.isTraining = false;
+                document.getElementById('status').textContent = `训练完成 (${parseInt(document.getElementById('trainGames').value)}局)`;
+                
+                // 启用控制按钮
+                document.getElementById('newGame').disabled = false;
+                document.getElementById('startTraining').disabled = false;
+                document.getElementById('startAIBattle').disabled = false;
+                document.getElementById('undoMove').disabled = false;
+                
+                addCommandOutput(`AI训练完成，共 ${parseInt(document.getElementById('trainGames').value)} 局`);
+                return;
+            }
+            
+            // 设置训练游戏
+            gameState.board = Array(15).fill().map(() => Array(15).fill(0));
+            gameState.gameOver = false;
+            gameState.lastMove = null;
+            gameState.moveHistory = [];
+            gameState.boardHistory = [];
+            gameState.currentPlayer = Math.random() < 0.5 ? 1 : 2; // 随机先手
+            
+            // 更新状态
+            const totalGames = parseInt(document.getElementById('trainGames').value);
+            const completedGames = totalGames - gameState.trainingQueue;
+            document.getElementById('status').textContent = `AI训练中 (${completedGames}/${totalGames})`;
+            
+            // 开始游戏
+            if (gameState.currentPlayer === 2) {
                 setTimeout(() => {
-                    if (!document.activeElement.classList.contains('suggestion')) {
-                        hideSuggestions();
-                    }
-                }, 200);
-            });
-
-            // 设置面板事件
-            elements.cancelSettings.addEventListener('click', cancelSettings);
-            elements.saveSettings.addEventListener('click', saveSettings);
-            elements.settingsOverlay.addEventListener('click', closeSettings);
-            elements.disableDevOptions.addEventListener('click', disableDevOptions);
-
-            // 点击页面其他区域隐藏建议和平台选择
-            document.addEventListener('click', function(e) {
-                if (!elements.searchInput.contains(e.target) && 
-                    !elements.suggestions.contains(e.target) &&
-                    !elements.searchBtn.contains(e.target) &&
-                    !elements.platformSelection.contains(e.target)) {
-                    hideSuggestions();
-                    elements.platformSelection.classList.remove('show');
-                }
-            });
-
-            // 键盘ESC键隐藏建议和平台选择
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    if (isSuggestionsOpen) {
-                        hideSuggestions();
-                    }
-                    elements.platformSelection.classList.remove('show');
-                }
-            });
-
-            // 背景模糊度调整
-            elements.bgBlur.addEventListener('input', function() {
-                elements.bgBlurValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--bg-blur', `${this.value}px`);
-            });
-
-            // 搜索框聚焦度调整
-            elements.searchFocusOpacity.addEventListener('input', function() {
-                elements.searchFocusOpacityValue.textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--search-focus-opacity', `${this.value/100}`);
-            });
-
-            // 板块透明度调整
-            elements.searchAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(1) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--search-area-opacity', `${this.value/100}`);
-            });
-            
-            elements.platformAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(2) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--platform-area-opacity', `${this.value/100}`);
-            });
-            
-            elements.poetryAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(3) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--poetry-area-opacity', `${this.value/100}`);
-            });
-            
-            elements.favoritesAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(4) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--favorites-area-opacity', `${this.value/100}`);
-            });
-            
-            elements.footerAreaOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(5) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--footer-area-opacity', `${this.value/100}`);
-            });
-            
-            elements.overlayOpacity.addEventListener('input', function() {
-                document.querySelector('.settings-item:nth-child(6) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--overlay-opacity', `${this.value/100}`);
-            });
-
-            // 动画速度调整
-            elements.animationSpeed.addEventListener('input', function() {
-                updateAnimationSpeedText();
-                updateAnimationSpeed();
-            });
-
-            // 卡片透明度调整
-            elements.platformCardOpacity.addEventListener('input', function() {
-                document.querySelector('.card-opacity-item:nth-child(1) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--platform-card-opacity', `${this.value/100}`);
-            });
-            
-            elements.favoriteCardOpacity.addEventListener('input', function() {
-                document.querySelector('.card-opacity-item:nth-child(2) .opacity-value').textContent = `${this.value}%`;
-                document.documentElement.style.setProperty('--favorite-card-opacity', `${this.value/100}`);
-            });
-
-            // 卡片尺寸调整
-            elements.platformCardWidth.addEventListener('input', function() {
-                elements.platformCardWidthValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--platform-card-width', `${this.value}px`);
-            });
-            
-            elements.platformCardHeight.addEventListener('input', function() {
-                elements.platformCardHeightValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--platform-card-height', `${this.value}px`);
-            });
-            
-            elements.favoritesCardWidth.addEventListener('input', function() {
-                elements.favoritesCardWidthValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--favorites-card-width', `${this.value}px`);
-            });
-            
-            elements.favoritesCardHeight.addEventListener('input', function() {
-                elements.favoritesCardHeightValue.textContent = `${this.value}px`;
-                document.documentElement.style.setProperty('--favorites-card-height', `${this.value}px`);
-            });
-
-            // 主题颜色调整
-            elements.themeColor.addEventListener('change', function() {
-                applyThemeSettings();
-            });
-
-            // 主题风格调整
-            elements.themeStyle.addEventListener('change', function() {
-                applyThemeSettings();
-            });
-
-            // 开发者选项开关
-            elements.enableDevOptions.addEventListener('change', function() {
-                updateDevOptionsDisplay();
-            });
-            
-            // 模式选择
-            elements.modeSelection.addEventListener('change', function() {
-                applyModeSettings();
-            });
-
-            // 设置选项卡切换
-            document.querySelectorAll('.settings-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // 更新活动选项卡
-                    document.querySelectorAll('.settings-tab').forEach(t => 
-                        t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // 更新活动内容
-                    const tabId = this.dataset.tab;
-                    document.querySelectorAll('.settings-tab-content').forEach(content => 
-                        content.classList.remove('active'));
-                    document.getElementById(`${tabId}Tab`).classList.add('active');
-                });
-            });
-
-            // 触摸事件支持
-            elements.searchInput.addEventListener('touchend', function(e) {
-                this.focus();
-                e.preventDefault();
-            });
-
-            document.querySelectorAll('.platform-card, .favorite-card').forEach(card => {
-                card.addEventListener('touchend', function(e) {
-                    this.click();
-                    e.preventDefault();
-                });
-            });
+                    aiMove();
+                    trainingNextStep();
+                }, 10);
+            } else {
+                trainingNextStep();
+            }
         }
 
-        // 初始化
-        document.addEventListener('DOMContentLoaded', init);
+        // 训练下一步
+        function trainingNextStep() {
+            if (!gameState.gameOver) {
+                setTimeout(() => {
+                    aiMove();
+                    trainingNextStep();
+                }, 10);
+            } else {
+                // 记录游戏结果
+                if (gameState.lastMove) {
+                    const winner = gameState.lastMove.player === 1 ? '黑棋' : '白棋';
+                    addLogEntry(`训练局 ${parseInt(document.getElementById('trainGames').value) - gameState.trainingQueue + 1}: ${winner} 获胜`, 
+                              gameState.lastMove.player === 1 ? 'loss' : 'win');
+                } else {
+                    addLogEntry(`训练局 ${parseInt(document.getElementById('trainGames').value) - gameState.trainingQueue + 1}: 平局`, 'draw');
+                }
+                
+                gameState.trainingQueue--;
+                setTimeout(trainingStep, 10);
+            }
+        }
+
+        // 开始AI对战
+        function startAIBattle() {
+            if (gameState.isTraining || gameState.isAIBattle) return;
+            
+            const games = parseInt(document.getElementById('aiBattleGames').value);
+            if (games < 1) return;
+            
+            gameState.isAIBattle = true;
+            gameState.trainingQueue = games;
+            gameState.aiBattlePlayers = [1, 2]; // 两个AI玩家
+            document.getElementById('status').textContent = `AI对战中 (0/${games})`;
+            
+            // 禁用控制按钮
+            document.getElementById('newGame').disabled = true;
+            document.getElementById('startTraining').disabled = true;
+            document.getElementById('startAIBattle').disabled = true;
+            document.getElementById('undoMove').disabled = true;
+            
+            addCommandOutput(`开始AI对战，共 ${games} 局`);
+            
+            // 开始对战
+            aiBattleStep();
+        }
+
+        // AI对战步骤
+        function aiBattleStep() {
+            if (gameState.trainingQueue <= 0) {
+                gameState.isAIBattle = false;
+                document.getElementById('status').textContent = `AI对战完成 (${parseInt(document.getElementById('aiBattleGames').value)}局)`;
+                
+                // 启用控制按钮
+                document.getElementById('newGame').disabled = false;
+                document.getElementById('startTraining').disabled = false;
+                document.getElementById('startAIBattle').disabled = false;
+                document.getElementById('undoMove').disabled = false;
+                
+                addCommandOutput(`AI对战完成，共 ${parseInt(document.getElementById('aiBattleGames').value)} 局`);
+                return;
+            }
+            
+            // 重置棋盘
+            gameState.board = Array(15).fill().map(() => Array(15).fill(0));
+            gameState.gameOver = false;
+            gameState.lastMove = null;
+            gameState.moveHistory = [];
+            gameState.boardHistory = [];
+            gameState.currentPlayer = Math.random() < 0.5 ? 1 : 2; // 随机先手
+            
+            // 更新状态
+            const totalGames = parseInt(document.getElementById('aiBattleGames').value);
+            const completedGames = totalGames - gameState.trainingQueue;
+            document.getElementById('status').textContent = `AI对战中 (${completedGames}/${totalGames})`;
+            updateBoardDisplay();
+            
+            addCommandOutput(`开始对战局 ${completedGames + 1}`);
+            
+            // 开始AI对战
+            setTimeout(() => {
+                aiMove();
+            }, 100);
+        }
+
+        // 更新AI对战统计
+        function updateAIBattleStats() {
+            document.getElementById('ai1Wins').textContent = `AI1: ${gameState.learningData.aiBattleStats.ai1Wins}`;
+            document.getElementById('ai2Wins').textContent = `AI2: ${gameState.learningData.aiBattleStats.ai2Wins}`;
+            document.getElementById('aiDraws').textContent = `平局: ${gameState.learningData.aiBattleStats.draws}`;
+        }
+
+        // 添加日志条目
+        function addLogEntry(message, type) {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.textContent = message;
+            
+            const logEntries = document.getElementById('logEntries');
+            logEntries.insertBefore(logEntry, logEntries.firstChild);
+            
+            // 限制日志数量
+            if (logEntries.children.length > 100) {
+                logEntries.removeChild(logEntries.lastChild);
+            }
+        }
+
+        // 初始化游戏
+        function initGame() {
+            initBoard();
+            
+            // 加载AI对战统计
+            if (gameState.learningData.aiBattleStats) {
+                updateAIBattleStats();
+            }
+            
+            // 事件监听器
+            document.getElementById('newGame').addEventListener('click', newGame);
+            document.getElementById('undoMove').addEventListener('click', undoMove);
+            document.getElementById('clearData').addEventListener('click', clearLearningData);
+            document.getElementById('toggleDebug').addEventListener('click', () => {
+                gameState.debugMode = !gameState.debugMode;
+                document.getElementById('debugInfo').classList.toggle('hidden', !gameState.debugMode);
+                document.getElementById('toggleDebug').textContent = gameState.debugMode ? '隐藏AI思考' : '显示AI思考';
+            });
+            document.getElementById('startTraining').addEventListener('click', startTraining);
+            document.getElementById('startAIBattle').addEventListener('click', startAIBattle);
+            document.getElementById('commandInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleCommandInput();
+                }
+            });
+            document.getElementById('gameRule').addEventListener('change', () => {
+                if (document.getElementById('gameRule').value === 'custom') {
+                    document.getElementById('customRuleContainer').classList.remove('hidden');
+                } else {
+                    document.getElementById('customRuleContainer').classList.add('hidden');
+                }
+            });
+            
+            // 初始游戏
+            newGame();
+            
+            // 添加欢迎消息
+            addCommandOutput('五子棋AI系统已启动');
+            addCommandOutput('输入 help 查看可用命令');
+        }
+
+        // 启动游戏
+        window.onload = initGame;
     </script>
 </body>
-
 </html>
